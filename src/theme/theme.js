@@ -2,28 +2,103 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
     palette: {
-        mode: "dark",
+        mode: "light",
 
         primary: {
-            main: "#7c4dff",
+            main: "#7c3aed",
+            contrastText: "#ffffff",
         },
 
         secondary: {
-            main: "#00c6ff",
+            main: "#f4f4f5",
+            contrastText: "#27272a",
         },
 
         background: {
-            default: "#0f172a",
-            paper: "#1e293b",
+            default: "#f7f7fb",
+            paper: "#ffffff",
         },
+
+        text: {
+            primary: "#18181b",
+            secondary: "#71717a",
+        },
+
+        divider: "#e4e4e7",
     },
 
     typography: {
-        fontFamily: "Roboto, sans-serif",
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        button: {
+            fontWeight: 700,
+            textTransform: "none",
+        },
     },
 
     shape: {
-        borderRadius: 18,
+        borderRadius: 8,
+    },
+
+    components: {
+        MuiPaper: {
+            styleOverrides: {
+                rounded: {
+                    borderRadius: 8,
+                },
+            },
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                },
+            },
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                    boxShadow: "none",
+                    whiteSpace: "nowrap",
+                },
+            },
+        },
+        MuiTextField: {
+            defaultProps: {
+                variant: "outlined",
+            },
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                    backgroundColor: "#ffffff",
+                    fontWeight: 500,
+                },
+            },
+        },
+        MuiSelect: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                    backgroundColor: "#ffffff",
+                },
+            },
+        },
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                },
+            },
+        },
+        MuiDialog: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 8,
+                },
+            },
+        },
     },
 });
 
