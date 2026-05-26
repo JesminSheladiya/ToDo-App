@@ -1,15 +1,22 @@
-import { Box, Divider, Paper, Typography } from "@mui/material";
+import { Box, Divider, LinearProgress, Paper, Typography } from "@mui/material";
 import { CATEGORIES } from "../constants/goals";
 import Stack from "./Stack";
 import Stat from "./Stat";
 
 function ProgressSummary({ stats, goals }) {
+    const overallProgress = goals.length > 0
+        ? Math.round(
+            goals.reduce((sum, g) => sum + (g.steps?.filter((s) => s.done).length || 0), 0) /
+            Math.max(goals.reduce((sum, g) => sum + (g.steps?.length || 0), 0), 1) * 100
+          )
+        : 0;
+
     return (
         <Paper
             elevation={0}
             sx={{
-                p: 2,
-                borderRadius: 1,
+                p: { xs: 1.5, sm: 2 },
+                borderRadius: 1.5,
                 border: "1px solid",
                 borderColor: "divider",
                 bgcolor: "background.paper",
@@ -18,35 +25,42 @@ function ProgressSummary({ stats, goals }) {
         >
             <Stack spacing={1.5}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography sx={{ fontWeight: 800, fontSize: 14 }}>
+                    <Typography sx={{ fontWeight: 800, fontSize: 14, color: "text.primary" }}>
                         Overall Progress
                     </Typography>
-
                     <Typography sx={{ fontWeight: 800, fontSize: 14, color: "primary.main" }}>
-                        {stats.stepProgress}%
+                        {overallProgress}%
                     </Typography>
                 </Stack>
 
-                <Stack direction="row" spacing={0.5} sx={{ height: 12, bgcolor: "secondary.main", borderRadius: 99, overflow: "hidden" }}>
-                    {CATEGORIES.map((category) => {
-                        const count = goals.filter((goal) => goal.category === category.key).length;
-                        const width = stats.total > 0 ? (count / stats.total) * 100 : 0;
+                <Box>
+                    <LinearProgress
+                        variant="determinate"
+                        value={overallProgress}
+                        sx={{
+                            height: 10,
+                            borderRadius: 99,
+                            bgcolor: "action.hover",
+                            "& .MuiLinearProgress-bar": {
+                                borderRadius: 99,
+                                background: `linear-gradient(90deg, ${CATEGORIES[0].progress}, ${CATEGORIES[2].progress}, ${CATEGORIES[3].progress})`
+                            }
+                        }}
+                    />
+                    <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.5 }}>
+                        <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
+                            {stats.completed}/{stats.total} goals completed
+                        </Typography>
+                        <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
+                            {goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0)}/
+                            {goals.reduce((s, g) => s + (g.steps?.length || 0), 0)} steps done
+                        </Typography>
+                    </Stack>
+                </Box>
 
-                        return width > 0 ? (
-                            <Box
-                                key={category.key}
-                                title={`${category.label}: ${count} goals`}
-                                sx={{
-                                    width: `${width}%`,
-                                    bgcolor: category.progress,
-                                    borderRadius: 99
-                                }}
-                            />
-                        ) : null;
-                    })}
-                </Stack>
+                <Divider />
 
-                <Stack direction="row" flexWrap="wrap" gap={1.5}>
+                <Stack direction="row" flexWrap="wrap" gap={1}>
                     {CATEGORIES.map((category) => {
                         const count = goals.filter((goal) => goal.category === category.key).length;
 
@@ -54,13 +68,13 @@ function ProgressSummary({ stats, goals }) {
                             <Stack key={category.key} direction="row" spacing={0.75} alignItems="center">
                                 <Box
                                     sx={{
-                                        width: 10,
-                                        height: 10,
+                                        width: 8,
+                                        height: 8,
                                         borderRadius: "50%",
                                         bgcolor: category.progress
                                     }}
                                 />
-                                <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
+                                <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
                                     {category.label}{" "}
                                     <Box component="strong" sx={{ color: "text.primary" }}>
                                         {count}

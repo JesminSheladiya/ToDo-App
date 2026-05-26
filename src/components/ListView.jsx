@@ -42,7 +42,8 @@ function ListView({
                     value={categoryFilter}
                     onChange={(event) => onCategoryFilterChange(event.target.value)}
                     size="small"
-                    sx={{ minWidth: { sm: 160 } }}
+                    sx={{ minWidth: { xs: "100%", sm: 160 } }}
+                    displayEmpty
                 >
                     <MenuItem value="all">All Categories</MenuItem>
                     {CATEGORIES.map((category) => (
@@ -56,7 +57,8 @@ function ListView({
                     value={statusFilter}
                     onChange={(event) => onStatusFilterChange(event.target.value)}
                     size="small"
-                    sx={{ minWidth: { sm: 140 } }}
+                    sx={{ minWidth: { xs: "100%", sm: 140 } }}
+                    displayEmpty
                 >
                     <MenuItem value="all">All Statuses</MenuItem>
                     <MenuItem value="active">Active</MenuItem>
@@ -66,8 +68,8 @@ function ListView({
             </Stack>
 
             {goals.length === 0 ? (
-                <Paper elevation={0} sx={{ p: 5, textAlign: "center", borderRadius: 1 }}>
-                    <Typography color="text.secondary">
+                <Paper elevation={0} sx={{ p: 4, textAlign: "center", borderRadius: 1.5, border: "1px solid", borderColor: "divider" }}>
+                    <Typography color="text.secondary" sx={{ fontSize: { xs: 13, sm: 14 } }}>
                         No goals match your search.
                     </Typography>
                 </Paper>
@@ -75,7 +77,7 @@ function ListView({
                 <Paper
                     elevation={0}
                     sx={{
-                        borderRadius: 1,
+                        borderRadius: 1.5,
                         border: "1px solid",
                         borderColor: "divider",
                         overflow: "hidden"
@@ -90,33 +92,38 @@ function ListView({
                                 {index > 0 && <Divider />}
                                 <Stack
                                     direction="row"
-                                    spacing={1.25}
+                                    spacing={1}
                                     alignItems="center"
                                     sx={{
-                                        px: 2,
-                                        py: 1.5,
-                                        "&:hover": { bgcolor: "rgba(244, 244, 245, 0.65)" }
+                                        px: { xs: 1.25, sm: 2 },
+                                        py: { xs: 1, sm: 1.25 },
+                                        "&:hover": { bgcolor: "action.hover" },
+                                        minHeight: 48
                                     }}
                                 >
-                                    <IconButton onClick={() => onToggleGoal(goal)} size="small">
+                                    <IconButton
+                                        onClick={() => onToggleGoal(goal)}
+                                        size="small"
+                                        sx={{ p: 0.5 }}
+                                    >
                                         {completed ? (
-                                            <CheckCircle sx={{ color: category.text }} />
+                                            <CheckCircle sx={{ color: category.text, fontSize: { xs: 20, sm: 22 } }} />
                                         ) : (
-                                            <RadioButtonUnchecked sx={{ color: "text.disabled" }} />
+                                            <RadioButtonUnchecked sx={{ color: "text.disabled", fontSize: { xs: 20, sm: 22 } }} />
                                         )}
                                     </IconButton>
 
                                     <RoundedGoalIcon
                                         iconKey={goal.emoji}
                                         fallbackKey={category.iconKey}
-                                        sx={{ color: category.text, fontSize: 22 }}
+                                        sx={{ color: category.text, fontSize: { xs: 18, sm: 22 }, flexShrink: 0 }}
                                     />
 
                                     <Typography
                                         sx={{
                                             flex: 1,
                                             minWidth: 0,
-                                            fontSize: 14,
+                                            fontSize: { xs: 13, sm: 14 },
                                             fontWeight: 700,
                                             overflow: "hidden",
                                             textOverflow: "ellipsis",
@@ -133,23 +140,28 @@ function ListView({
                                         label={category.label}
                                         sx={{
                                             display: { xs: "none", sm: "inline-flex" },
+                                            height: 24,
                                             bgcolor: category.badgeBg,
                                             color: category.text,
-                                            fontWeight: 800
+                                            fontWeight: 800,
+                                            fontSize: 11,
+                                            flexShrink: 0
                                         }}
                                     />
 
-                                    <Tooltip title="Edit goal">
-                                        <IconButton onClick={() => onEdit(goal)} size="small">
-                                            <Edit fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
+                                    <Box sx={{ display: "flex", flexShrink: 0 }}>
+                                        <Tooltip title="Edit goal">
+                                            <IconButton onClick={() => onEdit(goal)} size="small" sx={{ p: 0.5 }}>
+                                                <Edit sx={{ fontSize: { xs: 18, sm: 20 } }} />
+                                            </IconButton>
+                                        </Tooltip>
 
-                                    <Tooltip title="Delete goal">
-                                        <IconButton onClick={() => onDelete(goal)} size="small" color="error">
-                                            <Delete fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
+                                        <Tooltip title="Delete goal">
+                                            <IconButton onClick={() => onDelete(goal)} size="small" color="error" sx={{ p: 0.5 }}>
+                                                <Delete sx={{ fontSize: { xs: 18, sm: 20 } }} />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Box>
                                 </Stack>
                             </Box>
                         );

@@ -6,14 +6,14 @@ function Stat({ label, value, color }) {
             <Typography
                 sx={{
                     fontFamily: "'Sora', sans-serif",
-                    fontSize: 24,
+                    fontSize: { xs: 20, sm: 24 },
                     fontWeight: 800,
                     color
                 }}
             >
                 {value}
             </Typography>
-            <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
+            <Typography sx={{ fontSize: { xs: 11, sm: 12 }, color: "text.secondary" }}>
                 {label}
             </Typography>
         </Box>

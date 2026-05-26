@@ -57,30 +57,36 @@ function GoalEditor({
     };
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <Box sx={{ height: 8, background: category.gradient }} />
-            <DialogContent sx={{ p: 3 }}>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            fullWidth
+            maxWidth="sm"
+            fullScreen={{ xs: true, sm: false }}
+        >
+            <Box sx={{ height: { xs: 4, sm: 8 }, background: category.gradient }} />
+            <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Stack spacing={2.5}>
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Typography
                             sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
-                                fontSize: 22
+                                fontSize: { xs: 18, sm: 22 }
                             }}
                         >
                             {editingGoal ? "Edit Goal" : "New Goal"}
                         </Typography>
-                        <IconButton onClick={onClose}>
+                        <IconButton onClick={onClose} size="small">
                             <Close />
                         </IconButton>
                     </Stack>
 
                     <Box>
-                        <Typography sx={{ fontSize: 14, fontWeight: 800, color: "text.secondary", mb: 1 }}>
+                        <Typography sx={{ fontSize: { xs: 12, sm: 14 }, fontWeight: 800, color: "text.secondary", mb: 1 }}>
                             Choose an icon
                         </Typography>
-                        <Stack direction="row" flexWrap="wrap" gap={1}>
+                        <Stack direction="row" flexWrap="wrap" gap={0.75}>
                             {ICON_OPTIONS.map((option) => {
                                 const selected = getIconKey(draft.emoji, category.iconKey) === option.key;
                                 const Icon = option.Icon;
@@ -89,9 +95,10 @@ function GoalEditor({
                                     <Tooltip key={option.key} title={option.label}>
                                         <IconButton
                                             onClick={() => updateDraft({ emoji: option.key })}
+                                            size="small"
                                             sx={{
-                                                width: 42,
-                                                height: 42,
+                                                width: { xs: 38, sm: 42 },
+                                                height: { xs: 38, sm: 42 },
                                                 borderRadius: 1,
                                                 border: `2px solid ${selected ? category.progress : category.border}`,
                                                 bgcolor: selected ? category.soft : "#ffffff",
@@ -106,7 +113,7 @@ function GoalEditor({
                                                 }
                                             }}
                                         >
-                                            <Icon sx={{ fontSize: 22 }} />
+                                            <Icon sx={{ fontSize: { xs: 18, sm: 22 } }} />
                                         </IconButton>
                                     </Tooltip>
                                 );
@@ -122,6 +129,7 @@ function GoalEditor({
                         fullWidth
                         required
                         InputLabelProps={{ shrink: true }}
+                        size="small"
                         sx={fieldSx}
                     />
 
@@ -134,18 +142,19 @@ function GoalEditor({
                         rows={2}
                         fullWidth
                         InputLabelProps={{ shrink: true }}
+                        size="small"
                         sx={fieldSx}
                     />
 
                     <Box>
-                        <Typography sx={{ fontSize: 14, fontWeight: 800, color: "text.secondary", mb: 1 }}>
+                        <Typography sx={{ fontSize: { xs: 12, sm: 14 }, fontWeight: 800, color: "text.secondary", mb: 1 }}>
                             Category
                         </Typography>
                         <Box
                             sx={{
                                 display: "grid",
-                                gridTemplateColumns: { xs: "1fr 1fr", sm: "1fr 1fr 1fr" },
-                                gap: 1
+                                gridTemplateColumns: "1fr 1fr",
+                                gap: 0.75
                             }}
                         >
                             {CATEGORIES.map((item) => {
@@ -158,13 +167,13 @@ function GoalEditor({
                                         sx={{
                                             justifyContent: "flex-start",
                                             alignItems: "flex-start",
-                                            p: 1.25,
+                                            p: { xs: 1, sm: 1.25 },
                                             borderRadius: 1,
                                             border: `2px solid ${selected ? item.progress : "#e4e4e7"}`,
                                             bgcolor: selected ? item.soft : "white",
                                             color: selected ? item.text : "text.primary",
                                             textTransform: "none",
-                                            minHeight: 78,
+                                            minHeight: { xs: 62, sm: 78 },
                                             boxShadow: selected ? "0 4px 12px rgba(15,23,42,0.08)" : "none",
                                             "&:hover": {
                                                 bgcolor: item.soft,
@@ -172,15 +181,15 @@ function GoalEditor({
                                             }
                                         }}
                                     >
-                                        <Stack alignItems="flex-start" spacing={0.25}>
+                                        <Stack alignItems="flex-start" spacing={0.15}>
                                             <RoundedGoalIcon
                                                 iconKey={item.iconKey}
-                                                sx={{ color: item.text, fontSize: 22 }}
+                                                sx={{ color: item.text, fontSize: { xs: 18, sm: 22 } }}
                                             />
-                                            <Typography sx={{ fontSize: 12, fontWeight: 800 }}>
+                                            <Typography sx={{ fontSize: { xs: 11, sm: 12 }, fontWeight: 800 }}>
                                                 {item.label}
                                             </Typography>
-                                            <Typography sx={{ fontSize: 11, color: "text.secondary", textAlign: "left" }}>
+                                            <Typography sx={{ fontSize: { xs: 10, sm: 11 }, color: "text.secondary", textAlign: "left" }}>
                                                 {item.sublabel}
                                             </Typography>
                                         </Stack>
@@ -197,10 +206,11 @@ function GoalEditor({
                         onChange={(event) => updateDraft({ targetDate: event.target.value })}
                         fullWidth
                         InputLabelProps={{ shrink: true }}
+                        size="small"
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <CalendarToday sx={{ color: category.text, fontSize: 18 }} />
+                                    <CalendarToday sx={{ color: category.text, fontSize: { xs: 16, sm: 18 } }} />
                                 </InputAdornment>
                             )
                         }}
@@ -214,11 +224,11 @@ function GoalEditor({
                     />
 
                     <Box>
-                        <Typography sx={{ fontSize: 14, fontWeight: 800, color: "text.secondary", mb: 1 }}>
+                        <Typography sx={{ fontSize: { xs: 12, sm: 14 }, fontWeight: 800, color: "text.secondary", mb: 1 }}>
                             Steps / Sub-tasks
                         </Typography>
 
-                        <Stack spacing={1} sx={{ mb: 1 }}>
+                        <Stack spacing={0.75} sx={{ mb: 1 }}>
                             {draft.steps.map((step, index) => (
                                 <Stack
                                     key={step.stepId}
@@ -229,7 +239,7 @@ function GoalEditor({
                                         bgcolor: "secondary.main",
                                         borderRadius: 1,
                                         px: 1.5,
-                                        py: 1
+                                        py: 0.75
                                     }}
                                 >
                                     <Box
@@ -242,12 +252,13 @@ function GoalEditor({
                                             display: "grid",
                                             placeItems: "center",
                                             fontSize: 12,
-                                            fontWeight: 800
+                                            fontWeight: 800,
+                                            flexShrink: 0
                                         }}
                                     >
                                         {index + 1}
                                     </Box>
-                                    <Typography sx={{ flex: 1, fontSize: 14 }}>
+                                    <Typography sx={{ flex: 1, fontSize: { xs: 13, sm: 14 } }}>
                                         {step.text}
                                     </Typography>
                                     <IconButton onClick={() => onRemoveStep(step.stepId)} size="small" color="error">
@@ -279,9 +290,7 @@ function GoalEditor({
                                     minWidth: 44,
                                     px: 1.25,
                                     bgcolor: category.progress,
-                                    "&:hover": {
-                                        bgcolor: category.text
-                                    }
+                                    "&:hover": { bgcolor: category.text }
                                 }}
                             >
                                 <Add />
@@ -295,10 +304,11 @@ function GoalEditor({
                             fullWidth
                             onClick={onClose}
                             sx={{
-                                py: 1.25,
+                                py: { xs: 1, sm: 1.25 },
                                 borderColor: "divider",
                                 color: "text.secondary",
                                 bgcolor: "#ffffff",
+                                fontSize: { xs: 13, sm: 14 },
                                 "&:hover": {
                                     borderColor: category.border,
                                     bgcolor: category.soft,
@@ -315,9 +325,10 @@ function GoalEditor({
                             disabled={!draft.title.trim()}
                             startIcon={<FlagRounded />}
                             sx={{
-                                py: 1.25,
+                                py: { xs: 1, sm: 1.25 },
                                 background: category.gradient,
                                 color: "#ffffff",
+                                fontSize: { xs: 13, sm: 14 },
                                 boxShadow: "0 8px 18px rgba(15, 23, 42, 0.14)",
                                 "&:hover": {
                                     boxShadow: "0 10px 22px rgba(15, 23, 42, 0.18)"

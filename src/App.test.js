@@ -20,6 +20,8 @@ jest.mock("react-router-dom", () => ({
   Outlet: () => null,
   useNavigate: () => jest.fn(),
   useLocation: () => ({ pathname: "/" }),
+  useParams: () => ({}),
+  useSearchParams: () => [new URLSearchParams(), jest.fn()],
 }));
 
 test("renders goal tracker dashboard", async () => {
@@ -29,6 +31,6 @@ test("renders goal tracker dashboard", async () => {
     </Provider>
   );
   expect(screen.getByText(/Your Goals/i)).toBeInTheDocument();
-  expect(screen.getByText(/New Goal/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/New Goal/i).length).toBeGreaterThanOrEqual(1);
   expect(await screen.findByText(/Start Your Journey/i)).toBeInTheDocument();
 });

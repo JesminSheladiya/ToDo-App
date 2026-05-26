@@ -1,29 +1,32 @@
 import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { createGoal, deleteGoal, updateGoal } from "../store/goalsSlice";
-import { closeEditor, openEditor, openEditorWithCategory } from "../store/uiSlice";
-import { syncCompletion } from "../utils/goals";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { deleteGoal, updateGoal } from "../store/goalsSlice";
 
 export function useGoalActions() {
     const dispatch = useDispatch();
-    const draft = useSelector((state) => state.ui.draft);
-    const editingGoal = useSelector((state) => state.ui.editingGoal);
+    const navigate = useNavigate();
 
     const handleOpenCreate = useCallback((category) => {
-        if (category) {
-            dispatch(openEditorWithCategory(category));
-        } else {
-            dispatch(openEditor(null));
-        }
-    }, [dispatch]);
+        const params = category ? `?category=${category}` : "";
+        navigate(`/goals/new${params}`);
+    }, [navigate]);
 
     const handleOpenEdit = useCallback((goal) => {
-        dispatch(openEditor(goal));
-    }, [dispatch]);
+        navigate(`/goals/${goal.id}/edit`);
+    }, [navigate]);
 
     const handleDelete = useCallback((goal) => {
         if (!window.confirm(`Delete "${goal.title}"?`)) return;
-        dispatch(deleteGoal(goal.id));
+        toast.promise(
+            dispatch(deleteGoal(goal.id)).unwrap(),
+            {
+                loading: "Deleting goal...",
+                success: `"${goal.title}" deleted!`,
+                error: "Failed to delete goal"
+            }
+        );
     }, [dispatch]);
 
     const handleToggleGoal = useCallback((goal) => {
@@ -35,7 +38,14 @@ export function useGoalActions() {
             steps: (goal.steps || []).map((step) => ({ ...step, done: completed }))
         };
 
-        dispatch(updateGoal(nextGoal));
+        toast.promise(
+            dispatch(updateGoal(nextGoal)).unwrap(),
+            {
+                loading: "Updating...",
+                success: completed ? "Goal completed!" : "Goal reopened",
+                error: "Failed to update goal"
+            }
+        );
     }, [dispatch]);
 
     const handleToggleStep = useCallback((goal, stepId) => {
@@ -51,29 +61,11 @@ export function useGoalActions() {
         dispatch(updateGoal(nextGoal));
     }, [dispatch]);
 
-    const handleSave = useCallback(() => {
-        const goalToSave = syncCompletion({
-            ...draft,
-            title: draft.title.trim(),
-            description: draft.description.trim()
-        });
-
-        if (!goalToSave.title) return;
-
-        if (editingGoal) {
-            dispatch(updateGoal({ ...goalToSave, id: editingGoal.id }));
-        } else {
-            dispatch(createGoal(goalToSave));
-        }
-        dispatch(closeEditor());
-    }, [dispatch, draft, editingGoal]);
-
     return {
         handleOpenCreate,
         handleOpenEdit,
         handleDelete,
         handleToggleGoal,
-        handleToggleStep,
-        handleSave
+        handleToggleStep
     };
 }

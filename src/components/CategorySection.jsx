@@ -1,6 +1,10 @@
-import { Add } from "@mui/icons-material";
-import { Box, Divider, IconButton, LinearProgress, Paper, Tooltip, Typography } from "@mui/material";
-import GoalCard from "./GoalCard";
+import { useState } from "react";
+import { Add, ExpandLess, ExpandMore } from "@mui/icons-material";
+import {
+    Box, Collapse, Divider, IconButton, LinearProgress,
+    Paper, Tooltip, Typography
+} from "@mui/material";
+import GoalRow from "./GoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
@@ -13,6 +17,7 @@ function CategorySection({
     onToggleGoal,
     onToggleStep
 }) {
+    const [expanded, setExpanded] = useState(true);
     const activeGoals = goals.filter((goal) => goal.status !== "completed");
     const completedGoals = goals.filter((goal) => goal.status === "completed");
     const totalSteps = goals.reduce((sum, goal) => sum + (goal.steps?.length || 0), 0);
@@ -23,85 +28,87 @@ function CategorySection({
     const progress = totalSteps > 0 ? Math.round((doneSteps / totalSteps) * 100) : 0;
 
     return (
-        <Box component="section">
+        <Paper
+            elevation={0}
+            sx={{
+                borderRadius: 1.5,
+                border: "1px solid",
+                borderColor: "divider",
+                overflow: "hidden",
+                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04)"
+            }}
+        >
             <Box
+                onClick={() => setExpanded((v) => !v)}
                 sx={{
-                    p: 2,
-                    mb: 2,
-                    borderRadius: 1,
-                    background: category.gradient,
-                    boxShadow: "0 8px 18px rgba(15, 23, 42, 0.12)"
+                    px: { xs: 1.5, sm: 2 },
+                    py: 1.25,
+                    cursor: "pointer",
+                    transition: "background-color 120ms",
+                    "&:hover": { bgcolor: "action.hover" }
                 }}
             >
-                <Stack direction="row" justifyContent="space-between" spacing={2} alignItems="center">
-                    <Stack direction="row" spacing={1.5} alignItems="center">
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ minWidth: 0 }}>
                         <Box
                             sx={{
-                                width: 40,
-                                height: 40,
+                                width: 32,
+                                height: 32,
                                 borderRadius: 1,
-                                bgcolor: "rgba(255,255,255,0.2)",
+                                background: category.gradient,
                                 display: "grid",
                                 placeItems: "center",
-                                fontSize: 22
+                                flexShrink: 0
                             }}
                         >
                             <RoundedGoalIcon
                                 iconKey={category.iconKey}
-                                sx={{ color: "white", fontSize: 24 }}
+                                sx={{ color: "white", fontSize: 16 }}
                             />
                         </Box>
 
-                        <Box>
+                        <Box sx={{ minWidth: 0 }}>
                             <Typography
                                 sx={{
                                     fontFamily: "'Sora', sans-serif",
                                     fontWeight: 800,
-                                    color: "white",
-                                    lineHeight: 1
+                                    fontSize: 14,
+                                    color: "text.primary",
+                                    lineHeight: 1.2
                                 }}
                             >
                                 {category.label}
                             </Typography>
-                            <Typography sx={{ color: "rgba(255,255,255,0.78)", fontSize: 12, mt: 0.5 }}>
-                                {category.sublabel}
+                            <Typography sx={{ color: "text.secondary", fontSize: 11, mt: 0.1 }}>
+                                {category.sublabel} &middot; {goals.length} goal{goals.length !== 1 ? "s" : ""}
                             </Typography>
                         </Box>
                     </Stack>
 
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                        <Box sx={{ textAlign: "right" }}>
-                            <Typography sx={{ color: "white", fontWeight: 800, lineHeight: 1 }}>
-                                {goals.length}
-                            </Typography>
-                            <Typography sx={{ color: "rgba(255,255,255,0.78)", fontSize: 12 }}>
-                                goals
-                            </Typography>
-                        </Box>
-
+                    <Stack direction="row" spacing={0.75} alignItems="center" sx={{ flexShrink: 0 }}>
                         {totalSteps > 0 && (
-                            <Box sx={{ textAlign: "right" }}>
-                                <Typography sx={{ color: "white", fontWeight: 800, lineHeight: 1 }}>
-                                    {progress}%
-                                </Typography>
-                                <Typography sx={{ color: "rgba(255,255,255,0.78)", fontSize: 12 }}>
-                                    done
-                                </Typography>
-                            </Box>
+                            <Typography sx={{ fontSize: 12, fontWeight: 700, color: category.text }}>
+                                {progress}%
+                            </Typography>
                         )}
 
                         <Tooltip title={`Add ${category.label} goal`}>
                             <IconButton
-                                onClick={() => onCreate(category.key)}
+                                onClick={(e) => { e.stopPropagation(); onCreate(category.key); }}
+                                size="small"
                                 sx={{
-                                    color: "white",
-                                    bgcolor: "rgba(255,255,255,0.18)",
-                                    "&:hover": { bgcolor: "rgba(255,255,255,0.28)" }
+                                    color: category.text,
+                                    bgcolor: category.soft,
+                                    "&:hover": { bgcolor: category.badgeBg }
                                 }}
                             >
-                                <Add />
+                                <Add sx={{ fontSize: 18 }} />
                             </IconButton>
                         </Tooltip>
+
+                        <IconButton size="small" sx={{ color: "text.secondary" }}>
+                            {expanded ? <ExpandLess sx={{ fontSize: 20 }} /> : <ExpandMore sx={{ fontSize: 20 }} />}
+                        </IconButton>
                     </Stack>
                 </Stack>
 
@@ -110,84 +117,85 @@ function CategorySection({
                         variant="determinate"
                         value={progress}
                         sx={{
-                            mt: 1.5,
-                            height: 6,
+                            mt: 1,
+                            height: 4,
                             borderRadius: 99,
-                            bgcolor: "rgba(255,255,255,0.25)",
+                            bgcolor: "action.hover",
                             "& .MuiLinearProgress-bar": {
-                                bgcolor: "rgba(255,255,255,0.85)"
+                                bgcolor: category.progress,
+                                borderRadius: 99
                             }
                         }}
                     />
                 )}
             </Box>
 
-            {goals.length === 0 ? (
-                <Paper
-                    elevation={0}
-                    onClick={() => onCreate(category.key)}
-                    sx={{
-                        p: 4,
-                        borderRadius: 1,
-                        border: `2px dashed ${category.border}`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        color: "text.secondary",
-                        transition: "background-color 160ms ease",
-                        "&:hover": {
-                            bgcolor: category.soft,
-                            color: "text.primary"
-                        }
-                    }}
-                >
-                    <RoundedGoalIcon
-                        iconKey={category.iconKey}
-                        sx={{ color: category.text, fontSize: 36, mb: 1 }}
-                    />
-                    <Typography sx={{ fontWeight: 700, fontSize: 14 }}>
-                        No {category.label.toLowerCase()} goals yet. Click to add one!
-                    </Typography>
-                </Paper>
-            ) : (
-                <Stack spacing={1.5}>
-                    {activeGoals.map((goal) => (
-                        <GoalCard
-                            key={goal.id}
-                            goal={goal}
-                            onEdit={onEdit}
-                            onDelete={onDelete}
-                            onToggleGoal={onToggleGoal}
-                            onToggleStep={onToggleStep}
+            <Collapse in={expanded}>
+                {goals.length === 0 ? (
+                    <Box
+                        onClick={() => onCreate(category.key)}
+                        sx={{
+                            mx: { xs: 1.25, sm: 1.75 },
+                            mb: 1.25,
+                            py: 2.5,
+                            borderRadius: 1,
+                            border: `2px dashed ${category.border}`,
+                            textAlign: "center",
+                            cursor: "pointer",
+                            color: "text.secondary",
+                            transition: "background-color 120ms",
+                            "&:hover": { bgcolor: category.soft, color: "text.primary" }
+                        }}
+                    >
+                        <RoundedGoalIcon
+                            iconKey={category.iconKey}
+                            sx={{ color: category.text, fontSize: 24, mb: 0.25 }}
                         />
-                    ))}
+                        <Typography sx={{ fontWeight: 700, fontSize: 12 }}>
+                            No {category.label.toLowerCase()} goals yet. Click to add one!
+                        </Typography>
+                    </Box>
+                ) : (
+                    <Box sx={{ pb: 0.75 }}>
+                        {activeGoals.map((goal) => (
+                            <GoalRow
+                                key={goal.id}
+                                goal={goal}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                                onToggleGoal={onToggleGoal}
+                                onToggleStep={onToggleStep}
+                            />
+                        ))}
 
-                    {completedGoals.length > 0 && (
-                        <>
-                            <Stack direction="row" spacing={1} alignItems="center" sx={{ opacity: 0.65 }}>
-                                <Divider sx={{ flex: 1, borderColor: category.border }} />
-                                <Typography sx={{ fontSize: 12, color: "text.secondary", fontWeight: 700 }}>
-                                    Completed ({completedGoals.length})
-                                </Typography>
-                                <Divider sx={{ flex: 1, borderColor: category.border }} />
-                            </Stack>
+                        {completedGoals.length > 0 && (
+                            <>
+                                <Stack direction="row" spacing={1} alignItems="center" sx={{ px: { xs: 1.5, sm: 2 }, py: 0.5, opacity: 0.5 }}>
+                                    <Divider sx={{ flex: 1 }} />
+                                    <Typography sx={{ fontSize: 10, color: "text.secondary", fontWeight: 700, whiteSpace: "nowrap" }}>
+                                        Completed ({completedGoals.length})
+                                    </Typography>
+                                    <Divider sx={{ flex: 1 }} />
+                                </Stack>
 
-                            <Stack spacing={1.5} sx={{ opacity: 0.65 }}>
-                                {completedGoals.map((goal) => (
-                                    <GoalCard
-                                        key={goal.id}
-                                        goal={goal}
-                                        onEdit={onEdit}
-                                        onDelete={onDelete}
-                                        onToggleGoal={onToggleGoal}
-                                        onToggleStep={onToggleStep}
-                                    />
-                                ))}
-                            </Stack>
-                        </>
-                    )}
-                </Stack>
-            )}
-        </Box>
+                                <Box sx={{ opacity: 0.5 }}>
+                                    {completedGoals.map((goal) => (
+                                        <GoalRow
+                                            key={goal.id}
+                                            goal={goal}
+                                            onEdit={onEdit}
+                                            onDelete={onDelete}
+                                            onToggleGoal={onToggleGoal}
+                                            onToggleStep={onToggleStep}
+                                        />
+                                    ))}
+                                </Box>
+                            </>
+                        )}
+                    </Box>
+                )}
+            </Collapse>
+        </Paper>
     );
 }
 
