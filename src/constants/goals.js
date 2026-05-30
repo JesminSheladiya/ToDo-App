@@ -1,29 +1,27 @@
-import {
-    TrackChangesRounded, FlashOnRounded, SpaRounded,
-    RocketLaunchRounded, StarRounded, FitnessCenterRounded,
-    MenuBookRounded, LightbulbRounded, EmojiEventsRounded,
-    FavoriteRounded, PaletteRounded, DirectionsRunRounded,
-    FlightTakeoffRounded, SavingsRounded, SelfImprovementRounded,
-    LocalFireDepartmentRounded
-} from "@mui/icons-material";
+import { 
+    BsBullseye, BsLightningChargeFill, BsStarFill,
+    BsBookHalf, BsLightbulbFill, BsTrophyFill, BsHeartFill,
+    BsPaletteFill, BsAirplane, BsPiggyBankFill, BsFire, BsRocketTakeoffFill, BsTree
+} from "react-icons/bs";
+import { FaDumbbell, FaRunning, FaSpa } from "react-icons/fa";
 
 export const ICON_OPTIONS = [
-    { key: "target", label: "Target", Icon: TrackChangesRounded },
-    { key: "flash", label: "Energy", Icon: FlashOnRounded },
-    { key: "growth", label: "Growth", Icon: SpaRounded },
-    { key: "launch", label: "Launch", Icon: RocketLaunchRounded },
-    { key: "star", label: "Star", Icon: StarRounded },
-    { key: "strength", label: "Strength", Icon: FitnessCenterRounded },
-    { key: "learning", label: "Learning", Icon: MenuBookRounded },
-    { key: "idea", label: "Idea", Icon: LightbulbRounded },
-    { key: "achievement", label: "Achievement", Icon: EmojiEventsRounded },
-    { key: "heart", label: "Heart", Icon: FavoriteRounded },
-    { key: "creative", label: "Creative", Icon: PaletteRounded },
-    { key: "fitness", label: "Fitness", Icon: DirectionsRunRounded },
-    { key: "travel", label: "Travel", Icon: FlightTakeoffRounded },
-    { key: "money", label: "Money", Icon: SavingsRounded },
-    { key: "mindful", label: "Mindful", Icon: SelfImprovementRounded },
-    { key: "fire", label: "Momentum", Icon: LocalFireDepartmentRounded }
+    { key: "target", label: "Target", Icon: BsBullseye },
+    { key: "flash", label: "Energy", Icon: BsLightningChargeFill },
+    { key: "growth", label: "Growth", Icon: BsTree },
+    { key: "launch", label: "Launch", Icon: BsRocketTakeoffFill },
+    { key: "star", label: "Star", Icon: BsStarFill },
+    { key: "strength", label: "Strength", Icon: FaDumbbell },
+    { key: "learning", label: "Learning", Icon: BsBookHalf },
+    { key: "idea", label: "Idea", Icon: BsLightbulbFill },
+    { key: "achievement", label: "Achievement", Icon: BsTrophyFill },
+    { key: "heart", label: "Heart", Icon: BsHeartFill },
+    { key: "creative", label: "Creative", Icon: BsPaletteFill },
+    { key: "fitness", label: "Fitness", Icon: FaRunning },
+    { key: "travel", label: "Travel", Icon: BsAirplane },
+    { key: "money", label: "Money", Icon: BsPiggyBankFill },
+    { key: "mindful", label: "Mindful", Icon: FaSpa },
+    { key: "fire", label: "Momentum", Icon: BsFire }
 ];
 
 export const LEGACY_ICON_MAP = {

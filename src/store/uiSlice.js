@@ -11,7 +11,8 @@ const uiSlice = createSlice({
         newStepText: "",
         query: "",
         categoryFilter: "all",
-        statusFilter: "all"
+        statusFilter: "all",
+        activeCategory: "all",
     },
     reducers: {
         openEditor(state, action) {
@@ -76,7 +77,13 @@ const uiSlice = createSlice({
         },
         setStatusFilter(state, action) {
             state.statusFilter = action.payload;
-        }
+        },
+        setActiveCategory(state, action) {
+            state.activeCategory = action.payload;
+        },
+        clearActiveCategory(state) {
+            state.activeCategory = "all";
+        },
     }
 });
 
@@ -90,7 +97,9 @@ export const {
     removeDraftStep,
     setQuery,
     setCategoryFilter,
-    setStatusFilter
+    setStatusFilter,
+    setActiveCategory,
+    clearActiveCategory,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

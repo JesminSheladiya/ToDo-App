@@ -1,172 +1,261 @@
-import { CheckCircle, Delete, Edit, RadioButtonUnchecked, Search } from "@mui/icons-material";
-import {
-    Box, Chip, Divider, IconButton, InputAdornment, MenuItem,
-    Paper, Select, TextField, Tooltip, Typography
-} from "@mui/material";
+import { Box, IconButton, InputAdornment, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
+import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete } from "@mui/icons-material";
 import { CATEGORIES } from "../constants/goals";
 import { getCategory } from "../utils/goals";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
-function ListView({
-    goals,
-    query,
-    categoryFilter,
-    statusFilter,
-    onQueryChange,
-    onCategoryFilterChange,
-    onStatusFilterChange,
-    onEdit,
-    onDelete,
-    onToggleGoal
-}) {
+function ListView({ goals, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal }) {
     return (
         <Stack spacing={2}>
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+            {/* Search & Filters */}
+            <Box sx={{
+                display: "flex",
+                gap: 1,
+                flexWrap: "wrap",
+            }}>
                 <TextField
-                    value={query}
-                    onChange={(event) => onQueryChange(event.target.value)}
-                    placeholder="Search goals..."
-                    fullWidth
                     size="small"
+                    value={query}
+                    onChange={(e) => onQueryChange(e.target.value)}
+                    placeholder="Search goals..."
+                    sx={{
+                        flex: { xs: "1 1 100%", sm: "1 1 auto" },
+                        minWidth: { sm: 220 },
+                        "& .MuiOutlinedInput-root": {
+                            bgcolor: "#ffffff",
+                            boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "hsl(240, 10%, 88%)",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#7c3aed",
+                            },
+                            "&.Mui-focused": {
+                                boxShadow: "0 0 0 3px hsl(262, 83%, 95%)",
+                            },
+                        },
+                    }}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Search fontSize="small" />
+                                <Search sx={{ fontSize: 18, color: "hsl(240, 8%, 50%)" }} />
                             </InputAdornment>
                         )
                     }}
                 />
-
                 <Select
-                    value={categoryFilter}
-                    onChange={(event) => onCategoryFilterChange(event.target.value)}
                     size="small"
-                    sx={{ minWidth: { xs: "100%", sm: 160 } }}
-                    displayEmpty
+                    value={categoryFilter}
+                    onChange={(e) => onCategoryFilterChange(e.target.value)}
+                    sx={{
+                        flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" },
+                        minWidth: 140,
+                        bgcolor: "#ffffff",
+                        boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "hsl(240, 10%, 88%)",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#7c3aed",
+                        },
+                    }}
                 >
                     <MenuItem value="all">All Categories</MenuItem>
-                    {CATEGORIES.map((category) => (
-                        <MenuItem key={category.key} value={category.key}>
-                            {category.label}
-                        </MenuItem>
+                    {CATEGORIES.map((cat) => (
+                        <MenuItem key={cat.key} value={cat.key}>{cat.label}</MenuItem>
                     ))}
                 </Select>
-
                 <Select
-                    value={statusFilter}
-                    onChange={(event) => onStatusFilterChange(event.target.value)}
                     size="small"
-                    sx={{ minWidth: { xs: "100%", sm: 140 } }}
-                    displayEmpty
+                    value={statusFilter}
+                    onChange={(e) => onStatusFilterChange(e.target.value)}
+                    sx={{
+                        flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" },
+                        minWidth: 130,
+                        bgcolor: "#ffffff",
+                        boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "hsl(240, 10%, 88%)",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#7c3aed",
+                        },
+                    }}
                 >
                     <MenuItem value="all">All Statuses</MenuItem>
                     <MenuItem value="active">Active</MenuItem>
                     <MenuItem value="completed">Completed</MenuItem>
                     <MenuItem value="paused">Paused</MenuItem>
                 </Select>
-            </Stack>
+            </Box>
 
+            {/* Goals List */}
             {goals.length === 0 ? (
-                <Paper elevation={0} sx={{ p: 4, textAlign: "center", borderRadius: 1.5, border: "1px solid", borderColor: "divider" }}>
-                    <Typography color="text.secondary" sx={{ fontSize: { xs: 13, sm: 14 } }}>
-                        No goals match your search.
+                <Box sx={{
+                    bgcolor: "#ffffff",
+                    borderRadius: "16px",
+                    border: "1px dashed hsl(240, 10%, 85%)",
+                    p: 5,
+                    textAlign: "center",
+                    animation: "fadeInUp 300ms ease-out forwards",
+                }}>
+                    <Typography sx={{
+                        fontSize: 40,
+                        mb: 1,
+                        opacity: 0.7,
+                    }}>
+                        🔍
                     </Typography>
-                </Paper>
+                    <Typography sx={{
+                        fontSize: 15,
+                        fontWeight: 700,
+                        color: "hsl(240, 15%, 10%)",
+                        mb: 0.5,
+                    }}>
+                        No goals found
+                    </Typography>
+                    <Typography sx={{
+                        fontSize: 13,
+                        color: "hsl(240, 8%, 50%)",
+                    }}>
+                        Try adjusting your search or filters
+                    </Typography>
+                </Box>
             ) : (
-                <Paper
-                    elevation={0}
-                    sx={{
-                        borderRadius: 1.5,
-                        border: "1px solid",
-                        borderColor: "divider",
-                        overflow: "hidden"
-                    }}
-                >
+                <Box sx={{
+                    bgcolor: "#ffffff",
+                    borderRadius: "16px",
+                    border: "1px solid hsl(240, 10%, 90%)",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
+                    animation: "fadeInUp 300ms ease-out forwards",
+                    position: "relative",
+                    "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: 4,
+                        background: "linear-gradient(180deg, hsl(var(--short-term)), hsl(var(--long-term)), hsl(var(--life-goal)))",
+                        borderRadius: "16px 0 0 16px",
+                    },
+                }}>
                     {goals.map((goal, index) => {
                         const category = getCategory(goal.category);
                         const completed = goal.status === "completed" || goal.completed;
 
                         return (
-                            <Box key={goal.id}>
-                                {index > 0 && <Divider />}
-                                <Stack
-                                    direction="row"
-                                    spacing={1}
-                                    alignItems="center"
-                                    sx={{
-                                        px: { xs: 1.25, sm: 2 },
-                                        py: { xs: 1, sm: 1.25 },
-                                        "&:hover": { bgcolor: "action.hover" },
-                                        minHeight: 48
-                                    }}
-                                >
+                            <Box
+                                key={goal.id}
+                                sx={{
+                                    transition: "background-color 150ms ease",
+                                    "&:hover": {
+                                        bgcolor: "hsl(240, 20%, 98%)",
+                                    },
+                                    borderBottom: index < goals.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
+                                }}
+                            >
+                                <Box sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    px: { xs: 2, sm: 2.5 },
+                                    py: 1.25,
+                                    minHeight: 52,
+                                }}>
                                     <IconButton
                                         onClick={() => onToggleGoal(goal)}
                                         size="small"
-                                        sx={{ p: 0.5 }}
+                                        sx={{
+                                            p: 0.25,
+                                            color: completed ? category.text : "hsl(240, 6%, 70%)",
+                                            transition: "all 150ms ease",
+                                            "&:hover": { transform: "scale(1.1)" },
+                                        }}
                                     >
                                         {completed ? (
-                                            <CheckCircle sx={{ color: category.text, fontSize: { xs: 20, sm: 22 } }} />
+                                            <CheckCircle sx={{ fontSize: 22 }} />
                                         ) : (
-                                            <RadioButtonUnchecked sx={{ color: "text.disabled", fontSize: { xs: 20, sm: 22 } }} />
+                                            <RadioButtonUnchecked sx={{ fontSize: 22 }} />
                                         )}
                                     </IconButton>
 
                                     <RoundedGoalIcon
                                         iconKey={goal.emoji}
                                         fallbackKey={category.iconKey}
-                                        sx={{ color: category.text, fontSize: { xs: 18, sm: 22 }, flexShrink: 0 }}
+                                        sx={{ color: category.text, fontSize: 18, flexShrink: 0 }}
                                     />
 
                                     <Typography
                                         sx={{
                                             flex: 1,
                                             minWidth: 0,
-                                            fontSize: { xs: 13, sm: 14 },
+                                            fontSize: 14,
                                             fontWeight: 700,
                                             overflow: "hidden",
                                             textOverflow: "ellipsis",
                                             whiteSpace: "nowrap",
-                                            color: completed ? "text.secondary" : "text.primary",
-                                            textDecoration: completed ? "line-through" : "none"
+                                            color: completed ? "hsl(240, 8%, 50%)" : "hsl(240, 15%, 10%)",
+                                            textDecoration: completed ? "line-through" : "none",
+                                            opacity: completed ? 0.6 : 1,
                                         }}
                                     >
                                         {goal.title}
                                     </Typography>
 
-                                    <Chip
-                                        size="small"
-                                        label={category.label}
-                                        sx={{
-                                            display: { xs: "none", sm: "inline-flex" },
-                                            height: 24,
-                                            bgcolor: category.badgeBg,
-                                            color: category.text,
-                                            fontWeight: 800,
-                                            fontSize: 11,
-                                            flexShrink: 0
-                                        }}
-                                    />
-
-                                    <Box sx={{ display: "flex", flexShrink: 0 }}>
-                                        <Tooltip title="Edit goal">
-                                            <IconButton onClick={() => onEdit(goal)} size="small" sx={{ p: 0.5 }}>
-                                                <Edit sx={{ fontSize: { xs: 18, sm: 20 } }} />
-                                            </IconButton>
-                                        </Tooltip>
-
-                                        <Tooltip title="Delete goal">
-                                            <IconButton onClick={() => onDelete(goal)} size="small" color="error" sx={{ p: 0.5 }}>
-                                                <Delete sx={{ fontSize: { xs: 18, sm: 20 } }} />
-                                            </IconButton>
-                                        </Tooltip>
+                                    <Box sx={{
+                                        px: 1.25,
+                                        py: 0.375,
+                                        borderRadius: "8px",
+                                        background: category.gradient,
+                                        color: "#fff",
+                                        fontWeight: 700,
+                                        fontSize: 11,
+                                        display: { xs: "none", sm: "inline-flex" },
+                                        whiteSpace: "nowrap",
+                                    }}>
+                                        {category.label}
                                     </Box>
-                                </Stack>
+
+                                    <Tooltip title="Edit" arrow>
+                                        <IconButton
+                                            onClick={() => onEdit(goal)}
+                                            size="small"
+                                            sx={{
+                                                p: 0.5,
+                                                color: "hsl(240, 8%, 50%)",
+                                                "&:hover": {
+                                                    color: "#7c3aed",
+                                                    bgcolor: "hsl(262, 83%, 96%)",
+                                                },
+                                            }}
+                                        >
+                                            <Edit sx={{ fontSize: 17 }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Delete" arrow>
+                                        <IconButton
+                                            onClick={() => onDelete(goal)}
+                                            size="small"
+                                            sx={{
+                                                p: 0.5,
+                                                color: "hsl(240, 8%, 60%)",
+                                                "&:hover": {
+                                                    color: "#dc2626",
+                                                    bgcolor: "hsl(0, 84%, 95%)",
+                                                },
+                                            }}
+                                        >
+                                            <Delete sx={{ fontSize: 17 }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
                             </Box>
                         );
                     })}
-                </Paper>
+                </Box>
             )}
         </Stack>
     );

@@ -1,146 +1,217 @@
+import { useState } from "react";
+import { CheckCircle, Delete, Edit, ExpandMore, RadioButtonUnchecked } from "@mui/icons-material";
 import {
-    CheckCircle, Delete, Edit, RadioButtonUnchecked
-} from "@mui/icons-material";
-import {
-    Box, Button, IconButton, LinearProgress, Tooltip, Typography
+    Box, Button, Checkbox, Collapse, IconButton, LinearProgress, Tooltip, Typography
 } from "@mui/material";
-import { getCategory, getStepProgress } from "../utils/goals";
+import { getStepProgress } from "../utils/goals";
 import RoundedGoalIcon from "./RoundedGoalIcon";
-import Stack from "./Stack";
 
-function GoalRow({ goal, onEdit, onDelete, onToggleGoal, onToggleStep }) {
-    const category = getCategory(goal.category);
+function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep, isLast }) {
+    const [expanded, setExpanded] = useState(false);
     const progress = getStepProgress(goal);
     const completed = goal.status === "completed" || goal.completed;
     const hasSteps = goal.steps?.length > 0;
 
     return (
         <Box>
-            <Stack
-                direction="row"
-                spacing={0.75}
-                alignItems="center"
+            <Box
                 sx={{
-                    px: { xs: 1.25, sm: 1.75 },
-                    py: 0.625,
-                    minHeight: 40,
-                    transition: "background-color 120ms",
-                    "&:hover": { bgcolor: "action.hover" }
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    px: { xs: 2, sm: 2.5 },
+                    py: 1.25,
+                    minHeight: 52,
+                    transition: "background-color 150ms ease",
+                    "&:hover": {
+                        bgcolor: "hsl(240, 20%, 98%)",
+                    },
+                    borderBottom: isLast ? "none" : "1px solid hsl(240, 10%, 93%)",
                 }}
             >
-                <IconButton
-                    onClick={() => onToggleGoal(goal)}
-                    size="small"
-                    sx={{ p: 0.25, color: category.text }}
-                >
-                    {completed ? (
-                        <CheckCircle sx={{ fontSize: 18 }} />
-                    ) : (
-                        <RadioButtonUnchecked sx={{ fontSize: 18, color: "text.disabled" }} />
-                    )}
-                </IconButton>
+                {/* Checkbox */}
+                <Checkbox
+                    checked={completed}
+                    onChange={() => onToggleGoal(goal)}
+                    disableRipple
+                    sx={{
+                        p: 0,
+                        width: 22,
+                        height: 22,
+                        color: "hsl(240, 10%, 80%)",
+                        "&.Mui-checked": {
+                            color: category.text,
+                        },
+                        "& .MuiSvgIcon-root": {
+                            fontSize: 22,
+                            transition: "all 150ms ease",
+                        },
+                        "&:hover": {
+                            bgcolor: "transparent",
+                        },
+                        "&.Mui-checked:hover": {
+                            bgcolor: "transparent",
+                        },
+                    }}
+                    icon={<RadioButtonUnchecked sx={{ fontSize: 22 }} />}
+                    checkedIcon={<CheckCircle sx={{ fontSize: 22 }} />}
+                />
 
+                {/* Goal Icon */}
                 <RoundedGoalIcon
                     iconKey={goal.emoji}
                     fallbackKey={category.iconKey}
                     sx={{ color: category.text, fontSize: 16, flexShrink: 0 }}
                 />
 
-                <Typography
-                    sx={{
-                        flex: 1,
-                        minWidth: 0,
-                        fontSize: 13,
-                        fontWeight: 700,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        color: completed ? "text.secondary" : "text.primary",
-                        textDecoration: completed ? "line-through" : "none"
-                    }}
-                >
-                    {goal.title}
-                </Typography>
-
-                {hasSteps && (
-                    <Typography sx={{ fontSize: 10, color: "text.secondary", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>
-                        {goal.steps.filter((s) => s.done).length}/{goal.steps.length}
+                {/* Title & Steps Info */}
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography
+                        sx={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            color: completed ? "hsl(240, 8%, 55%)" : "hsl(240, 15%, 10%)",
+                            textDecoration: completed ? "line-through" : "none",
+                            opacity: completed ? 0.6 : 1,
+                            transition: "all 150ms ease",
+                            lineHeight: 1.4,
+                        }}
+                    >
+                        {goal.title}
                     </Typography>
-                )}
+                    {hasSteps && (
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.25 }}>
+                            <Typography sx={{
+                                fontSize: 12,
+                                color: "hsl(240, 8%, 50%)",
+                                fontWeight: 500,
+                            }}>
+                                {goal.steps.filter((s) => s.done).length}/{goal.steps.length} steps
+                            </Typography>
+                            <Box sx={{ flex: 1, maxWidth: 60 }}>
+                                <LinearProgress
+                                    variant="determinate"
+                                    value={progress}
+                                    sx={{
+                                        height: 4,
+                                        borderRadius: 99,
+                                        bgcolor: "hsl(240, 10%, 94%)",
+                                        "& .MuiLinearProgress-bar": {
+                                            borderRadius: 99,
+                                            bgcolor: category.progress,
+                                            transition: "transform 500ms cubic-bezier(0.4, 0, 0.2, 1)",
+                                        }
+                                    }}
+                                />
+                            </Box>
+                        </Box>
+                    )}
+                </Box>
 
-                <Box sx={{ display: "flex", flexShrink: 0 }}>
-                    <Tooltip title="Edit">
-                        <IconButton onClick={() => onEdit(goal)} size="small" sx={{ p: 0.25 }}>
+                {/* Actions */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.25 }}>
+                    {hasSteps && (
+                        <IconButton
+                            onClick={() => setExpanded(!expanded)}
+                            size="small"
+                            disableRipple
+                            sx={{
+                                p: 0.5,
+                                color: "hsl(240, 8%, 55%)",
+                                transition: "transform 200ms ease",
+                                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+                                "&:hover": {
+                                    bgcolor: "hsl(240, 20%, 95%)",
+                                },
+                            }}
+                        >
+                            <ExpandMore sx={{ fontSize: 18 }} />
+                        </IconButton>
+                    )}
+                    <Tooltip title="Edit" arrow placement="top">
+                        <IconButton
+                            onClick={() => onEdit(goal)}
+                            size="small"
+                            disableRipple
+                            sx={{
+                                p: 0.5,
+                                color: "hsl(240, 8%, 65%)",
+                                "&:hover": {
+                                    color: "#7c3aed",
+                                    bgcolor: "hsl(262, 83%, 96%)",
+                                },
+                            }}
+                        >
                             <Edit sx={{ fontSize: 16 }} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Delete">
-                        <IconButton onClick={() => onDelete(goal)} size="small" color="error" sx={{ p: 0.25 }}>
+                    <Tooltip title="Delete" arrow placement="top">
+                        <IconButton
+                            onClick={() => onDelete(goal)}
+                            size="small"
+                            disableRipple
+                            sx={{
+                                p: 0.5,
+                                color: "hsl(240, 8%, 65%)",
+                                "&:hover": {
+                                    color: "#dc2626",
+                                    bgcolor: "hsl(0, 84%, 96%)",
+                                },
+                            }}
+                        >
                             <Delete sx={{ fontSize: 16 }} />
                         </IconButton>
                     </Tooltip>
                 </Box>
-            </Stack>
+            </Box>
 
+            {/* Expanded Steps */}
             {hasSteps && (
-                <Box sx={{ px: { xs: 3.25, sm: 4.75 }, pb: 0.75 }}>
-                    <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mb: 0.5 }}>
-                        <Typography sx={{ fontSize: 10, color: "text.secondary", fontWeight: 700 }}>
-                            Subtask progress
-                        </Typography>
-                        <Box sx={{ flex: 1, maxWidth: 120 }}>
-                            <LinearProgress
-                                variant="determinate"
-                                value={progress}
-                                sx={{
-                                    height: 4,
-                                    borderRadius: 99,
-                                    bgcolor: "action.hover",
-                                    "& .MuiLinearProgress-bar": { bgcolor: category.progress, borderRadius: 99 }
-                                }}
-                            />
-                        </Box>
-                    </Stack>
-
-                    <Stack spacing={0.25}>
+                <Collapse in={expanded} timeout={200}>
+                    <Box sx={{
+                        px: { xs: 5, sm: 6.5 },
+                        py: 1,
+                        bgcolor: "hsl(240, 20%, 98.5%)",
+                        borderBottom: isLast ? "none" : "1px solid hsl(240, 10%, 93%)",
+                    }}>
                         {goal.steps.map((step) => (
                             <Button
                                 key={step.stepId}
                                 variant="text"
                                 onClick={() => onToggleStep(goal, step.stepId)}
                                 size="small"
+                                disableRipple
                                 startIcon={step.done ? (
-                                    <CheckCircle sx={{ color: category.text, fontSize: 14 }} />
+                                    <CheckCircle sx={{ color: category.text, fontSize: 15 }} />
                                 ) : (
-                                    <RadioButtonUnchecked sx={{ fontSize: 14 }} />
+                                    <RadioButtonUnchecked sx={{ fontSize: 15, color: "hsl(240, 10%, 78%)" }} />
                                 )}
                                 sx={{
                                     justifyContent: "flex-start",
-                                    color: step.done ? "text.secondary" : "text.primary",
+                                    color: step.done ? "hsl(240, 8%, 55%)" : "hsl(240, 15%, 25%)",
                                     textDecoration: step.done ? "line-through" : "none",
                                     textTransform: "none",
-                                    px: 0.25,
-                                    py: 0.1,
-                                    minHeight: 22,
-                                    fontSize: 12,
-                                    "&:hover": { bgcolor: "action.hover" }
+                                    px: 0.75,
+                                    py: 0.3,
+                                    minHeight: 30,
+                                    fontSize: 13,
+                                    fontWeight: 500,
+                                    borderRadius: "6px",
+                                    transition: "all 150ms ease",
+                                    width: "100%",
+                                    "&:hover": {
+                                        bgcolor: "hsl(240, 20%, 96%)",
+                                    },
                                 }}
                             >
                                 {step.text}
                             </Button>
                         ))}
-                    </Stack>
-                </Box>
-            )}
-
-            {!hasSteps && completed && (
-                <Box sx={{ px: { xs: 3.5, sm: 5 }, pb: 0.5 }}>
-                    <LinearProgress
-                        variant="determinate"
-                        value={100}
-                        sx={{ height: 3, borderRadius: 99, "& .MuiLinearProgress-bar": { bgcolor: category.progress, borderRadius: 99 } }}
-                    />
-                </Box>
+                    </Box>
+                </Collapse>
             )}
         </Box>
     );

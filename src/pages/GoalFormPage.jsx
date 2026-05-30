@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
-    Add, ArrowBack, CalendarToday, Delete, FlagRounded
+    Add, ArrowBack, CalendarToday, Delete
 } from "@mui/icons-material";
 import {
-    Box, Button, Dialog, DialogContent, IconButton, InputAdornment,
+    Box, Button, Dialog, IconButton, InputAdornment,
     TextField, Tooltip, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -20,15 +20,16 @@ function GoalFormPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const { id } = useParams();
     const [searchParams] = useSearchParams();
     const goals = useSelector((state) => state.goals.items);
     const loading = useSelector((state) => state.goals.loading);
     const isEditing = !!id;
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const background = location.state?.background;
     const isOverlay = !!background;
+
     const existingGoal = useMemo(
         () => isEditing && !loading ? goals.find((g) => String(g.id) === id) : null,
         [id, goals, isEditing, loading]
@@ -104,63 +105,51 @@ function GoalFormPage() {
         }
     }, [draft, dispatch, isEditing, id, navigate]);
 
-    const fieldSx = {
-        "& .MuiOutlinedInput-root": {
-            bgcolor: "#ffffff",
-            transition: "border-color 160ms ease, box-shadow 160ms ease",
-            "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#d4d4d8",
-                borderWidth: 1
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: category.progress
-            },
-            "&.Mui-focused": {
-                boxShadow: `0 0 0 3px ${category.badgeBg}`
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: category.progress,
-                borderWidth: 2
-            }
-        },
-        "& .MuiInputBase-input::placeholder": {
-            color: "#a1a1aa",
-            fontWeight: 500,
-            opacity: 1
-        },
-        "& .MuiInputLabel-root.Mui-focused": {
-            color: category.text
-        }
-    };
-
     const content = (
         <>
+            {/* Gradient Top Bar */}
+            <Box sx={{
+                height: 4,
+                background: category.gradient,
+                flexShrink: 0,
+            }} />
+
+            {/* Header */}
             <Box
                 sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    px: { xs: 1.5, sm: 2 },
-                    py: 0.5,
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                    bgcolor: "rgba(255,255,255,0.95)",
-                    backdropFilter: "blur(14px)",
-                    position: "sticky",
-                    top: 0,
-                    zIndex: 10
+                    px: 2.5,
+                    py: 1.5,
+                    borderBottom: "1px solid hsl(240, 10%, 90%)",
+                    bgcolor: "#ffffff",
                 }}
             >
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                    <IconButton onClick={handleClose} size="small">
-                        <ArrowBack />
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <IconButton
+                        onClick={handleClose}
+                        size="small"
+                        disableRipple
+                        sx={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: "8px",
+                            bgcolor: "hsl(240, 20%, 96%)",
+                            color: "hsl(240, 15%, 30%)",
+                            "&:hover": {
+                                bgcolor: "hsl(240, 20%, 90%)",
+                            },
+                        }}
+                    >
+                        <ArrowBack sx={{ fontSize: 18 }} />
                     </IconButton>
                     <Typography
                         sx={{
                             fontFamily: "'Sora', sans-serif",
-                            fontWeight: 800,
-                            fontSize: { xs: 16, sm: 18 },
-                            color: "text.primary"
+                            fontWeight: 700,
+                            fontSize: 16,
+                            color: "hsl(240, 15%, 10%)",
                         }}
                     >
                         {isEditing ? "Edit Goal" : "New Goal"}
@@ -171,233 +160,393 @@ function GoalFormPage() {
                     variant="contained"
                     onClick={handleSave}
                     disabled={!draft.title.trim()}
-                    startIcon={<FlagRounded />}
                     size="small"
+                    disableElevation
                     sx={{
                         background: category.gradient,
                         color: "#fff",
-                        fontSize: { xs: 12, sm: 13 },
-                        px: { xs: 1.5, sm: 2 },
-                        "&:hover": { boxShadow: "0 4px 12px rgba(15,23,42,0.2)" },
+                        fontSize: 13,
+                        fontWeight: 700,
+                        px: 2.5,
+                        py: 0.625,
+                        borderRadius: "8px",
+                        textTransform: "none",
+                        boxShadow: "none",
+                        "&:hover": {
+                            boxShadow: "0 2px 8px rgb(0 0 0 / .12)",
+                        },
                         "&.Mui-disabled": {
-                            bgcolor: "#e4e4e7",
-                            background: "#e4e4e7",
-                            color: "#a1a1aa"
+                            bgcolor: "hsl(240, 10%, 92%)",
+                            color: "hsl(240, 6%, 70%)",
                         }
                     }}
                 >
-                    {isEditing ? "Save" : "Create"}
+                    {isEditing ? "Save Changes" : "Create Goal"}
                 </Button>
             </Box>
 
-            <DialogContent sx={{ p: 0 }}>
-                <Box sx={{ px: { xs: 1.5, sm: 2 }, py: 1.25 }}>
-                    <Stack spacing={1.5}>
-                        <Box>
-                            <TextField
-                                placeholder="Goal Title"
-                                value={draft.title}
-                                onChange={(e) => updateDraft({ title: e.target.value })}
-                                fullWidth
-                                required
-                                variant="standard"
-                                autoFocus
-                                InputProps={{ disableUnderline: true }}
-                                sx={{
-                                    "& .MuiInputBase-input": {
-                                        fontSize: { xs: 22, sm: 26 },
-                                        fontWeight: 800,
-                                        fontFamily: "'Sora', sans-serif",
-                                        py: 1,
-                                        color: "text.primary",
-                                        "&::placeholder": { color: "#d4d4d8", opacity: 1 }
-                                    }
-                                }}
-                            />
-                        </Box>
-
-                        <Box>
-                            <Typography sx={{ fontSize: 12, fontWeight: 800, color: "text.secondary", mb: 1, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                                Icon
-                            </Typography>
-                            <Stack direction="row" spacing={0.5} sx={{ flexWrap: "wrap", pb: 0.5 }}>
-                                {ICON_OPTIONS.map((option) => {
-                                    const selected = getIconKey(draft.emoji, category.iconKey) === option.key;
-                                    const Icon = option.Icon;
-                                    return (
-                                        <Tooltip key={option.key} title={option.label}>
-                                            <IconButton
-                                                onClick={() => updateDraft({ emoji: option.key })}
-                                                size="small"
-                                                sx={{
-                                                    width: 40,
-                                                    height: 40,
-                                                    borderRadius: 1.5,
-                                                    border: `2px solid ${selected ? category.progress : "#e4e4e7"}`,
-                                                    bgcolor: selected ? category.soft : "transparent",
-                                                    color: selected ? category.text : "text.secondary",
-                                                    flexShrink: 0,
-                                                    "&:hover": { bgcolor: category.badgeBg, color: category.text, borderColor: category.progress }
-                                                }}
-                                            >
-                                                <Icon sx={{ fontSize: 20 }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    );
-                                })}
-                            </Stack>
-                        </Box>
-
+            {/* Form Body */}
+            <Box sx={{ px: 3, py: 2.5, overflow: "auto", flex: 1, bgcolor: "#ffffff" }}>
+                <Stack spacing={2.5}>
+                    {/* Title */}
+                    <Box>
                         <TextField
-                            label="Description"
-                                placeholder="Add a short description"
-                                value={draft.description}
-                                onChange={(e) => updateDraft({ description: e.target.value })}
-                                multiline
-                                rows={1}
-                                minRows={1}
+                            placeholder="What's your goal?"
+                            value={draft.title}
+                            onChange={(e) => updateDraft({ title: e.target.value })}
+                            fullWidth
+                            required
+                            variant="standard"
+                            autoFocus
+                            InputProps={{ disableUnderline: true }}
+                            sx={{
+                                "& .MuiInputBase-input": {
+                                    fontSize: 24,
+                                    fontWeight: 700,
+                                    fontFamily: "'Sora', sans-serif",
+                                    py: 0.5,
+                                    color: "hsl(240, 15%, 10%)",
+                                    letterSpacing: "-0.02em",
+                                    "&::placeholder": {
+                                        color: "hsl(240, 10%, 78%)",
+                                        opacity: 1,
+                                    }
+                                }
+                            }}
+                        />
+                    </Box>
+
+                    {/* Category Selector */}
+                    <Box>
+                        <Typography sx={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: "hsl(240, 8%, 45%)",
+                            mb: 1,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                        }}>
+                            Category
+                        </Typography>
+                        <Box sx={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(5, 1fr)",
+                            gap: 0.75,
+                        }}>
+                            {CATEGORIES.map((item) => {
+                                const selected = draft.category === item.key;
+                                return (
+                                    <Button
+                                        key={item.key}
+                                        onClick={() => updateDraft({ category: item.key, emoji: draft.emoji || item.iconKey })}
+                                        disableRipple
+                                        sx={{
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: 0.5,
+                                            p: 1,
+                                            borderRadius: "10px",
+                                            border: `1.5px solid ${selected ? item.progress : "hsl(240, 10%, 90%)"}`,
+                                            bgcolor: selected ? item.soft : "#ffffff",
+                                            color: selected ? item.text : "hsl(240, 15%, 10%)",
+                                            textTransform: "none",
+                                            minHeight: 64,
+                                            transition: "all 150ms ease",
+                                            "&:hover": {
+                                                bgcolor: item.soft,
+                                                borderColor: item.progress,
+                                            },
+                                        }}
+                                    >
+                                        <RoundedGoalIcon iconKey={item.iconKey} sx={{ color: item.text, fontSize: 18 }} />
+                                        <Typography sx={{
+                                            fontSize: 10,
+                                            fontWeight: 700,
+                                            textAlign: "center",
+                                            lineHeight: 1.2,
+                                            letterSpacing: "-0.01em",
+                                        }}>
+                                            {item.label}
+                                        </Typography>
+                                    </Button>
+                                );
+                            })}
+                        </Box>
+                    </Box>
+
+                    {/* Description */}
+                    <Box>
+                        <Typography sx={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: "hsl(240, 8%, 45%)",
+                            mb: 1,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                        }}>
+                            Description
+                        </Typography>
+                        <TextField
+                            placeholder="Add a short description (optional)"
+                            value={draft.description}
+                            onChange={(e) => updateDraft({ description: e.target.value })}
+                            multiline
+                            rows={2}
+                            minRows={1}
                             fullWidth
                             size="small"
-                            sx={fieldSx}
+                            variant="outlined"
+                            sx={{
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: "10px",
+                                    fontSize: 14,
+                                    bgcolor: "hsl(240, 20%, 98%)",
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "hsl(240, 10%, 88%)",
+                                    },
+                                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "hsl(240, 10%, 78%)",
+                                    },
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: category.progress,
+                                    },
+                                },
+                            }}
                         />
+                    </Box>
 
-                        <Box>
-                            <Typography sx={{ fontSize: 12, fontWeight: 800, color: "text.secondary", mb: 1, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                                Category
-                            </Typography>
-                            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0.75 }}>
-                                {CATEGORIES.map((item) => {
-                                    const selected = draft.category === item.key;
-                                    return (
-                                        <Button
-                                            key={item.key}
-                                            onClick={() => updateDraft({ category: item.key, emoji: draft.emoji || item.iconKey })}
+                    {/* Icon Picker */}
+                    <Box>
+                        <Typography sx={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: "hsl(240, 8%, 45%)",
+                            mb: 1,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                        }}>
+                            Icon
+                        </Typography>
+                        <Box sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 0.5,
+                        }}>
+                            {ICON_OPTIONS.map((option) => {
+                                const selected = getIconKey(draft.emoji, category.iconKey) === option.key;
+                                const Icon = option.Icon;
+                                return (
+                                    <Tooltip key={option.key} title={option.label} arrow placement="top">
+                                        <IconButton
+                                            onClick={() => updateDraft({ emoji: option.key })}
+                                            size="small"
+                                            disableRipple
                                             sx={{
-                                                flexDirection: "column",
-                                                alignItems: "center",
-                                                gap: 0.25,
-                                                p: 1,
-                                                borderRadius: 1.5,
-                                                border: `2px solid ${selected ? item.progress : "#e4e4e7"}`,
-                                                bgcolor: selected ? item.soft : "white",
-                                                color: selected ? item.text : "text.primary",
-                                                textTransform: "none",
-                                                minHeight: 64,
-                                                "&:hover": { bgcolor: item.soft, borderColor: item.progress }
+                                                width: 36,
+                                                height: 36,
+                                                borderRadius: "8px",
+                                                border: `1.5px solid ${selected ? category.progress : "hsl(240, 10%, 90%)"}`,
+                                                bgcolor: selected ? category.soft : "transparent",
+                                                color: selected ? category.text : "hsl(240, 8%, 55%)",
+                                                transition: "all 150ms ease",
+                                                "&:hover": {
+                                                    bgcolor: category.soft,
+                                                    borderColor: category.progress,
+                                                },
                                             }}
                                         >
-                                            <RoundedGoalIcon iconKey={item.iconKey} sx={{ color: item.text, fontSize: 20 }} />
-                                            <Typography sx={{ fontSize: 10, fontWeight: 800, textAlign: "center", lineHeight: 1.2 }}>
-                                                {item.label}
-                                            </Typography>
-                                        </Button>
-                                    );
-                                })}
-                            </Box>
+                                            <Icon style={{ fontSize: 16 }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                );
+                            })}
                         </Box>
+                    </Box>
 
+                    {/* Target Date */}
+                    <Box>
+                        <Typography sx={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: "hsl(240, 8%, 45%)",
+                            mb: 1,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                        }}>
+                            Target Date
+                        </Typography>
                         <TextField
-                            label="Target Date"
                             type="date"
                             value={draft.targetDate}
                             onChange={(e) => updateDraft({ targetDate: e.target.value })}
                             fullWidth
                             size="small"
+                            variant="outlined"
                             InputLabelProps={{ shrink: true }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <CalendarToday sx={{ color: category.text, fontSize: 16 }} />
+                                        <CalendarToday sx={{ color: "hsl(240, 8%, 55%)", fontSize: 16 }} />
                                     </InputAdornment>
                                 )
                             }}
                             sx={{
-                                ...fieldSx,
-                                "& input[type='date']::-webkit-calendar-picker-indicator": { cursor: "pointer", opacity: 0.75 }
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: "10px",
+                                    fontSize: 14,
+                                    bgcolor: "hsl(240, 20%, 98%)",
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "hsl(240, 10%, 88%)",
+                                    },
+                                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "hsl(240, 10%, 78%)",
+                                    },
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: category.progress,
+                                    },
+                                },
+                                "& input[type='date']::-webkit-calendar-picker-indicator": {
+                                    cursor: "pointer",
+                                    opacity: 0.6,
+                                }
                             }}
                         />
+                    </Box>
 
-                        <Box>
-                            <Typography sx={{ fontSize: 12, fontWeight: 800, color: "text.secondary", mb: 1, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                                Subtasks
-                            </Typography>
+                    {/* Subtasks */}
+                    <Box>
+                        <Typography sx={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: "hsl(240, 8%, 45%)",
+                            mb: 1,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                        }}>
+                            Subtasks
+                        </Typography>
 
-                            {draft.steps.length > 0 && (
-                                <Stack spacing={0.75} sx={{ mb: 1.5 }}>
-                                    {draft.steps.map((step, idx) => (
-                                        <Box
-                                            key={step.stepId}
+                        {draft.steps.length > 0 && (
+                            <Stack spacing={0.5} sx={{ mb: 1.5 }}>
+                                {draft.steps.map((step, idx) => (
+                                    <Box
+                                        key={step.stepId}
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1.25,
+                                            py: 0.875,
+                                            px: 1.25,
+                                            borderRadius: "8px",
+                                            bgcolor: "hsl(240, 20%, 98%)",
+                                            border: "1px solid hsl(240, 10%, 92%)",
+                                            transition: "all 150ms ease",
+                                            "&:hover": {
+                                                borderColor: "hsl(240, 10%, 82%)",
+                                            }
+                                        }}
+                                    >
+                                        <Box sx={{
+                                            width: 24,
+                                            height: 24,
+                                            borderRadius: "6px",
+                                            background: category.gradient,
+                                            color: "white",
+                                            display: "grid",
+                                            placeItems: "center",
+                                            fontSize: 11,
+                                            fontWeight: 800,
+                                            fontFamily: "'Sora', sans-serif",
+                                            flexShrink: 0,
+                                        }}>
+                                            {idx + 1}
+                                        </Box>
+                                        <Typography sx={{
+                                            flex: 1,
+                                            fontSize: 13,
+                                            fontWeight: 500,
+                                            color: "hsl(240, 15%, 15%)",
+                                        }}>
+                                            {step.text}
+                                        </Typography>
+                                        <IconButton
+                                            onClick={() => handleRemoveStep(step.stepId)}
+                                            size="small"
+                                            disableRipple
                                             sx={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: 1,
-                                                p: 0.75,
-                                                borderRadius: 1.5,
-                                                bgcolor: "white",
-                                                border: "1px solid",
-                                                borderColor: "divider",
-                                                transition: "box-shadow 120ms",
-                                                "&:hover": { boxShadow: "0 1px 4px rgba(15,23,42,0.06)" }
+                                                p: 0.375,
+                                                color: "hsl(240, 8%, 65%)",
+                                                "&:hover": {
+                                                    color: "#dc2626",
+                                                    bgcolor: "hsl(0, 84%, 96%)",
+                                                },
                                             }}
                                         >
-                                            <Box
-                                                sx={{
-                                                    width: 26,
-                                                    height: 26,
-                                                    borderRadius: "50%",
-                                                    background: category.gradient,
-                                                    color: "white",
-                                                    display: "grid",
-                                                    placeItems: "center",
-                                                    fontSize: 12,
-                                                    fontWeight: 800,
-                                                    flexShrink: 0
-                                                }}
-                                            >
-                                                {idx + 1}
-                                            </Box>
-                                            <Typography sx={{ flex: 1, fontSize: 14, fontWeight: 500, color: "text.primary" }}>
-                                                {step.text}
-                                            </Typography>
-                                            <IconButton onClick={() => handleRemoveStep(step.stepId)} size="small" color="error" sx={{ p: 0.25 }}>
-                                                <Delete sx={{ fontSize: 18 }} />
-                                            </IconButton>
-                                        </Box>
-                                    ))}
-                                </Stack>
-                            )}
-
-                            <Stack direction="row" spacing={1}>
-                                <TextField
-                                    value={newStepText}
-                                    onChange={(e) => setNewStepText(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") { e.preventDefault(); handleAddStep(); }
-                                    }}
-                                    placeholder="Add a subtask..."
-                                    size="small"
-                                    fullWidth
-                                    sx={fieldSx}
-                                />
-                                <Button
-                                    variant="contained"
-                                    onClick={handleAddStep}
-                                    sx={{
-                                        minWidth: 44,
-                                        px: 1.25,
-                                        bgcolor: category.progress,
-                                        "&:hover": { bgcolor: category.text }
-                                    }}
-                                >
-                                    <Add />
-                                </Button>
+                                            <Delete sx={{ fontSize: 15 }} />
+                                        </IconButton>
+                                    </Box>
+                                ))}
                             </Stack>
-                        </Box>
+                        )}
 
-                        <Box sx={{ height: 8 }} />
-                    </Stack>
-                </Box>
-            </DialogContent>
+                        {/* Add Step Input */}
+                        <Box sx={{
+                            display: "flex",
+                            gap: 0.75,
+                            alignItems: "flex-start",
+                        }}>
+                            <TextField
+                                value={newStepText}
+                                onChange={(e) => setNewStepText(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") { e.preventDefault(); handleAddStep(); }
+                                }}
+                                placeholder="Add a subtask..."
+                                size="small"
+                                fullWidth
+                                variant="outlined"
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        borderRadius: "8px",
+                                        fontSize: 13,
+                                        bgcolor: "hsl(240, 20%, 98%)",
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "hsl(240, 10%, 88%)",
+                                        },
+                                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "hsl(240, 10%, 78%)",
+                                        },
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: category.progress,
+                                        },
+                                    },
+                                }}
+                            />
+                            <Button
+                                variant="contained"
+                                onClick={handleAddStep}
+                                disableElevation
+                                sx={{
+                                    minWidth: 38,
+                                    width: 38,
+                                    height: 38,
+                                    px: 0,
+                                    borderRadius: "8px",
+                                    background: category.gradient,
+                                    boxShadow: "none",
+                                    "&:hover": {
+                                        boxShadow: "0 2px 6px rgb(0 0 0 / .1)",
+                                    },
+                                }}
+                            >
+                                <Add sx={{ fontSize: 20 }} />
+                            </Button>
+                        </Box>
+                    </Box>
+
+                    <Box sx={{ height: 2 }} />
+                </Stack>
+            </Box>
         </>
     );
 
@@ -411,11 +560,17 @@ function GoalFormPage() {
                 fullScreen={isMobile}
                 PaperProps={{
                     sx: {
-                        borderRadius: isMobile ? 0 : 3,
+                        borderRadius: isMobile ? 0 : "16px",
                         minHeight: isMobile ? "100vh" : "auto",
-                        maxHeight: isMobile ? "100vh" : "90vh",
+                        maxHeight: isMobile ? "100vh" : "88vh",
                         bgcolor: "#ffffff",
-                        m: isMobile ? 0 : 2
+                        m: isMobile ? 0 : 1.5,
+                        overflow: "hidden",
+                        display: "flex",
+                        flexDirection: "column",
+                        boxShadow: isMobile
+                            ? "none"
+                            : "0 20px 60px rgb(0 0 0 / .12), 0 8px 20px rgb(0 0 0 / .06)",
                     }
                 }}
             >
@@ -425,8 +580,22 @@ function GoalFormPage() {
     }
 
     return (
-        <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #ffffff 0%, #f7f7fb 100%)", display: "flex", flexDirection: "column" }}>
-            {content}
+        <Box sx={{
+            minHeight: "100vh",
+            background: "hsl(240, 20%, 97%)",
+            display: "flex",
+            flexDirection: "column",
+        }}>
+            <Box sx={{
+                maxWidth: 640,
+                mx: "auto",
+                width: "100%",
+                bgcolor: "#ffffff",
+                minHeight: "100vh",
+                boxShadow: "0 0 40px rgb(0 0 0 / .04)",
+            }}>
+                {content}
+            </Box>
         </Box>
     );
 }

@@ -30,7 +30,7 @@ test("renders goal tracker dashboard", async () => {
       <App />
     </Provider>
   );
-  expect(screen.getByText(/Your Goals/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/Dashboard/i).length).toBeGreaterThanOrEqual(1);
   expect(screen.getAllByText(/New Goal/i).length).toBeGreaterThanOrEqual(1);
-  expect(await screen.findByText(/Start Your Journey/i)).toBeInTheDocument();
+  expect(await screen.findByText(/No goals yet/i)).toBeInTheDocument();
 });

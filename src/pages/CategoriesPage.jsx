@@ -6,6 +6,7 @@ import { useGoalActions } from "../hooks/useGoalActions";
 
 function CategoriesPage() {
     const goals = useSelector((state) => state.goals.items);
+    const activeCategory = useSelector((state) => state.ui.activeCategory);
     const {
         handleOpenCreate,
         handleOpenEdit,
@@ -14,9 +15,13 @@ function CategoriesPage() {
         handleToggleStep
     } = useGoalActions();
 
+    const filteredCategories = activeCategory === "all"
+        ? CATEGORIES
+        : CATEGORIES.filter((cat) => cat.key === activeCategory);
+
     return (
-        <Stack spacing={4}>
-            {CATEGORIES.map((category) => (
+        <Stack spacing={2.5}>
+            {filteredCategories.map((category) => (
                 <CategorySection
                     key={category.key}
                     category={category}

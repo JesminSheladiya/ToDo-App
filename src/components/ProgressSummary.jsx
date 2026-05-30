@@ -1,4 +1,4 @@
-import { Box, Divider, LinearProgress, Paper, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import { CATEGORIES } from "../constants/goals";
 import Stack from "./Stack";
 import Stat from "./Stat";
@@ -11,89 +11,162 @@ function ProgressSummary({ stats, goals }) {
           )
         : 0;
 
+    const doneSteps = goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0);
+    const totalSteps = goals.reduce((s, g) => s + (g.steps?.length || 0), 0);
+
     return (
-        <Paper
-            elevation={0}
-            sx={{
-                p: { xs: 1.5, sm: 2 },
-                borderRadius: 1.5,
-                border: "1px solid",
-                borderColor: "divider",
-                bgcolor: "background.paper",
-                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)"
-            }}
-        >
-            <Stack spacing={1.5}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography sx={{ fontWeight: 800, fontSize: 14, color: "text.primary" }}>
-                        Overall Progress
-                    </Typography>
-                    <Typography sx={{ fontWeight: 800, fontSize: 14, color: "primary.main" }}>
-                        {overallProgress}%
-                    </Typography>
-                </Stack>
+        <Box sx={{
+            bgcolor: "#ffffff",
+            borderRadius: "16px",
+            border: "1px solid hsl(240, 10%, 90%)",
+            overflow: "hidden",
+            boxShadow: "0 1px 2px rgb(0 0 0 / .05)",
+        }}>
+            {/* Gradient Top Bar */}
+            <Box sx={{
+                height: 3,
+                background: `linear-gradient(90deg, 
+                    hsl(var(--short-term)), 
+                    hsl(var(--mid-term)), 
+                    hsl(var(--long-term)), 
+                    hsl(var(--very-long-term)), 
+                    hsl(var(--life-goal))
+                )`,
+            }} />
 
-                <Box>
-                    <LinearProgress
-                        variant="determinate"
-                        value={overallProgress}
-                        sx={{
-                            height: 10,
-                            borderRadius: 99,
-                            bgcolor: "action.hover",
-                            "& .MuiLinearProgress-bar": {
-                                borderRadius: 99,
-                                background: `linear-gradient(90deg, ${CATEGORIES[0].progress}, ${CATEGORIES[2].progress}, ${CATEGORIES[3].progress})`
-                            }
-                        }}
-                    />
-                    <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.5 }}>
-                        <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
-                            {stats.completed}/{stats.total} goals completed
+            <Box sx={{ p: { xs: 2, sm: 2.5 } }}>
+                <Stack spacing={2}>
+                    {/* Progress Header */}
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Typography sx={{
+                            fontWeight: 700,
+                            fontSize: 15,
+                            color: "hsl(240, 15%, 10%)",
+                            fontFamily: "'Sora', sans-serif",
+                        }}>
+                            Overall Progress
                         </Typography>
-                        <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
-                            {goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0)}/
-                            {goals.reduce((s, g) => s + (g.steps?.length || 0), 0)} steps done
-                        </Typography>
+                        <Box sx={{
+                            px: 1.5,
+                            py: 0.5,
+                            borderRadius: "8px",
+                            background: `linear-gradient(135deg, #7c3aed, #a855f7)`,
+                            color: "#fff",
+                            fontWeight: 800,
+                            fontSize: 13,
+                            fontFamily: "'Sora', sans-serif",
+                        }}>
+                            {overallProgress}%
+                        </Box>
                     </Stack>
-                </Box>
 
-                <Divider />
+                    {/* Progress Bar */}
+                    <Box>
+                        <LinearProgress
+                            variant="determinate"
+                            value={overallProgress}
+                            sx={{
+                                height: 8,
+                                borderRadius: 99,
+                                bgcolor: "hsl(240, 10%, 94%)",
+                                "& .MuiLinearProgress-bar": {
+                                    borderRadius: 99,
+                                    background: `linear-gradient(90deg, 
+                                        hsl(var(--short-term)), 
+                                        hsl(var(--long-term)), 
+                                        hsl(var(--very-long-term)), 
+                                        hsl(var(--life-goal))
+                                    )`,
+                                    transition: "transform 600ms cubic-bezier(0.4, 0, 0.2, 1)",
+                                }
+                            }}
+                        />
+                        <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.75 }}>
+                            <Typography sx={{
+                                fontSize: 12,
+                                color: "hsl(240, 8%, 50%)",
+                                fontWeight: 500,
+                            }}>
+                                {stats.completed}/{stats.total} goals completed
+                            </Typography>
+                            <Typography sx={{
+                                fontSize: 12,
+                                color: "hsl(240, 8%, 50%)",
+                                fontWeight: 500,
+                            }}>
+                                {doneSteps}/{totalSteps} steps done
+                            </Typography>
+                        </Stack>
+                    </Box>
 
-                <Stack direction="row" flexWrap="wrap" gap={1}>
-                    {CATEGORIES.map((category) => {
-                        const count = goals.filter((goal) => goal.category === category.key).length;
-
-                        return (
-                            <Stack key={category.key} direction="row" spacing={0.75} alignItems="center">
+                    {/* Category Chips */}
+                    <Box sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 0.75,
+                    }}>
+                        {CATEGORIES.map((category) => {
+                            const count = goals.filter((goal) => goal.category === category.key).length;
+                            if (count === 0) return null;
+                            return (
                                 <Box
+                                    key={category.key}
                                     sx={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: 0.75,
+                                        px: 1.25,
+                                        py: 0.5,
+                                        borderRadius: "8px",
+                                        bgcolor: category.soft,
+                                        border: `1px solid ${category.border}`,
+                                    }}
+                                >
+                                    <Box sx={{
                                         width: 8,
                                         height: 8,
                                         borderRadius: "50%",
-                                        bgcolor: category.progress
-                                    }}
-                                />
-                                <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
-                                    {category.label}{" "}
-                                    <Box component="strong" sx={{ color: "text.primary" }}>
+                                        background: category.gradient,
+                                        flexShrink: 0,
+                                    }} />
+                                    <Typography sx={{
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                        color: category.text,
+                                    }}>
+                                        {category.label}
+                                    </Typography>
+                                    <Typography sx={{
+                                        fontSize: 12,
+                                        fontWeight: 800,
+                                        color: category.text,
+                                        opacity: 0.8,
+                                    }}>
                                         {count}
-                                    </Box>
-                                </Typography>
-                            </Stack>
-                        );
-                    })}
-                </Stack>
+                                    </Typography>
+                                </Box>
+                            );
+                        })}
+                    </Box>
 
-                <Divider />
-
-                <Stack direction="row" spacing={2}>
-                    <Stat label="Total Goals" value={stats.total} color="text.primary" />
-                    <Stat label="Completed" value={stats.completed} color="#16a34a" />
-                    <Stat label="In Progress" value={stats.inProgress} color="primary.main" />
+                    {/* Stats Row */}
+                    <Box sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        bgcolor: "hsl(240, 20%, 97%)",
+                        borderRadius: "12px",
+                        p: 1.5,
+                        gap: 0,
+                    }}>
+                        <Stat label="Total Goals" value={stats.total} color="hsl(240, 15%, 10%)" />
+                        <Box sx={{ width: 1, height: 36, bgcolor: "hsl(240, 10%, 88%)" }} />
+                        <Stat label="Completed" value={stats.completed} color="#16a34a" />
+                        <Box sx={{ width: 1, height: 36, bgcolor: "hsl(240, 10%, 88%)" }} />
+                        <Stat label="In Progress" value={stats.inProgress} color="#7c3aed" />
+                    </Box>
                 </Stack>
-            </Stack>
-        </Paper>
+            </Box>
+        </Box>
     );
 }
 
