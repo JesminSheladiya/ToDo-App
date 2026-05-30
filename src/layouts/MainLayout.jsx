@@ -42,7 +42,7 @@ function MainLayout() {
     }, [goals]);
 
     return (
-        <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+        <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #ffffff 0%, #f7f7fb 100%)" }}>
             <Toaster
                 position="top-center"
                 toastOptions={{

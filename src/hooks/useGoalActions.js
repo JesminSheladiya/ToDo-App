@@ -1,21 +1,22 @@
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { deleteGoal, updateGoal } from "../store/goalsSlice";
 
 export function useGoalActions() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleOpenCreate = useCallback((category) => {
         const params = category ? `?category=${category}` : "";
-        navigate(`/goals/new${params}`);
-    }, [navigate]);
+        navigate(`/goals/new${params}`, { state: { background: location } });
+    }, [navigate, location]);
 
     const handleOpenEdit = useCallback((goal) => {
-        navigate(`/goals/${goal.id}/edit`);
-    }, [navigate]);
+        navigate(`/goals/${goal.id}/edit`, { state: { background: location } });
+    }, [navigate, location]);
 
     const handleDelete = useCallback((goal) => {
         if (!window.confirm(`Delete "${goal.title}"?`)) return;
