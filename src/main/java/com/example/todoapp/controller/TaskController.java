@@ -1,7 +1,6 @@
 package com.example.todoapp.controller;
 
 import com.example.todoapp.entity.Task;
-import com.example.todoapp.repository.TaskRepository;
 import com.example.todoapp.service.TaskService;
 
 import jakarta.validation.Valid;
@@ -17,11 +16,9 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
-    private final TaskRepository taskRepository;
 
-    public TaskController(TaskService taskService, TaskRepository taskRepository) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.taskRepository = taskRepository;
     }
 
     @GetMapping
@@ -39,19 +36,11 @@ public class TaskController {
             @PathVariable Long id,
             @RequestBody Task updatedTask
     ) {
-
-        Task task = taskRepository.findById(id)
-                .orElseThrow();
-
-        task.setTitle(updatedTask.getTitle());
-        task.setDescription(updatedTask.getDescription());
-        task.setCompleted(updatedTask.isCompleted());
-
-        return taskRepository.save(task);
+        return taskService.updateTask(id, updatedTask);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Long id) {
-        taskRepository.deleteById(id);
+        taskService.deleteTask(id);
     }
 }

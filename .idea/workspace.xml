@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="To DO Task CRUD.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;JesminSheladiya&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/JesminSheladiya/ToDo-App.git&quot;,
+    &quot;accountId&quot;: &quot;4507b3c1-9671-41e0-9bd8-9d4f23911399&quot;
+  }
+}</component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0000000078209987" />
+      <entry key="MS500" value="1.024017359095392" />
+      <entry key="S2" value="1.5953020302675363" />
+      <entry key="S5" value="2.695680964768966" />
+      <entry key="S10" value="3.6330104566580315" />
+      <entry key="S30" value="5.340678598292264" />
+      <entry key="S60" value="6.9383313864893905" />
+      <entry key="M2" value="9.69507953323794" />
+      <entry key="M5" value="16.51915331341504" />
+      <entry key="M10" value="24.118820243676517" />
+      <entry key="M15" value="28.52688987450815" />
+      <entry key="M30" value="34.577108448552735" />
+      <entry key="H1" value="38.434354523524114" />
+      <entry key="H2" value="40.62013211919887" />
+      <entry key="H4" value="41.78464933807244" />
+      <entry key="D1" value="42.79380868773662" />
+      <entry key="W1" value="42.970453757063424" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.3480271170374594E-16" />
+      <entry key="MS500" value="6.697916448196274E-4" />
+      <entry key="S2" value="0.16087365591265881" />
+      <entry key="S5" value="0.4814974290672503" />
+      <entry key="S10" value="0.6939001579137297" />
+      <entry key="S30" value="0.8859446646051555" />
+      <entry key="S60" value="0.9832690469452393" />
+      <entry key="M2" value="1.354261970936931" />
+      <entry key="M5" value="2.5216993909802086" />
+      <entry key="M10" value="3.4609613307340674" />
+      <entry key="M15" value="3.8915347941689453" />
+      <entry key="M30" value="4.399664305743617" />
+      <entry key="H1" value="4.687284357855555" />
+      <entry key="H2" value="4.840367186872027" />
+      <entry key="H4" value="4.919346901089331" />
+      <entry key="D1" value="4.986440053321745" />
+      <entry key="W1" value="4.998059960234538" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9726549550723305" />
+      <entry key="MS500" value="1.0185988904496444" />
+      <entry key="S2" value="1.7138078267587933" />
+      <entry key="S5" value="3.1233592947564204" />
+      <entry key="S10" value="4.2871044088149945" />
+      <entry key="S30" value="6.209055097507976" />
+      <entry key="S60" value="7.9095010533428525" />
+      <entry key="M2" value="11.03469093884319" />
+      <entry key="M5" value="19.024164988149256" />
+      <entry key="M10" value="27.56691010612792" />
+      <entry key="M15" value="32.40840573752639" />
+      <entry key="M30" value="38.97088909603152" />
+      <entry key="H1" value="43.118442996593245" />
+      <entry key="H2" value="45.45883272718048" />
+      <entry key="H4" value="46.70314510112079" />
+      <entry key="D1" value="47.78010434476478" />
+      <entry key="W1" value="47.96849302624068" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3E7Ji4gfWtFMrhspCmOLCjmqtqN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="TodoBackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="todo-backend" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.todoapp.TodoBackendApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="StructureViewState">
+    <option name="selectedTab" value="Logical" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="" />
+      <created>1779523797955</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1779523797955</updated>
+      <workItem from="1779523798967" duration="1527000" />
+      <workItem from="1779682777718" duration="4585000" />
+      <workItem from="1779768869513" duration="3668000" />
+      <workItem from="1780120367539" duration="631000" />
+      <workItem from="1780295225137" duration="2787000" />
+      <workItem from="1780460875064" duration="598000" />
+      <workItem from="1780634195471" duration="15481000" />
+      <workItem from="1780720197244" duration="5714000" />
+    </task>
+    <task id="LOCAL-00001" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1779523907935</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779523907935</updated>
+    </task>
+    <task id="LOCAL-00002" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1779524617576</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779524617576</updated>
+    </task>
+    <task id="LOCAL-00003" summary="To DO Task CRUD.">
+      <option name="closed" value="true" />
+      <created>1779770749446</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779770749446</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge pull request #1 from JesminSheladiya/backend&#10;&#10;Add files via upload" />
+    <MESSAGE value="initial commit" />
+    <MESSAGE value="To DO Task CRUD." />
+    <option name="LAST_COMMIT_MESSAGE" value="To DO Task CRUD." />
+  </component>
+</project>
