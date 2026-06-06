@@ -29,8 +29,7 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, Task updatedTask) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow();
+        Task task = taskRepository.findById(id).orElseThrow();
 
         task.setTitle(updatedTask.getTitle());
         task.setDescription(updatedTask.getDescription());
@@ -39,6 +38,7 @@ public class TaskService {
         task.setEmoji(updatedTask.getEmoji());
         task.setTargetDate(updatedTask.getTargetDate());
         task.setStatus(updatedTask.getStatus());
+        task.setTaskOrder(updatedTask.getTaskOrder());
         task.setSteps(updatedTask.getSteps());
 
         normalizeTask(task);

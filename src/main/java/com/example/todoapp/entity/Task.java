@@ -42,6 +42,8 @@ public class Task {
     @Builder.Default
     private String status = "active";
 
+    private Integer taskOrder;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "task_steps",

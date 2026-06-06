@@ -4,18 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="initial commit">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" afterDir="false" />
+    <list default="true" id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="To DO Task CRUD.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,61 +40,61 @@
 }</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0002125367724206" />
-      <entry key="MS500" value="1.199875468731883" />
-      <entry key="S2" value="2.4591642720605718" />
-      <entry key="S5" value="3.6157417731424637" />
-      <entry key="S10" value="4.224071179720079" />
-      <entry key="S30" value="4.7357879507253635" />
-      <entry key="S60" value="5.159888604018939" />
-      <entry key="M2" value="6.570794860071341" />
-      <entry key="M5" value="11.943139757786268" />
-      <entry key="M10" value="18.128195423718584" />
-      <entry key="M15" value="21.54278119410698" />
-      <entry key="M30" value="26.03958719951145" />
-      <entry key="H1" value="28.80801234020234" />
-      <entry key="H2" value="30.346937780410236" />
-      <entry key="H4" value="31.158649864769032" />
-      <entry key="D1" value="31.857668124790713" />
-      <entry key="W1" value="31.9796146315615" />
+      <entry key="MS100" value="1.0000000078209987" />
+      <entry key="MS500" value="1.024017359095392" />
+      <entry key="S2" value="1.5953020302675363" />
+      <entry key="S5" value="2.695680964768966" />
+      <entry key="S10" value="3.6330104566580315" />
+      <entry key="S30" value="5.340678598292264" />
+      <entry key="S60" value="6.9383313864893905" />
+      <entry key="M2" value="9.69507953323794" />
+      <entry key="M5" value="16.51915331341504" />
+      <entry key="M10" value="24.118820243676517" />
+      <entry key="M15" value="28.52688987450815" />
+      <entry key="M30" value="34.577108448552735" />
+      <entry key="H1" value="38.434354523524114" />
+      <entry key="H2" value="40.62013211919887" />
+      <entry key="H4" value="41.78464933807244" />
+      <entry key="D1" value="42.79380868773662" />
+      <entry key="W1" value="42.970453757063424" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="1.742181265311381E-71" />
-      <entry key="S2" value="2.043100959983687E-18" />
-      <entry key="S5" value="8.539971800088991E-8" />
-      <entry key="S10" value="3.28424908533749E-4" />
-      <entry key="S30" value="0.1095997291620005" />
-      <entry key="S60" value="0.5598748594570355" />
-      <entry key="M2" value="1.3970369355596277" />
-      <entry key="M5" value="2.570430024573056" />
-      <entry key="M10" value="3.193689023381625" />
-      <entry key="M15" value="3.439392000232219" />
-      <entry key="M30" value="3.707384064615407" />
-      <entry key="H1" value="3.8504579149781413" />
-      <entry key="H2" value="3.9243999598730466" />
-      <entry key="H4" value="3.961990109893172" />
-      <entry key="D1" value="3.9936356443146273" />
-      <entry key="W1" value="3.999090084008283" />
+      <entry key="MS100" value="1.3480271170374594E-16" />
+      <entry key="MS500" value="6.697916448196274E-4" />
+      <entry key="S2" value="0.16087365591265881" />
+      <entry key="S5" value="0.4814974290672503" />
+      <entry key="S10" value="0.6939001579137297" />
+      <entry key="S30" value="0.8859446646051555" />
+      <entry key="S60" value="0.9832690469452393" />
+      <entry key="M2" value="1.354261970936931" />
+      <entry key="M5" value="2.5216993909802086" />
+      <entry key="M10" value="3.4609613307340674" />
+      <entry key="M15" value="3.8915347941689453" />
+      <entry key="M30" value="4.399664305743617" />
+      <entry key="H1" value="4.687284357855555" />
+      <entry key="H2" value="4.840367186872027" />
+      <entry key="H4" value="4.919346901089331" />
+      <entry key="D1" value="4.986440053321745" />
+      <entry key="W1" value="4.998059960234538" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.027394140721068317" />
-      <entry key="MS500" value="0.5487491658605118" />
-      <entry key="S2" value="2.1017289737667397" />
-      <entry key="S5" value="3.4360916830641415" />
-      <entry key="S10" value="4.126872083026794" />
-      <entry key="S30" value="4.805226278672437" />
-      <entry key="S60" value="5.683334002335297" />
-      <entry key="M2" value="7.932406182790206" />
-      <entry key="M5" value="14.489034001554684" />
-      <entry key="M10" value="21.306570695322666" />
-      <entry key="M15" value="24.97110327747956" />
-      <entry key="M30" value="29.740942591455983" />
-      <entry key="H1" value="32.655318303614834" />
-      <entry key="H2" value="34.2697253439011" />
-      <entry key="H4" value="35.119824401922024" />
-      <entry key="D1" value="35.8511665145679" />
-      <entry key="W1" value="35.978685074996044" />
+      <entry key="MS100" value="0.9726549550723305" />
+      <entry key="MS500" value="1.0185988904496444" />
+      <entry key="S2" value="1.7138078267587933" />
+      <entry key="S5" value="3.1233592947564204" />
+      <entry key="S10" value="4.2871044088149945" />
+      <entry key="S30" value="6.209055097507976" />
+      <entry key="S60" value="7.9095010533428525" />
+      <entry key="M2" value="11.03469093884319" />
+      <entry key="M5" value="19.024164988149256" />
+      <entry key="M10" value="27.56691010612792" />
+      <entry key="M15" value="32.40840573752639" />
+      <entry key="M30" value="38.97088909603152" />
+      <entry key="H1" value="43.118442996593245" />
+      <entry key="H2" value="45.45883272718048" />
+      <entry key="H4" value="46.70314510112079" />
+      <entry key="D1" value="47.78010434476478" />
+      <entry key="W1" value="47.96849302624068" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -143,6 +139,9 @@
       </set>
     </attachedChunks>
   </component>
+  <component name="StructureViewState">
+    <option name="selectedTab" value="Logical" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="" />
@@ -152,7 +151,12 @@
       <updated>1779523797955</updated>
       <workItem from="1779523798967" duration="1527000" />
       <workItem from="1779682777718" duration="4585000" />
-      <workItem from="1779768869513" duration="1402000" />
+      <workItem from="1779768869513" duration="3668000" />
+      <workItem from="1780120367539" duration="631000" />
+      <workItem from="1780295225137" duration="2787000" />
+      <workItem from="1780460875064" duration="598000" />
+      <workItem from="1780634195471" duration="15481000" />
+      <workItem from="1780720197244" duration="5714000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -170,13 +174,36 @@
       <option name="project" value="LOCAL" />
       <updated>1779524617576</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="To DO Task CRUD.">
+      <option name="closed" value="true" />
+      <created>1779770749446</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779770749446</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -190,6 +217,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Merge pull request #1 from JesminSheladiya/backend&#10;&#10;Add files via upload" />
     <MESSAGE value="initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
+    <MESSAGE value="To DO Task CRUD." />
+    <option name="LAST_COMMIT_MESSAGE" value="To DO Task CRUD." />
   </component>
 </project>
