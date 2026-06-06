@@ -30,7 +30,30 @@ const goalsSlice = createSlice({
         items: [],
         loading: true
     },
-    reducers: {},
+    reducers: {
+        reorderGoals(state, action) {
+            const { categoryKey, orderedIds } = action.payload;
+            const categoryItems = state.items.filter((g) => g.category === categoryKey);
+            const otherItems = state.items.filter((g) => g.category !== categoryKey);
+
+            const reordered = orderedIds
+                .map((id, index) => {
+                    const goal = categoryItems.find((g) => String(g.id) === id);
+                    if (!goal) return null;
+                    return { ...goal, taskOrder: index };
+                })
+                .filter(Boolean);
+
+            state.items = [...otherItems, ...reordered];
+        },
+        reorderSteps(state, action) {
+            const { goalId, newSteps } = action.payload;
+            const index = state.items.findIndex((g) => g.id === goalId);
+            if (index !== -1) {
+                state.items[index] = { ...state.items[index], steps: newSteps };
+            }
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchGoals.pending, (state) => {
@@ -58,4 +81,5 @@ const goalsSlice = createSlice({
     }
 });
 
+export const { reorderGoals, reorderSteps } = goalsSlice.actions;
 export default goalsSlice.reducer;

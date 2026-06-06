@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
-    Add, ArrowBack, CalendarToday, Delete
+    Add, ArrowBack, CalendarToday, Delete, Edit, Check, Close
 } from "@mui/icons-material";
 import {
     Box, Button, Dialog, IconButton, InputAdornment,
@@ -15,6 +18,7 @@ import { createGoal, fetchGoals, updateGoal } from "../store/goalsSlice";
 import { createId, getCategory, getIconKey, syncCompletion } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
 import Stack from "../components/Stack";
+import DragHandle from "../components/DragHandle";
 
 function GoalFormPage() {
     const dispatch = useDispatch();
@@ -49,6 +53,8 @@ function GoalFormPage() {
         return { ...emptyDraft, category: cat.key, emoji: cat.iconKey };
     });
     const [newStepText, setNewStepText] = useState("");
+    const [editingStepId, setEditingStepId] = useState(null);
+    const [editingStepText, setEditingStepText] = useState("");
 
     useEffect(() => {
         if (isEditing && existingGoal) {
@@ -77,7 +83,52 @@ function GoalFormPage() {
             ...prev,
             steps: prev.steps.filter((s) => s.stepId !== stepId)
         }));
+        if (editingStepId === stepId) {
+            setEditingStepId(null);
+            setEditingStepText("");
+        }
+    }, [editingStepId]);
+
+    const handleStartEditStep = useCallback((step) => {
+        setEditingStepId(step.stepId);
+        setEditingStepText(step.text);
     }, []);
+
+    const handleSaveEditStep = useCallback(() => {
+        const trimmed = editingStepText.trim();
+        if (!trimmed || !editingStepId) return;
+        setDraft((prev) => ({
+            ...prev,
+            steps: prev.steps.map((s) =>
+                s.stepId === editingStepId ? { ...s, text: trimmed } : s
+            )
+        }));
+        setEditingStepId(null);
+        setEditingStepText("");
+    }, [editingStepText, editingStepId]);
+
+    const handleCancelEditStep = useCallback(() => {
+        setEditingStepId(null);
+        setEditingStepText("");
+    }, []);
+
+    const stepSensors = useSensors(useSensor(PointerSensor, {
+        activationConstraint: { distance: 5 },
+    }));
+
+    const handleFormStepDragEnd = useCallback((event) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const steps = draft.steps;
+        const oldIndex = steps.findIndex((s) => s.stepId === active.id);
+        const newIndex = steps.findIndex((s) => s.stepId === over.id);
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        const newSteps = [...steps];
+        newSteps.splice(newIndex, 0, newSteps.splice(oldIndex, 1)[0]);
+        setDraft((prev) => ({ ...prev, steps: newSteps }));
+    }, [draft.steps]);
 
     const handleClose = useCallback(() => {
         navigate(-1);
@@ -176,7 +227,7 @@ function GoalFormPage() {
                             boxShadow: "0 2px 8px rgb(0 0 0 / .12)",
                         },
                         "&.Mui-disabled": {
-                            bgcolor: "hsl(240, 10%, 92%)",
+                            background: "hsl(240, 10%, 92%)",
                             color: "hsl(240, 6%, 70%)",
                         }
                     }}
@@ -222,8 +273,7 @@ function GoalFormPage() {
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
-                            mb: 1,
-                            textTransform: "uppercase",
+                            mb: 0.5,
                             letterSpacing: "0.06em",
                         }}>
                             Category
@@ -280,8 +330,7 @@ function GoalFormPage() {
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
-                            mb: 1,
-                            textTransform: "uppercase",
+                            mb: 0.5,
                             letterSpacing: "0.06em",
                         }}>
                             Description
@@ -321,8 +370,7 @@ function GoalFormPage() {
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
-                            mb: 1,
-                            textTransform: "uppercase",
+                            mb: 0.5,
                             letterSpacing: "0.06em",
                         }}>
                             Icon
@@ -369,8 +417,7 @@ function GoalFormPage() {
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
-                            mb: 1,
-                            textTransform: "uppercase",
+                            mb: 0.5,
                             letterSpacing: "0.06em",
                         }}>
                             Target Date
@@ -419,74 +466,44 @@ function GoalFormPage() {
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
-                            mb: 1,
-                            textTransform: "uppercase",
                             letterSpacing: "0.06em",
                         }}>
                             Subtasks
                         </Typography>
 
                         {draft.steps.length > 0 && (
-                            <Stack spacing={0.5} sx={{ mb: 1.5 }}>
-                                {draft.steps.map((step, idx) => (
-                                    <Box
-                                        key={step.stepId}
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 1.25,
-                                            py: 0.875,
-                                            px: 1.25,
-                                            borderRadius: "8px",
-                                            bgcolor: "hsl(240, 20%, 98%)",
-                                            border: "1px solid hsl(240, 10%, 92%)",
-                                            transition: "all 150ms ease",
-                                            "&:hover": {
-                                                borderColor: "hsl(240, 10%, 82%)",
-                                            }
-                                        }}
-                                    >
-                                        <Box sx={{
-                                            width: 24,
-                                            height: 24,
-                                            borderRadius: "6px",
-                                            background: category.gradient,
-                                            color: "white",
-                                            display: "grid",
-                                            placeItems: "center",
-                                            fontSize: 11,
-                                            fontWeight: 800,
-                                            fontFamily: "'Sora', sans-serif",
-                                            flexShrink: 0,
-                                        }}>
-                                            {idx + 1}
-                                        </Box>
-                                        <Typography sx={{
-                                            flex: 1,
-                                            fontSize: 13,
-                                            fontWeight: 500,
-                                            color: "hsl(240, 15%, 15%)",
-                                        }}>
-                                            {step.text}
-                                        </Typography>
-                                        <IconButton
-                                            onClick={() => handleRemoveStep(step.stepId)}
-                                            size="small"
-                                            disableRipple
-                                            sx={{
-                                                p: 0.375,
-                                                color: "hsl(240, 8%, 65%)",
-                                                "&:hover": {
-                                                    color: "#dc2626",
-                                                    bgcolor: "hsl(0, 84%, 96%)",
-                                                },
-                                            }}
-                                        >
-                                            <Delete sx={{ fontSize: 15 }} />
-                                        </IconButton>
-                                    </Box>
-                                ))}
-                            </Stack>
+                            <DndContext
+                                sensors={stepSensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleFormStepDragEnd}
+                            >
+                                <SortableContext
+                                    items={draft.steps.map((s) => s.stepId)}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    <Stack spacing={0.5} sx={{ mb: 1.5 }}>
+                                        {draft.steps.map((step, idx) => {
+                                            const isEditing = editingStepId === step.stepId;
+                                            return (
+                                                <SortableFormStep
+                                                    key={step.stepId}
+                                                    step={step}
+                                                    stepId={step.stepId}
+                                                    isEditing={isEditing}
+                                                    editingStepText={editingStepText}
+                                                    setEditingStepText={setEditingStepText}
+                                                    handleSaveEditStep={handleSaveEditStep}
+                                                    handleCancelEditStep={handleCancelEditStep}
+                                                    handleStartEditStep={handleStartEditStep}
+                                                    handleRemoveStep={handleRemoveStep}
+                                                    category={category}
+                                                    idx={idx}
+                                                />
+                                            );
+                                        })}
+                                    </Stack>
+                                </SortableContext>
+                            </DndContext>
                         )}
 
                         {/* Add Step Input */}
@@ -494,6 +511,7 @@ function GoalFormPage() {
                             display: "flex",
                             gap: 0.75,
                             alignItems: "flex-start",
+                            pt: 0.8,
                         }}>
                             <TextField
                                 value={newStepText}
@@ -527,9 +545,6 @@ function GoalFormPage() {
                                 onClick={handleAddStep}
                                 disableElevation
                                 sx={{
-                                    minWidth: 38,
-                                    width: 38,
-                                    height: 38,
                                     px: 0,
                                     borderRadius: "8px",
                                     background: category.gradient,
@@ -539,7 +554,7 @@ function GoalFormPage() {
                                     },
                                 }}
                             >
-                                <Add sx={{ fontSize: 20 }} />
+                                Add
                             </Button>
                         </Box>
                     </Box>
@@ -595,6 +610,177 @@ function GoalFormPage() {
                 boxShadow: "0 0 40px rgb(0 0 0 / .04)",
             }}>
                 {content}
+            </Box>
+        </Box>
+    );
+}
+
+function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditingStepText, handleSaveEditStep, handleCancelEditStep, handleStartEditStep, handleRemoveStep, category, idx }) {
+    const {
+        attributes, listeners, setNodeRef, setActivatorNodeRef,
+        transform, transition, isDragging
+    } = useSortable({ id: stepId });
+
+    return (
+        <Box
+            ref={setNodeRef}
+            className={isDragging ? "" : "group"}
+            style={{
+                transform: CSS.Transform.toString(transform),
+                transition: isDragging ? transition : "none",
+                opacity: isDragging ? 0.4 : 1,
+                zIndex: isDragging ? 10 : "auto",
+            }}
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.75,
+                py: isEditing ? 0.5 : 0.875,
+                px: 1.25,
+                borderRadius: "8px",
+                bgcolor: isEditing ? "hsl(240, 20%, 97%)" : "hsl(240, 20%, 98%)",
+                border: `1px solid ${isEditing ? category.progress : "hsl(240, 10%, 92%)"}`,
+                transition: "all 150ms ease",
+                "&:hover": {
+                    borderColor: isEditing ? category.progress : "hsl(240, 10%, 82%)",
+                },
+            }}
+        >
+            <DragHandle
+                activatorRef={setActivatorNodeRef}
+                listeners={listeners}
+                attributes={attributes}
+            />
+
+            <Box sx={{
+                width: 24,
+                height: 24,
+                borderRadius: "6px",
+                background: category.gradient,
+                color: "white",
+                display: "grid",
+                placeItems: "center",
+                fontSize: 11,
+                fontWeight: 800,
+                fontFamily: "'Sora', sans-serif",
+                flexShrink: 0,
+            }}>
+                {idx + 1}
+            </Box>
+
+            {isEditing ? (
+                <TextField
+                    value={editingStepText}
+                    onChange={(e) => setEditingStepText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") { e.preventDefault(); handleSaveEditStep(); }
+                        if (e.key === "Escape") { handleCancelEditStep(); }
+                    }}
+                    autoFocus
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                        flex: 1,
+                        "& .MuiOutlinedInput-root": {
+                            borderRadius: "6px",
+                            fontSize: 13,
+                            py: 0.25,
+                            bgcolor: "#ffffff",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "hsl(240, 10%, 82%)",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: category.progress,
+                            },
+                        },
+                    }}
+                />
+            ) : (
+                <Typography sx={{
+                    flex: 1,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "hsl(240, 15%, 15%)",
+                }}>
+                    {step.text}
+                </Typography>
+            )}
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.25, flexShrink: 0 }}>
+                {isEditing ? (
+                    <>
+                        <Tooltip title="Save" arrow placement="top">
+                            <IconButton
+                                onClick={handleSaveEditStep}
+                                size="small"
+                                disableRipple
+                                sx={{
+                                    p: 0.375,
+                                    color: "#16a34a",
+                                    "&:hover": {
+                                        bgcolor: "hsl(142, 71%, 95%)",
+                                    },
+                                }}
+                            >
+                                <Check sx={{ fontSize: 16 }} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Cancel" arrow placement="top">
+                            <IconButton
+                                onClick={handleCancelEditStep}
+                                size="small"
+                                disableRipple
+                                sx={{
+                                    p: 0.375,
+                                    color: "hsl(240, 8%, 55%)",
+                                    "&:hover": {
+                                        bgcolor: "hsl(240, 20%, 93%)",
+                                    },
+                                }}
+                            >
+                                <Close sx={{ fontSize: 16 }} />
+                            </IconButton>
+                        </Tooltip>
+                    </>
+                ) : (
+                    <>
+                        <Tooltip title="Edit" arrow placement="top">
+                            <IconButton
+                                onClick={() => handleStartEditStep(step)}
+                                size="small"
+                                disableRipple
+                                sx={{
+                                    p: 0.375,
+                                    color: "hsl(240, 8%, 65%)",
+                                    "&:hover": {
+                                        color: "#7c3aed",
+                                        bgcolor: "hsl(262, 83%, 96%)",
+                                    },
+                                }}
+                            >
+                                <Edit sx={{ fontSize: 14 }} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete" arrow placement="top">
+                            <IconButton
+                                onClick={() => handleRemoveStep(step.stepId)}
+                                size="small"
+                                disableRipple
+                                sx={{
+                                    p: 0.375,
+                                    color: "hsl(240, 8%, 65%)",
+                                    "&:hover": {
+                                        color: "#dc2626",
+                                        bgcolor: "hsl(0, 84%, 96%)",
+                                    },
+                                }}
+                            >
+                                <Delete sx={{ fontSize: 15 }} />
+                            </IconButton>
+                        </Tooltip>
+                    </>
+                )}
             </Box>
         </Box>
     );

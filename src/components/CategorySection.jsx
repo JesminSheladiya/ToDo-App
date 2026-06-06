@@ -1,10 +1,12 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Add, ExpandMore, FiberManualRecord } from "@mui/icons-material";
 import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@mui/material";
-import GoalRow from "./GoalRow";
+import SortableGoalRow from "./SortableGoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 
-function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggleGoal, onToggleStep }) {
+function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderGoals, onReorderSteps }) {
     const [expanded, setExpanded] = useState(true);
     const stats = useMemo(() => {
         const total = goals.length;
@@ -19,6 +21,25 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
             stepProgress: totalSteps > 0 ? Math.round((doneSteps / totalSteps) * 100) : 0
         };
     }, [goals]);
+
+    const pointerSensor = useSensor(PointerSensor, {
+        activationConstraint: { distance: 5 },
+    });
+    const sensors = useSensors(pointerSensor);
+
+    const handleDragEnd = useCallback((event) => {
+        const { active, over } = event;
+        if (!over || !onReorderGoals || active.id === over.id) return;
+
+        const goalIds = goals.map((g) => String(g.id));
+        const oldIndex = goalIds.indexOf(active.id);
+        const newIndex = goalIds.indexOf(over.id);
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        const newIds = [...goalIds];
+        newIds.splice(newIndex, 0, newIds.splice(oldIndex, 1)[0]);
+        onReorderGoals(category.key, newIds);
+    }, [goals, onReorderGoals, category.key]);
 
     if (goals.length === 0) return null;
 
@@ -59,7 +80,6 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     },
                 }}
             >
-                {/* Icon */}
                 <Box
                     sx={{
                         width: 40,
@@ -74,7 +94,6 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     <RoundedGoalIcon iconKey={category.iconKey} sx={{ color: category.text, fontSize: 20 }} />
                 </Box>
 
-                {/* Title & Subtitle */}
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Typography sx={{
                         fontSize: 16,
@@ -96,9 +115,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     </Typography>
                 </Box>
 
-                {/* Progress & Count */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    {/* Mini Progress */}
                     {stats.total > 0 && (
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 100 }}>
                             <Box sx={{ flex: 1 }}>
@@ -129,7 +146,6 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         </Box>
                     )}
 
-                    {/* Count Badge */}
                     <Box
                         sx={{
                             display: "flex",
@@ -143,16 +159,11 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         }}
                     >
                         <FiberManualRecord sx={{ fontSize: 8, color: category.text }} />
-                        <Typography sx={{
-                            fontSize: 13,
-                            fontWeight: 700,
-                            color: category.text,
-                        }}>
+                        <Typography sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
                             {stats.completed}/{stats.total}
                         </Typography>
                     </Box>
 
-                    {/* Expand Icon */}
                     <IconButton
                         size="small"
                         sx={{
@@ -169,21 +180,32 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
             {/* Goals List */}
             <Collapse in={expanded} timeout={200}>
                 <Box sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
-                    {goals.map((goal, index) => (
-                        <GoalRow
-                            key={goal.id}
-                            goal={goal}
-                            category={category}
-                            onEdit={onEdit}
-                            onDelete={onDelete}
-                            onToggleGoal={onToggleGoal}
-                            onToggleStep={onToggleStep}
-                            isLast={index === goals.length - 1}
-                        />
-                    ))}
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <SortableContext
+                            items={goals.map((g) => String(g.id))}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {goals.map((goal, index) => (
+                                <SortableGoalRow
+                                    key={goal.id}
+                                    goal={goal}
+                                    category={category}
+                                    onEdit={onEdit}
+                                    onDelete={onDelete}
+                                    onToggleGoal={onToggleGoal}
+                                    onToggleStep={onToggleStep}
+                                    onReorderSteps={onReorderSteps}
+                                    isLast={index === goals.length - 1}
+                                />
+                            ))}
+                        </SortableContext>
+                    </DndContext>
                 </Box>
 
-                {/* Add Button Footer */}
                 <Box sx={{
                     px: { xs: 2, sm: 2.5 },
                     py: 1,
