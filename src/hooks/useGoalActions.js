@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { deleteGoal, updateGoal } from "../store/goalsSlice";
 
 const stepSnapshots = new Map();
@@ -22,14 +22,28 @@ export function useGoalActions() {
 
     const handleDelete = useCallback((goal) => {
         stepSnapshots.delete(goal.id);
-        if (!window.confirm(`Delete "${goal.title}"?`)) return;
-        toast.promise(
-            dispatch(deleteGoal(goal.id)).unwrap(),
-            {
-                loading: "Deleting goal...",
-                success: `"${goal.title}" deleted!`,
-                error: "Failed to delete goal"
-            }
+        toast(
+            ({ closeToast }) => (
+                <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
+                    <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+                    <span style={{ flex: 1, fontWeight: 600 }}>{`Delete "${goal.title}"?`}</span>
+                    <button onClick={() => { closeToast();
+                        toast.promise(
+                            dispatch(deleteGoal(goal.id)).unwrap(),
+                            {
+                                pending: "Deleting goal...",
+                                success: `"${goal.title}" deleted!`,
+                                error: "Failed to delete goal"
+                            }
+                        );
+                    }} style={{
+                        background: "#ef4444", color: "#fff", border: "none",
+                        borderRadius: 6, padding: "4px 12px", fontWeight: 700, fontSize: 12,
+                        cursor: "pointer", flexShrink: 0,
+                    }}>Delete</button>
+                </div>
+            ),
+            { autoClose: 5000, closeButton: true, draggable: true, pauseOnHover: false, pauseOnFocusLoss: false }
         );
     }, [dispatch]);
 
@@ -52,12 +66,12 @@ export function useGoalActions() {
             stepSnapshots.delete(goal.id);
         }
 
-        const nextGoal = { ...goal, steps: nextSteps };
+        const nextGoal = { ...goal, steps: nextSteps, completed, status: completed ? "completed" : "active" };
 
         toast.promise(
             dispatch(updateGoal(nextGoal)).unwrap(),
             {
-                loading: "Updating...",
+                pending: "Updating...",
                 success: completed ? "Goal completed!" : "Goal reopened",
                 error: "Failed to update goal"
             }

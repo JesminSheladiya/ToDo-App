@@ -4,7 +4,7 @@ import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-
 import { CSS } from "@dnd-kit/utilities";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import {
     ArrowBack, CalendarToday, Delete, Edit, Check, Close
 } from "@mui/icons-material";
@@ -85,14 +85,35 @@ function GoalFormPage() {
     }, [newStepText]);
 
     const handleRemoveStep = useCallback((id) => {
-        setDraft((prev) => ({
-            ...prev,
-            steps: prev.steps.filter((s) => s.stepId !== id && s._tempId !== id)
-        }));
-        if (editingStep && (editingStep.stepId === id || editingStep._tempId === id)) {
-            setEditingStep(null);
-            setEditingStepText("");
-        }
+        toast(
+            ({ closeToast }) => (
+                <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
+                    <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+                    <span style={{ flex: 1, fontWeight: 600 }}>Remove this subtask?</span>
+                    <button onClick={closeToast} style={{
+                        background: "transparent", color: "#a1a1aa", border: "1px solid #3f3f46",
+                        borderRadius: 6, padding: "4px 12px", fontWeight: 600, fontSize: 12,
+                        cursor: "pointer", flexShrink: 0,
+                    }}>Cancel</button>
+                    <button onClick={() => { closeToast();
+                        setDraft((prev) => ({
+                            ...prev,
+                            steps: prev.steps.filter((s) => s.stepId !== id && s._tempId !== id)
+                        }));
+                        if (editingStep && (editingStep.stepId === id || editingStep._tempId === id)) {
+                            setEditingStep(null);
+                            setEditingStepText("");
+                        }
+                        toast.success("Subtask removed");
+                    }} style={{
+                        background: "#ef4444", color: "#fff", border: "none",
+                        borderRadius: 6, padding: "4px 12px", fontWeight: 700, fontSize: 12,
+                        cursor: "pointer", flexShrink: 0,
+                    }}>Remove</button>
+                </div>
+            ),
+            { autoClose: false, closeButton: false, draggable: false }
+        );
     }, [editingStep]);
 
     const handleStartEditStep = useCallback((step) => {

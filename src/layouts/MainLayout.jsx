@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import { ToastContainer, Zoom } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
     Box, Button, CircularProgress, Drawer, IconButton,
     List, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery
@@ -369,21 +370,18 @@ function MainLayout() {
             background: "hsl(240, 20%, 97%)",
             display: "flex",
         }}>
-            <Toaster
-                position="top-center"
-                toastOptions={{
-                    duration: 2500,
-                    style: {
-                        borderRadius: "12px",
-                        background: "hsl(240, 15%, 10%)",
-                        color: "#fafafa",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        boxShadow: "0 8px 24px rgb(0 0 0 / .15)",
-                    },
-                    success: { iconTheme: { primary: "#16a34a", secondary: "#fafafa" } },
-                    error: { iconTheme: { primary: "#dc2626", secondary: "#fafafa" } },
-                }}
+            <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Zoom}
             />
 
             {isMobile ? (
