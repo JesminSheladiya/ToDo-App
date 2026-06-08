@@ -372,7 +372,7 @@ function MainLayout() {
         }}>
             <ToastContainer
                 position="bottom-right"
-                autoClose={5000}
+                autoClose={1500}
                 hideProgressBar={false}
                 newestOnTop
                 closeOnClick={false}
@@ -485,7 +485,7 @@ function MainLayout() {
                     overflowY: "auto",
                 }}>
                     <Stack spacing={2.5}>
-                        {stats.total > 0 && <ProgressSummary stats={stats} goals={goals} categories={categories} />}
+                        <ProgressSummary stats={stats} goals={goals} categories={categories} />
 
                         {loading ? (
                             <Box sx={{

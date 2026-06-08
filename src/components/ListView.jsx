@@ -4,6 +4,15 @@ import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
 function ListView({ goals, categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal }) {
+    const categoryCounts = categories.reduce((acc, cat) => {
+        acc[cat.key] = goals.filter((g) => g.category === cat.key).length;
+        return acc;
+    }, {});
+    const statusCounts = {
+        active: goals.filter((g) => g.status === "active" && !g.completed).length,
+        completed: goals.filter((g) => g.completed || g.status === "completed").length,
+        paused: goals.filter((g) => g.status === "paused").length,
+    };
     return (
         <Stack spacing={2}>
             <Box sx={{
@@ -58,9 +67,9 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                         },
                     }}
                 >
-                    <MenuItem value="all">All Categories</MenuItem>
+                    <MenuItem value="all">All Categories ({goals.length})</MenuItem>
                     {categories.map((cat) => (
-                        <MenuItem key={cat.key} value={cat.key}>{cat.label}</MenuItem>
+                        <MenuItem key={cat.key} value={cat.key}>{cat.label} ({categoryCounts[cat.key]})</MenuItem>
                     ))}
                 </Select>
                 <Select
@@ -80,10 +89,10 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                         },
                     }}
                 >
-                    <MenuItem value="all">All Statuses</MenuItem>
-                    <MenuItem value="active">Active</MenuItem>
-                    <MenuItem value="completed">Completed</MenuItem>
-                    <MenuItem value="paused">Paused</MenuItem>
+                    <MenuItem value="all">All Statuses ({goals.length})</MenuItem>
+                    <MenuItem value="active">Active ({statusCounts.active})</MenuItem>
+                    <MenuItem value="completed">Completed ({statusCounts.completed})</MenuItem>
+                    <MenuItem value="paused">Paused ({statusCounts.paused})</MenuItem>
                 </Select>
             </Box>
 
@@ -133,7 +142,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                         left: 0,
                         top: 0,
                         bottom: 0,
-                        width: 4,
+                        width: 2,
                         background: "linear-gradient(180deg, hsl(var(--short-term)), hsl(var(--long-term)), hsl(var(--life-goal)))",
                         borderRadius: "16px 0 0 16px",
                     },

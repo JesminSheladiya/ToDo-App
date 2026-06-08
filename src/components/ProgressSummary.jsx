@@ -1,13 +1,12 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import Stack from "./Stack";
-import Stat from "./Stat";
 
 function ProgressSummary({ stats, goals, categories }) {
     const overallProgress = goals.length > 0
         ? Math.round(
             goals.reduce((sum, g) => sum + (g.steps?.filter((s) => s.done).length || 0), 0) /
             Math.max(goals.reduce((sum, g) => sum + (g.steps?.length || 0), 0), 1) * 100
-          )
+        )
         : 0;
 
     const doneSteps = goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0);
@@ -102,7 +101,6 @@ function ProgressSummary({ stats, goals, categories }) {
                     }}>
                         {categories.map((category) => {
                             const count = goals.filter((goal) => goal.category === category.key).length;
-                            if (count === 0) return null;
                             return (
                                 <Box
                                     key={category.key}
@@ -145,18 +143,88 @@ function ProgressSummary({ stats, goals, categories }) {
                     </Box>
 
                     <Box sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        bgcolor: "hsl(240, 20%, 97%)",
-                        borderRadius: "12px",
-                        p: 1.5,
-                        gap: 0,
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr 1fr",
+                        gap: 1,
                     }}>
-                        <Stat label="Total Goals" value={stats.total} color="hsl(240, 15%, 10%)" />
-                        <Box sx={{ width: 1, height: 36, bgcolor: "hsl(240, 10%, 88%)" }} />
-                        <Stat label="Completed" value={stats.completed} color="#16a34a" />
-                        <Box sx={{ width: 1, height: 36, bgcolor: "hsl(240, 10%, 88%)" }} />
-                        <Stat label="In Progress" value={stats.inProgress} color="#7c3aed" />
+                        <Box sx={{
+                            bgcolor: "hsl(240, 20%, 97%)",
+                            borderRadius: "12px",
+                            p: 1.25,
+                            textAlign: "center",
+                            borderTop: "3px solid hsl(240, 15%, 10%)",
+                        }}>
+                            <Typography sx={{
+                                fontFamily: "'Sora', sans-serif",
+                                fontWeight: 800,
+                                fontSize: 26,
+                                color: "hsl(240, 15%, 10%)",
+                                letterSpacing: "-0.02em",
+                                lineHeight: 1.1,
+                            }}>
+                                {stats.total}
+                            </Typography>
+                            <Typography sx={{
+                                fontSize: 11,
+                                color: "hsl(240, 8%, 50%)",
+                                fontWeight: 600,
+                                mt: 0.25,
+                            }}>
+                                Total Goals
+                            </Typography>
+                        </Box>
+                        <Box sx={{
+                            bgcolor: "hsl(240, 20%, 97%)",
+                            borderRadius: "12px",
+                            p: 1.25,
+                            textAlign: "center",
+                            borderTop: "3px solid #16a34a",
+                        }}>
+                            <Typography sx={{
+                                fontFamily: "'Sora', sans-serif",
+                                fontWeight: 800,
+                                fontSize: 26,
+                                color: "#16a34a",
+                                letterSpacing: "-0.02em",
+                                lineHeight: 1.1,
+                            }}>
+                                {stats.completed}
+                            </Typography>
+                            <Typography sx={{
+                                fontSize: 11,
+                                color: "hsl(240, 8%, 50%)",
+                                fontWeight: 600,
+                                mt: 0.25,
+                            }}>
+                                Completed
+                            </Typography>
+                        </Box>
+                        <Box sx={{
+                            bgcolor: "hsl(240, 20%, 97%)",
+                            borderRadius: "12px",
+                            p: 1.25,
+                            textAlign: "center",
+                            borderTop: "3px solid #7c3aed",
+                        }}>
+                            <Typography sx={{
+                                fontFamily: "'Sora', sans-serif",
+                                fontWeight: 800,
+                                fontSize: 26,
+                                color: "#7c3aed",
+                                letterSpacing: "-0.02em",
+                                lineHeight: 1.1,
+                            }}>
+                                {stats.inProgress}
+                            </Typography>
+                            <Typography sx={{
+                                fontSize: 11,
+                                color: "hsl(240, 8%, 50%)",
+                                fontWeight: 600,
+                                mt: 0.25,
+                            }}>
+                                In Progress
+                            </Typography>
+                        </Box>
                     </Box>
                 </Stack>
             </Box>

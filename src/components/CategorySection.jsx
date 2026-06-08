@@ -41,8 +41,6 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
         onReorderGoals(category.key, newIds);
     }, [goals, onReorderGoals, category.key]);
 
-    if (goals.length === 0) return null;
-
     return (
         <Box
             sx={{
@@ -176,32 +174,34 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
             </Box>
 
             <Collapse in={expanded} timeout={200}>
-                <Box sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
-                    <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                    >
-                        <SortableContext
-                            items={goals.map((g) => String(g.id))}
-                            strategy={verticalListSortingStrategy}
+                {goals.length > 0 && (
+                    <Box sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
                         >
-                            {goals.map((goal, index) => (
-                                <SortableGoalRow
-                                    key={goal.id}
-                                    goal={goal}
-                                    category={category}
-                                    onEdit={onEdit}
-                                    onDelete={onDelete}
-                                    onToggleGoal={onToggleGoal}
-                                    onToggleStep={onToggleStep}
-                                    onReorderSteps={onReorderSteps}
-                                    isLast={index === goals.length - 1}
-                                />
-                            ))}
-                        </SortableContext>
-                    </DndContext>
-                </Box>
+                            <SortableContext
+                                items={goals.map((g) => String(g.id))}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {goals.map((goal, index) => (
+                                    <SortableGoalRow
+                                        key={goal.id}
+                                        goal={goal}
+                                        category={category}
+                                        onEdit={onEdit}
+                                        onDelete={onDelete}
+                                        onToggleGoal={onToggleGoal}
+                                        onToggleStep={onToggleStep}
+                                        onReorderSteps={onReorderSteps}
+                                        isLast={index === goals.length - 1}
+                                    />
+                                ))}
+                            </SortableContext>
+                        </DndContext>
+                    </Box>
+                )}
 
                 <Box sx={{
                     px: { xs: 2, sm: 2.5 },

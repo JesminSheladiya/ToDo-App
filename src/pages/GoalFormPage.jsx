@@ -89,13 +89,9 @@ function GoalFormPage() {
             ({ closeToast }) => (
                 <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
                     <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
-                    <span style={{ flex: 1, fontWeight: 600 }}>Remove this subtask?</span>
-                    <button onClick={closeToast} style={{
-                        background: "transparent", color: "#a1a1aa", border: "1px solid #3f3f46",
-                        borderRadius: 6, padding: "4px 12px", fontWeight: 600, fontSize: 12,
-                        cursor: "pointer", flexShrink: 0,
-                    }}>Cancel</button>
-                    <button onClick={() => { closeToast();
+                    <span style={{ flex: 1, fontWeight: 600 }}>Remove "{draft.steps.find((s) => s.stepId === id || s._tempId === id)?.text}"?</span>
+                    <button onClick={() => {
+                        closeToast();
                         setDraft((prev) => ({
                             ...prev,
                             steps: prev.steps.filter((s) => s.stepId !== id && s._tempId !== id)
@@ -107,12 +103,12 @@ function GoalFormPage() {
                         toast.success("Subtask removed");
                     }} style={{
                         background: "#ef4444", color: "#fff", border: "none",
-                        borderRadius: 6, padding: "4px 12px", fontWeight: 700, fontSize: 12,
+                        borderRadius: 6, padding: "6px 12px", fontWeight: 700, fontSize: 12,
                         cursor: "pointer", flexShrink: 0,
-                    }}>Remove</button>
+                    }}>Delete</button>
                 </div>
             ),
-            { autoClose: false, closeButton: false, draggable: false }
+            { autoClose: 5000, closeButton: true, draggable: true, pauseOnHover: false, pauseOnFocusLoss: false }
         );
     }, [editingStep]);
 
@@ -269,7 +265,7 @@ function GoalFormPage() {
                         }
                     }}
                 >
-                    {isEditing ? "Save Changes" : "Create Goal"}
+                    {isEditing ? "Update Changes" : "Create Goal"}
                 </Button>
             </Box>
 
