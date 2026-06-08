@@ -43,6 +43,8 @@ public class TaskService {
         task.setEmoji(updatedTask.getEmoji());
         task.setTargetDate(updatedTask.getTargetDate());
         task.setTaskOrder(updatedTask.getTaskOrder());
+        task.setCompleted(updatedTask.isCompleted());
+        task.setStatus(updatedTask.getStatus());
         task.setSteps(updatedTask.getSteps() != null ? updatedTask.getSteps() : new ArrayList<>());
 
         normalizeTask(task);
@@ -74,7 +76,7 @@ public class TaskService {
         if (task.getStatus() == null || task.getStatus().isBlank()) {
             task.setStatus(task.isCompleted() ? "completed" : "active");
         }
-        if (task.isCompleted()) {
+        if (!"paused".equals(task.getStatus()) && task.isCompleted()) {
             task.setStatus("completed");
         }
         if ("completed".equals(task.getStatus())) {
@@ -95,7 +97,9 @@ public class TaskService {
         if (steps != null && !steps.isEmpty()) {
             boolean allDone = steps.stream().allMatch(TaskStep::isDone);
             task.setCompleted(allDone);
-            task.setStatus(allDone ? "completed" : "active");
+            if (!"paused".equals(task.getStatus())) {
+                task.setStatus(allDone ? "completed" : "active");
+            }
         }
     }
 }
