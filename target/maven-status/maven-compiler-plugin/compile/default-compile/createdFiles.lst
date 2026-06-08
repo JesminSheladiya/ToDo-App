@@ -1,0 +1,15 @@
+com/example/todoapp/dto/ReorderDto$StepOrder.class
+com/example/todoapp/dto/ReorderDto.class
+com/example/todoapp/entity/TaskStep$TaskStepBuilder.class
+com/example/todoapp/repository/TaskRepository.class
+com/example/todoapp/dto/CategoryDto.class
+com/example/todoapp/dto/CategoryDto$CategoryDtoBuilder.class
+com/example/todoapp/entity/Task$TaskBuilder.class
+com/example/todoapp/entity/Task.class
+com/example/todoapp/dto/ReorderDto$GoalOrder.class
+com/example/todoapp/config/SecurityConfig.class
+com/example/todoapp/service/TaskService.class
+com/example/todoapp/controller/TaskController.class
+com/example/todoapp/controller/CategoryController.class
+com/example/todoapp/entity/TaskStep.class
+com/example/todoapp/TodoBackendApplication.class
