@@ -43,6 +43,8 @@ public class TaskService {
         task.setEmoji(updatedTask.getEmoji());
         task.setTargetDate(updatedTask.getTargetDate());
         task.setTaskOrder(updatedTask.getTaskOrder());
+        task.setCompleted(updatedTask.isCompleted());
+        task.setStatus(updatedTask.getStatus());
         task.setSteps(updatedTask.getSteps() != null ? updatedTask.getSteps() : new ArrayList<>());
 
         normalizeTask(task);
