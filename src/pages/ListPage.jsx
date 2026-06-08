@@ -7,6 +7,7 @@ import { useGoalActions } from "../hooks/useGoalActions";
 function ListPage() {
     const dispatch = useDispatch();
     const goals = useSelector((state) => state.goals.items);
+    const categories = useSelector((state) => state.config.categories);
     const query = useSelector((state) => state.ui.query);
     const categoryFilter = useSelector((state) => state.ui.categoryFilter);
     const statusFilter = useSelector((state) => state.ui.statusFilter);
@@ -29,6 +30,7 @@ function ListPage() {
     return (
         <ListView
             goals={filteredGoals}
+            categories={categories}
             query={query}
             categoryFilter={categoryFilter}
             statusFilter={statusFilter}

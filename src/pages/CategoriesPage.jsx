@@ -1,14 +1,14 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CATEGORIES } from "../constants/goals";
 import CategorySection from "../components/CategorySection";
 import Stack from "../components/Stack";
 import { useGoalActions } from "../hooks/useGoalActions";
-import { updateGoal, reorderGoals, reorderSteps } from "../store/goalsSlice";
+import { updateGoal, reorderGoals, reorderSteps, batchReorder } from "../store/goalsSlice";
 
 function CategoriesPage() {
     const dispatch = useDispatch();
     const goals = useSelector((state) => state.goals.items);
+    const categories = useSelector((state) => state.config.categories);
     const activeCategory = useSelector((state) => state.ui.activeCategory);
     const {
         handleOpenCreate,
@@ -20,13 +20,14 @@ function CategoriesPage() {
 
     const handleReorderGoals = useCallback((categoryKey, orderedIds) => {
         dispatch(reorderGoals({ categoryKey, orderedIds }));
-        orderedIds.forEach((id, index) => {
-            const goal = goals.find((g) => String(g.id) === id);
-            if (goal) {
-                dispatch(updateGoal({ ...goal, taskOrder: index }));
-            }
-        });
-    }, [goals, dispatch]);
+
+        const goalOrders = orderedIds.map((id, index) => ({
+            id: Number(id),
+            position: index
+        }));
+
+        dispatch(batchReorder({ goals: goalOrders, steps: null }));
+    }, [dispatch]);
 
     const handleReorderSteps = useCallback((goal, newSteps) => {
         dispatch(reorderSteps({ goalId: goal.id, newSteps }));
@@ -34,8 +35,8 @@ function CategoriesPage() {
     }, [dispatch]);
 
     const filteredCategories = activeCategory === "all"
-        ? CATEGORIES
-        : CATEGORIES.filter((cat) => cat.key === activeCategory);
+        ? categories
+        : categories.filter((cat) => cat.key === activeCategory);
 
     return (
         <Stack spacing={2.5}>

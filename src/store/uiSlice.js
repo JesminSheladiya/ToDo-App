@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { emptyDraft } from "../constants/goals";
-import { createId, getCategory, normalizeGoal } from "../utils/goals";
+
+let tempIdCounter = 0;
+
+function tempId() {
+    return `temp_${++tempIdCounter}_${Date.now()}`;
+}
 
 const uiSlice = createSlice({
     name: "ui",
@@ -20,7 +25,7 @@ const uiSlice = createSlice({
 
             if (goal) {
                 state.editingGoal = goal;
-                state.draft = normalizeGoal(goal);
+                state.draft = JSON.parse(JSON.stringify(goal));
             } else {
                 state.editingGoal = null;
                 state.draft = { ...emptyDraft };
@@ -29,13 +34,12 @@ const uiSlice = createSlice({
             state.editorOpen = true;
         },
         openEditorWithCategory(state, action) {
-            const category = getCategory(action.payload);
+            const categoryKey = action.payload;
 
             state.editingGoal = null;
             state.draft = {
                 ...emptyDraft,
-                category: category.key,
-                emoji: category.iconKey
+                category: categoryKey
             };
             state.newStepText = "";
             state.editorOpen = true;
@@ -58,15 +62,17 @@ const uiSlice = createSlice({
             if (!text) return;
 
             state.draft.steps.push({
-                stepId: createId(),
+                stepId: null,
+                _tempId: tempId(),
                 text,
                 done: false
             });
             state.newStepText = "";
         },
         removeDraftStep(state, action) {
+            const id = action.payload;
             state.draft.steps = state.draft.steps.filter(
-                (step) => step.stepId !== action.payload
+                (step) => step.stepId !== id && step._tempId !== id
             );
         },
         setQuery(state, action) {

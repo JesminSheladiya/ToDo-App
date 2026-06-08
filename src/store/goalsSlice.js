@@ -1,27 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api/api";
-import { normalizeGoal, syncCompletion } from "../utils/goals";
 
 export const fetchGoals = createAsyncThunk("goals/fetchGoals", async () => {
     const response = await api.get("/tasks");
-    const data = Array.isArray(response?.data) ? response.data : [];
-    return data.map(normalizeGoal);
+    return Array.isArray(response?.data) ? response.data : [];
 });
 
 export const createGoal = createAsyncThunk("goals/createGoal", async (goalData) => {
     const response = await api.post("/tasks", goalData);
-    return normalizeGoal(response.data);
+    return response.data;
 });
 
 export const updateGoal = createAsyncThunk("goals/updateGoal", async (goal) => {
-    const syncedGoal = syncCompletion(goal);
-    const response = await api.put(`/tasks/${goal.id}`, syncedGoal);
-    return normalizeGoal(response.data);
+    const response = await api.put(`/tasks/${goal.id}`, goal);
+    return response.data;
 });
 
 export const deleteGoal = createAsyncThunk("goals/deleteGoal", async (id) => {
     await api.delete(`/tasks/${id}`);
     return id;
+});
+
+export const batchReorder = createAsyncThunk("goals/batchReorder", async (payload) => {
+    await api.put("/tasks/reorder", payload);
+    return payload;
 });
 
 const goalsSlice = createSlice({

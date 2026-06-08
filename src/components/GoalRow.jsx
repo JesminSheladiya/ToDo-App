@@ -127,14 +127,12 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         borderBottom: isLast ? "none" : "1px solid hsl(240, 10%, 93%)",
                     }}
                 >
-                    {/* Drag Handle */}
                     <DragHandle
                         activatorRef={setActivatorNodeRef}
                         listeners={listeners}
                         attributes={attributes}
                     />
 
-                    {/* Checkbox */}
                     <Checkbox
                         checked={completed}
                         onChange={() => onToggleGoal(goal)}
@@ -161,14 +159,12 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         checkedIcon={<CheckCircle sx={{ fontSize: 22 }} />}
                     />
 
-                    {/* Goal Icon */}
                     <RoundedGoalIcon
                         iconKey={goal.emoji}
                         fallbackKey={category.iconKey}
                         sx={{ color: category.text, fontSize: 16, flexShrink: 0 }}
                     />
 
-                    {/* Title & Steps Info */}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Typography
                             sx={{
@@ -214,7 +210,6 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         )}
                     </Box>
 
-                    {/* Actions */}
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.25 }}>
                         {hasSteps && (
                             <IconButton
@@ -271,7 +266,6 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                     </Box>
                 </Box>
 
-                {/* Expanded Steps */}
                 {hasSteps && (
                     <Collapse in={expanded} timeout={200}>
                         <Box sx={{

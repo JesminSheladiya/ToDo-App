@@ -52,7 +52,7 @@ export function useGoalActions() {
             stepSnapshots.delete(goal.id);
         }
 
-        const nextGoal = { ...goal, completed, status: completed ? "completed" : "active", steps: nextSteps };
+        const nextGoal = { ...goal, steps: nextSteps };
 
         toast.promise(
             dispatch(updateGoal(nextGoal)).unwrap(),
@@ -68,7 +68,7 @@ export function useGoalActions() {
         const nextGoal = {
             ...goal,
             steps: goal.steps.map((step) =>
-                step.stepId === stepId
+                (step.stepId === stepId)
                     ? { ...step, done: !step.done }
                     : step
             )

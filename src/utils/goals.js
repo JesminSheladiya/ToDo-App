@@ -1,8 +1,4 @@
-import { ICON_OPTIONS, LEGACY_ICON_MAP, CATEGORIES } from "../constants/goals";
-
-export function getCategory(categoryKey) {
-    return CATEGORIES.find((category) => category.key === categoryKey) || CATEGORIES[0];
-}
+import { ICON_OPTIONS, LEGACY_ICON_MAP } from "../constants/goals";
 
 export function getIconKey(iconKey, fallbackKey = "target") {
     const normalizedKey = LEGACY_ICON_MAP[iconKey] || iconKey;
@@ -16,36 +12,6 @@ export function getIconOption(iconKey, fallbackKey = "target") {
     const normalizedKey = getIconKey(iconKey, fallbackKey);
 
     return ICON_OPTIONS.find((option) => option.key === normalizedKey) || ICON_OPTIONS[0];
-}
-
-export function createId() {
-    if (window.crypto?.randomUUID) {
-        return window.crypto.randomUUID();
-    }
-
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
-
-export function normalizeGoal(goal) {
-    const category = getCategory(goal.category);
-    const steps = Array.isArray(goal.steps)
-        ? goal.steps.map((step) => ({
-            stepId: step.stepId || step.id || createId(),
-            text: step.text || "",
-            done: Boolean(step.done)
-        }))
-        : [];
-    const completed = Boolean(goal.completed || goal.status === "completed");
-
-    return {
-        ...goal,
-        category: category.key,
-        emoji: getIconKey(goal.emoji, category.iconKey),
-        targetDate: goal.targetDate || "",
-        steps,
-        status: completed ? "completed" : (goal.status || "active"),
-        completed
-    };
 }
 
 export function getStepProgress(goal) {
@@ -66,17 +32,4 @@ export function formatDate(value) {
         day: "numeric",
         year: "numeric"
     }).format(new Date(`${value}T00:00:00`));
-}
-
-export function syncCompletion(goal) {
-    const steps = goal.steps || [];
-    const completed = steps.length > 0
-        ? steps.every((step) => step.done)
-        : Boolean(goal.completed || goal.status === "completed");
-
-    return {
-        ...goal,
-        completed,
-        status: completed ? "completed" : "active"
-    };
 }

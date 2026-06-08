@@ -57,13 +57,11 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                 },
             }}
         >
-            {/* Gradient Top Accent Bar */}
             <Box sx={{
                 height: 3,
                 background: category.gradient,
             }} />
 
-            {/* Header */}
             <Box
                 onClick={() => setExpanded(!expanded)}
                 sx={{
@@ -85,7 +83,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         width: 40,
                         height: 40,
                         borderRadius: "12px",
-                        background: `hsl(${category.text === "#ea580c" ? "var(--short-term)" : category.text === "#ca8a04" ? "var(--mid-term)" : category.text === "#16a34a" ? "var(--long-term)" : category.text === "#2563eb" ? "var(--very-long-term)" : "var(--life-goal)"} / 0.1)`,
+                        backgroundColor: category.soft,
                         display: "grid",
                         placeItems: "center",
                         flexShrink: 0,
@@ -177,7 +175,6 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                 </Box>
             </Box>
 
-            {/* Goals List */}
             <Collapse in={expanded} timeout={200}>
                 <Box sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
                     <DndContext

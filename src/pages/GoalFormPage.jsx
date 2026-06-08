@@ -6,19 +6,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
-    Add, ArrowBack, CalendarToday, Delete, Edit, Check, Close
+    ArrowBack, CalendarToday, Delete, Edit, Check, Close
 } from "@mui/icons-material";
 import {
     Box, Button, Dialog, IconButton, InputAdornment,
     TextField, Tooltip, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { CATEGORIES, ICON_OPTIONS, emptyDraft } from "../constants/goals";
+import { ICON_OPTIONS, emptyDraft } from "../constants/goals";
 import { createGoal, fetchGoals, updateGoal } from "../store/goalsSlice";
-import { createId, getCategory, getIconKey, syncCompletion } from "../utils/goals";
+import { getIconKey } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
 import Stack from "../components/Stack";
 import DragHandle from "../components/DragHandle";
+
+let tempStepId = 0;
+
+function nextTempId() {
+    return `step_${++tempStepId}`;
+}
 
 function GoalFormPage() {
     const dispatch = useDispatch();
@@ -29,6 +35,7 @@ function GoalFormPage() {
     const { id } = useParams();
     const [searchParams] = useSearchParams();
     const goals = useSelector((state) => state.goals.items);
+    const categories = useSelector((state) => state.config.categories);
     const loading = useSelector((state) => state.goals.loading);
     const isEditing = !!id;
     const background = location.state?.background;
@@ -47,22 +54,21 @@ function GoalFormPage() {
 
     const [draft, setDraft] = useState(() => {
         if (isEditing && existingGoal) {
-            return { ...existingGoal };
+            return JSON.parse(JSON.stringify(existingGoal));
         }
-        const cat = getCategory(initialCategory);
-        return { ...emptyDraft, category: cat.key, emoji: cat.iconKey };
+        return { ...emptyDraft, category: initialCategory };
     });
     const [newStepText, setNewStepText] = useState("");
-    const [editingStepId, setEditingStepId] = useState(null);
+    const [editingStep, setEditingStep] = useState(null);
     const [editingStepText, setEditingStepText] = useState("");
 
     useEffect(() => {
         if (isEditing && existingGoal) {
-            setDraft({ ...existingGoal });
+            setDraft(JSON.parse(JSON.stringify(existingGoal)));
         }
     }, [isEditing, existingGoal]);
 
-    const category = getCategory(draft.category);
+    const category = categories.find((c) => c.key === draft.category) || categories[0];
 
     const updateDraft = useCallback((updates) => {
         setDraft((prev) => ({ ...prev, ...updates }));
@@ -73,42 +79,43 @@ function GoalFormPage() {
         if (!text) return;
         setDraft((prev) => ({
             ...prev,
-            steps: [...prev.steps, { stepId: createId(), text, done: false }]
+            steps: [...prev.steps, { text, done: false, _tempId: nextTempId() }]
         }));
         setNewStepText("");
     }, [newStepText]);
 
-    const handleRemoveStep = useCallback((stepId) => {
+    const handleRemoveStep = useCallback((id) => {
         setDraft((prev) => ({
             ...prev,
-            steps: prev.steps.filter((s) => s.stepId !== stepId)
+            steps: prev.steps.filter((s) => s.stepId !== id && s._tempId !== id)
         }));
-        if (editingStepId === stepId) {
-            setEditingStepId(null);
+        if (editingStep && (editingStep.stepId === id || editingStep._tempId === id)) {
+            setEditingStep(null);
             setEditingStepText("");
         }
-    }, [editingStepId]);
+    }, [editingStep]);
 
     const handleStartEditStep = useCallback((step) => {
-        setEditingStepId(step.stepId);
+        setEditingStep(step);
         setEditingStepText(step.text);
     }, []);
 
     const handleSaveEditStep = useCallback(() => {
         const trimmed = editingStepText.trim();
-        if (!trimmed || !editingStepId) return;
+        if (!trimmed || !editingStep) return;
+        const id = editingStep.stepId || editingStep._tempId;
         setDraft((prev) => ({
             ...prev,
             steps: prev.steps.map((s) =>
-                s.stepId === editingStepId ? { ...s, text: trimmed } : s
+                (s.stepId === id || s._tempId === id) ? { ...s, text: trimmed } : s
             )
         }));
-        setEditingStepId(null);
+        setEditingStep(null);
         setEditingStepText("");
-    }, [editingStepText, editingStepId]);
+    }, [editingStepText, editingStep]);
 
     const handleCancelEditStep = useCallback(() => {
-        setEditingStepId(null);
+        setEditingStep(null);
         setEditingStepText("");
     }, []);
 
@@ -121,8 +128,8 @@ function GoalFormPage() {
         if (!over || active.id === over.id) return;
 
         const steps = draft.steps;
-        const oldIndex = steps.findIndex((s) => s.stepId === active.id);
-        const newIndex = steps.findIndex((s) => s.stepId === over.id);
+        const oldIndex = steps.findIndex((s) => s.stepId === active.id || s._tempId === active.id);
+        const newIndex = steps.findIndex((s) => s.stepId === over.id || s._tempId === over.id);
         if (oldIndex === -1 || newIndex === -1) return;
 
         const newSteps = [...steps];
@@ -134,12 +141,21 @@ function GoalFormPage() {
         navigate(-1);
     }, [navigate]);
 
+    function cleanStepsForSave(steps) {
+        return steps.map((s) => {
+            const clean = { text: s.text, done: s.done };
+            if (s.stepId != null) clean.stepId = s.stepId;
+            return clean;
+        });
+    }
+
     const handleSave = useCallback(async () => {
-        const goalToSave = syncCompletion({
+        const goalToSave = {
             ...draft,
             title: draft.title.trim(),
-            description: draft.description.trim()
-        });
+            description: draft.description.trim(),
+            steps: cleanStepsForSave(draft.steps)
+        };
         if (!goalToSave.title) return;
 
         try {
@@ -158,14 +174,14 @@ function GoalFormPage() {
 
     const content = (
         <>
-            {/* Gradient Top Bar */}
-            <Box sx={{
-                height: 4,
-                background: category.gradient,
-                flexShrink: 0,
-            }} />
+            {category && (
+                <Box sx={{
+                    height: 4,
+                    background: category.gradient,
+                    flexShrink: 0,
+                }} />
+            )}
 
-            {/* Header */}
             <Box
                 sx={{
                     display: "flex",
@@ -214,7 +230,7 @@ function GoalFormPage() {
                     size="small"
                     disableElevation
                     sx={{
-                        background: category.gradient,
+                        background: category ? category.gradient : "#7c3aed",
                         color: "#fff",
                         fontSize: 13,
                         fontWeight: 700,
@@ -236,10 +252,8 @@ function GoalFormPage() {
                 </Button>
             </Box>
 
-            {/* Form Body */}
             <Box sx={{ px: 3, py: 2.5, overflow: "auto", flex: 1, bgcolor: "#ffffff" }}>
                 <Stack spacing={2.5}>
-                    {/* Title */}
                     <Box>
                         <TextField
                             placeholder="What's your goal?"
@@ -267,64 +281,64 @@ function GoalFormPage() {
                         />
                     </Box>
 
-                    {/* Category Selector */}
-                    <Box>
-                        <Typography sx={{
-                            fontSize: 12,
-                            fontWeight: 700,
-                            color: "hsl(240, 8%, 45%)",
-                            mb: 0.5,
-                            letterSpacing: "0.06em",
-                        }}>
-                            Category
-                        </Typography>
-                        <Box sx={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(5, 1fr)",
-                            gap: 0.75,
-                        }}>
-                            {CATEGORIES.map((item) => {
-                                const selected = draft.category === item.key;
-                                return (
-                                    <Button
-                                        key={item.key}
-                                        onClick={() => updateDraft({ category: item.key, emoji: draft.emoji || item.iconKey })}
-                                        disableRipple
-                                        sx={{
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                            gap: 0.5,
-                                            p: 1,
-                                            borderRadius: "10px",
-                                            border: `1.5px solid ${selected ? item.progress : "hsl(240, 10%, 90%)"}`,
-                                            bgcolor: selected ? item.soft : "#ffffff",
-                                            color: selected ? item.text : "hsl(240, 15%, 10%)",
-                                            textTransform: "none",
-                                            minHeight: 64,
-                                            transition: "all 150ms ease",
-                                            "&:hover": {
-                                                bgcolor: item.soft,
-                                                borderColor: item.progress,
-                                            },
-                                        }}
-                                    >
-                                        <RoundedGoalIcon iconKey={item.iconKey} sx={{ color: item.text, fontSize: 18 }} />
-                                        <Typography sx={{
-                                            fontSize: 10,
-                                            fontWeight: 700,
-                                            textAlign: "center",
-                                            lineHeight: 1.2,
-                                            letterSpacing: "-0.01em",
-                                        }}>
-                                            {item.label}
-                                        </Typography>
-                                    </Button>
-                                );
-                            })}
+                    {categories.length > 0 && (
+                        <Box>
+                            <Typography sx={{
+                                fontSize: 12,
+                                fontWeight: 700,
+                                color: "hsl(240, 8%, 45%)",
+                                mb: 0.5,
+                                letterSpacing: "0.06em",
+                            }}>
+                                Category
+                            </Typography>
+                            <Box sx={{
+                                display: "grid",
+                                gridTemplateColumns: "repeat(5, 1fr)",
+                                gap: 0.75,
+                            }}>
+                                {categories.map((item) => {
+                                    const selected = draft.category === item.key;
+                                    return (
+                                        <Button
+                                            key={item.key}
+                                            onClick={() => updateDraft({ category: item.key, emoji: draft.emoji || item.iconKey })}
+                                            disableRipple
+                                            sx={{
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                gap: 0.5,
+                                                p: 1,
+                                                borderRadius: "10px",
+                                                border: `1.5px solid ${selected ? item.progress : "hsl(240, 10%, 90%)"}`,
+                                                bgcolor: selected ? item.soft : "#ffffff",
+                                                color: selected ? item.text : "hsl(240, 15%, 10%)",
+                                                textTransform: "none",
+                                                minHeight: 64,
+                                                transition: "all 150ms ease",
+                                                "&:hover": {
+                                                    bgcolor: item.soft,
+                                                    borderColor: item.progress,
+                                                },
+                                            }}
+                                        >
+                                            <RoundedGoalIcon iconKey={item.iconKey} sx={{ color: item.text, fontSize: 18 }} />
+                                            <Typography sx={{
+                                                fontSize: 10,
+                                                fontWeight: 700,
+                                                textAlign: "center",
+                                                lineHeight: 1.2,
+                                                letterSpacing: "-0.01em",
+                                            }}>
+                                                {item.label}
+                                            </Typography>
+                                        </Button>
+                                    );
+                                })}
+                            </Box>
                         </Box>
-                    </Box>
+                    )}
 
-                    {/* Description */}
                     <Box>
                         <Typography sx={{
                             fontSize: 12,
@@ -357,14 +371,13 @@ function GoalFormPage() {
                                         borderColor: "hsl(240, 10%, 78%)",
                                     },
                                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: category.progress,
+                                        borderColor: category ? category.progress : "#7c3aed",
                                     },
                                 },
                             }}
                         />
                     </Box>
 
-                    {/* Icon Picker */}
                     <Box>
                         <Typography sx={{
                             fontSize: 12,
@@ -381,7 +394,7 @@ function GoalFormPage() {
                             gap: 0.5,
                         }}>
                             {ICON_OPTIONS.map((option) => {
-                                const selected = getIconKey(draft.emoji, category.iconKey) === option.key;
+                                const selected = getIconKey(draft.emoji, category?.iconKey) === option.key;
                                 const Icon = option.Icon;
                                 return (
                                     <Tooltip key={option.key} title={option.label} arrow placement="top">
@@ -393,13 +406,13 @@ function GoalFormPage() {
                                                 width: 36,
                                                 height: 36,
                                                 borderRadius: "8px",
-                                                border: `1.5px solid ${selected ? category.progress : "hsl(240, 10%, 90%)"}`,
-                                                bgcolor: selected ? category.soft : "transparent",
-                                                color: selected ? category.text : "hsl(240, 8%, 55%)",
+                                                border: `1.5px solid ${selected ? (category?.progress || "#7c3aed") : "hsl(240, 10%, 90%)"}`,
+                                                bgcolor: selected ? (category?.soft || "#f5f3ff") : "transparent",
+                                                color: selected ? (category?.text || "#7c3aed") : "hsl(240, 8%, 55%)",
                                                 transition: "all 150ms ease",
                                                 "&:hover": {
-                                                    bgcolor: category.soft,
-                                                    borderColor: category.progress,
+                                                    bgcolor: category?.soft || "#f5f3ff",
+                                                    borderColor: category?.progress || "#7c3aed",
                                                 },
                                             }}
                                         >
@@ -411,7 +424,6 @@ function GoalFormPage() {
                         </Box>
                     </Box>
 
-                    {/* Target Date */}
                     <Box>
                         <Typography sx={{
                             fontSize: 12,
@@ -449,7 +461,7 @@ function GoalFormPage() {
                                         borderColor: "hsl(240, 10%, 78%)",
                                     },
                                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: category.progress,
+                                        borderColor: category ? category.progress : "#7c3aed",
                                     },
                                 },
                                 "& input[type='date']::-webkit-calendar-picker-indicator": {
@@ -460,7 +472,6 @@ function GoalFormPage() {
                         />
                     </Box>
 
-                    {/* Subtasks */}
                     <Box>
                         <Typography sx={{
                             fontSize: 12,
@@ -478,18 +489,19 @@ function GoalFormPage() {
                                 onDragEnd={handleFormStepDragEnd}
                             >
                                 <SortableContext
-                                    items={draft.steps.map((s) => s.stepId)}
+                                    items={draft.steps.map((s) => s.stepId || s._tempId)}
                                     strategy={verticalListSortingStrategy}
                                 >
                                     <Stack spacing={0.5} sx={{ mb: 1.5 }}>
                                         {draft.steps.map((step, idx) => {
-                                            const isEditing = editingStepId === step.stepId;
+                                            const stepId = step.stepId || step._tempId;
+                                            const isEditingStep = editingStep && (editingStep.stepId === stepId || editingStep._tempId === stepId);
                                             return (
                                                 <SortableFormStep
-                                                    key={step.stepId}
+                                                    key={stepId}
                                                     step={step}
-                                                    stepId={step.stepId}
-                                                    isEditing={isEditing}
+                                                    stepId={stepId}
+                                                    isEditing={isEditingStep}
                                                     editingStepText={editingStepText}
                                                     setEditingStepText={setEditingStepText}
                                                     handleSaveEditStep={handleSaveEditStep}
@@ -506,7 +518,6 @@ function GoalFormPage() {
                             </DndContext>
                         )}
 
-                        {/* Add Step Input */}
                         <Box sx={{
                             display: "flex",
                             gap: 0.75,
@@ -535,7 +546,7 @@ function GoalFormPage() {
                                             borderColor: "hsl(240, 10%, 78%)",
                                         },
                                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: category.progress,
+                                            borderColor: category ? category.progress : "#7c3aed",
                                         },
                                     },
                                 }}
@@ -547,7 +558,7 @@ function GoalFormPage() {
                                 sx={{
                                     px: 0,
                                     borderRadius: "8px",
-                                    background: category.gradient,
+                                    background: category ? category.gradient : "#7c3aed",
                                     boxShadow: "none",
                                     "&:hover": {
                                         boxShadow: "0 2px 6px rgb(0 0 0 / .1)",
@@ -639,10 +650,10 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                 px: 1.25,
                 borderRadius: "8px",
                 bgcolor: isEditing ? "hsl(240, 20%, 97%)" : "hsl(240, 20%, 98%)",
-                border: `1px solid ${isEditing ? category.progress : "hsl(240, 10%, 92%)"}`,
+                border: `1px solid ${isEditing ? (category?.progress || "#7c3aed") : "hsl(240, 10%, 92%)"}`,
                 transition: "all 150ms ease",
                 "&:hover": {
-                    borderColor: isEditing ? category.progress : "hsl(240, 10%, 82%)",
+                    borderColor: isEditing ? (category?.progress || "#7c3aed") : "hsl(240, 10%, 82%)",
                 },
             }}
         >
@@ -656,7 +667,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                 width: 24,
                 height: 24,
                 borderRadius: "6px",
-                background: category.gradient,
+                background: category?.gradient || "#7c3aed",
                 color: "white",
                 display: "grid",
                 placeItems: "center",
@@ -691,7 +702,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                 borderColor: "hsl(240, 10%, 82%)",
                             },
                             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: category.progress,
+                                borderColor: category?.progress || "#7c3aed",
                             },
                         },
                     }}
@@ -764,7 +775,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                         </Tooltip>
                         <Tooltip title="Delete" arrow placement="top">
                             <IconButton
-                                onClick={() => handleRemoveStep(step.stepId)}
+                                onClick={() => handleRemoveStep(stepId)}
                                 size="small"
                                 disableRipple
                                 sx={{

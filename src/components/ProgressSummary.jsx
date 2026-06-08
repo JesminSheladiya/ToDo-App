@@ -1,9 +1,8 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
-import { CATEGORIES } from "../constants/goals";
 import Stack from "./Stack";
 import Stat from "./Stat";
 
-function ProgressSummary({ stats, goals }) {
+function ProgressSummary({ stats, goals, categories }) {
     const overallProgress = goals.length > 0
         ? Math.round(
             goals.reduce((sum, g) => sum + (g.steps?.filter((s) => s.done).length || 0), 0) /
@@ -22,7 +21,6 @@ function ProgressSummary({ stats, goals }) {
             overflow: "hidden",
             boxShadow: "0 1px 2px rgb(0 0 0 / .05)",
         }}>
-            {/* Gradient Top Bar */}
             <Box sx={{
                 height: 3,
                 background: `linear-gradient(90deg, 
@@ -36,7 +34,6 @@ function ProgressSummary({ stats, goals }) {
 
             <Box sx={{ p: { xs: 2, sm: 2.5 } }}>
                 <Stack spacing={2}>
-                    {/* Progress Header */}
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Typography sx={{
                             fontWeight: 700,
@@ -60,7 +57,6 @@ function ProgressSummary({ stats, goals }) {
                         </Box>
                     </Stack>
 
-                    {/* Progress Bar */}
                     <Box>
                         <LinearProgress
                             variant="determinate"
@@ -99,13 +95,12 @@ function ProgressSummary({ stats, goals }) {
                         </Stack>
                     </Box>
 
-                    {/* Category Chips */}
                     <Box sx={{
                         display: "flex",
                         flexWrap: "wrap",
                         gap: 0.75,
                     }}>
-                        {CATEGORIES.map((category) => {
+                        {categories.map((category) => {
                             const count = goals.filter((goal) => goal.category === category.key).length;
                             if (count === 0) return null;
                             return (
@@ -149,7 +144,6 @@ function ProgressSummary({ stats, goals }) {
                         })}
                     </Box>
 
-                    {/* Stats Row */}
                     <Box sx={{
                         display: "flex",
                         alignItems: "center",

@@ -9,7 +9,6 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { Menu as MenuIcon, ViewList, Dashboard, Add } from "@mui/icons-material";
 import { fetchGoals } from "../store/goalsSlice";
-import { CATEGORIES } from "../constants/goals";
 import { setActiveCategory, clearActiveCategory } from "../store/uiSlice";
 import ProgressSummary from "../components/ProgressSummary";
 import Stack from "../components/Stack";
@@ -18,7 +17,7 @@ import RoundedGoalIcon from "../components/RoundedGoalIcon";
 
 const SIDEBAR_WIDTH = 260;
 
-function Sidebar({ onClose, onCreate }) {
+function Sidebar({ categories, onClose, onCreate }) {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -53,6 +52,8 @@ function Sidebar({ onClose, onCreate }) {
             sx={{
                 width: SIDEBAR_WIDTH,
                 height: "100vh",
+                position: "sticky",
+                top: 0,
                 display: "flex",
                 flexDirection: "column",
                 bgcolor: "hsl(0, 0%, 100%)",
@@ -61,7 +62,6 @@ function Sidebar({ onClose, onCreate }) {
                 overflow: "hidden",
             }}
         >
-            {/* Brand */}
             <Box sx={{ px: 2.5, py: 2.5, pb: 1.5 }}>
                 <Stack direction="row" spacing={1.25} alignItems="center">
                     <Box
@@ -109,12 +109,9 @@ function Sidebar({ onClose, onCreate }) {
                 </Stack>
             </Box>
 
-            {/* Divider */}
             <Box sx={{ mx: 2, height: "1px", bgcolor: "hsl(240, 10%, 90%)" }} />
 
-            {/* Navigation */}
             <List sx={{ px: 1.5, pt: 1.5, pb: 1, flex: 1, overflowY: "auto" }}>
-                {/* Dashboard */}
                 <ListItemButton
                     selected={isDashboard && isOnMainLayout && activeCategory === "all"}
                     onClick={handleDashboardClick}
@@ -164,7 +161,6 @@ function Sidebar({ onClose, onCreate }) {
                     />
                 </ListItemButton>
 
-                {/* All Goals */}
                 <ListItemButton
                     selected={isList}
                     onClick={handleListClick}
@@ -214,7 +210,6 @@ function Sidebar({ onClose, onCreate }) {
                     />
                 </ListItemButton>
 
-                {/* Categories Header */}
                 <Typography sx={{
                     fontSize: 10.5,
                     fontWeight: 800,
@@ -228,8 +223,7 @@ function Sidebar({ onClose, onCreate }) {
                     Categories
                 </Typography>
 
-                {/* Category Items */}
-                {CATEGORIES.map((cat) => {
+                {categories.map((cat) => {
                     const isActive = isDashboard && isOnMainLayout && activeCategory === cat.key;
                     return (
                         <ListItemButton
@@ -294,7 +288,6 @@ function Sidebar({ onClose, onCreate }) {
                 })}
             </List>
 
-            {/* New Goal Button */}
             <Box sx={{ px: 2, pb: 2, pt: 1 }}>
                 <Button
                     variant="contained"
@@ -334,6 +327,7 @@ function MainLayout() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [mobileOpen, setMobileOpen] = useState(false);
     const goals = useSelector((state) => state.goals.items);
+    const categories = useSelector((state) => state.config.categories);
     const loading = useSelector((state) => state.goals.loading);
     const { handleOpenCreate } = useGoalActions();
 
@@ -341,7 +335,6 @@ function MainLayout() {
         dispatch(fetchGoals());
     }, [dispatch]);
 
-    // Close mobile drawer on route change
     useEffect(() => {
         setMobileOpen(false);
     }, [location.pathname]);
@@ -364,6 +357,7 @@ function MainLayout() {
 
     const sidebar = (
         <Sidebar
+            categories={categories}
             onCreate={() => { handleOpenCreate(); setMobileOpen(false); }}
             onClose={() => setMobileOpen(false)}
         />
@@ -415,7 +409,6 @@ function MainLayout() {
                 display: "flex",
                 flexDirection: "column",
             }}>
-                {/* Header */}
                 <Box
                     sx={{
                         px: { xs: 2, sm: 3.5 },
@@ -487,7 +480,6 @@ function MainLayout() {
                     )}
                 </Box>
 
-                {/* Content */}
                 <Box sx={{
                     px: { xs: 2, sm: 3.5 },
                     pb: 4,
@@ -495,7 +487,7 @@ function MainLayout() {
                     overflowY: "auto",
                 }}>
                     <Stack spacing={2.5}>
-                        {stats.total > 0 && <ProgressSummary stats={stats} goals={goals} />}
+                        {stats.total > 0 && <ProgressSummary stats={stats} goals={goals} categories={categories} />}
 
                         {loading ? (
                             <Box sx={{

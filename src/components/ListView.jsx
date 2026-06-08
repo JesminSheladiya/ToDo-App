@@ -1,14 +1,11 @@
 import { Box, IconButton, InputAdornment, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
 import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete } from "@mui/icons-material";
-import { CATEGORIES } from "../constants/goals";
-import { getCategory } from "../utils/goals";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
-function ListView({ goals, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal }) {
+function ListView({ goals, categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal }) {
     return (
         <Stack spacing={2}>
-            {/* Search & Filters */}
             <Box sx={{
                 display: "flex",
                 gap: 1,
@@ -62,7 +59,7 @@ function ListView({ goals, query, categoryFilter, statusFilter, onQueryChange, o
                     }}
                 >
                     <MenuItem value="all">All Categories</MenuItem>
-                    {CATEGORIES.map((cat) => (
+                    {categories.map((cat) => (
                         <MenuItem key={cat.key} value={cat.key}>{cat.label}</MenuItem>
                     ))}
                 </Select>
@@ -90,7 +87,6 @@ function ListView({ goals, query, categoryFilter, statusFilter, onQueryChange, o
                 </Select>
             </Box>
 
-            {/* Goals List */}
             {goals.length === 0 ? (
                 <Box sx={{
                     bgcolor: "#ffffff",
@@ -143,7 +139,7 @@ function ListView({ goals, query, categoryFilter, statusFilter, onQueryChange, o
                     },
                 }}>
                     {goals.map((goal, index) => {
-                        const category = getCategory(goal.category);
+                        const category = categories.find((c) => c.key === goal.category) || categories[0];
                         const completed = goal.status === "completed" || goal.completed;
 
                         return (
@@ -205,19 +201,21 @@ function ListView({ goals, query, categoryFilter, statusFilter, onQueryChange, o
                                         {goal.title}
                                     </Typography>
 
-                                    <Box sx={{
-                                        px: 1.25,
-                                        py: 0.375,
-                                        borderRadius: "8px",
-                                        background: category.gradient,
-                                        color: "#fff",
-                                        fontWeight: 700,
-                                        fontSize: 11,
-                                        display: { xs: "none", sm: "inline-flex" },
-                                        whiteSpace: "nowrap",
-                                    }}>
-                                        {category.label}
-                                    </Box>
+                                    {category && (
+                                        <Box sx={{
+                                            px: 1.25,
+                                            py: 0.375,
+                                            borderRadius: "8px",
+                                            background: category.gradient,
+                                            color: "#fff",
+                                            fontWeight: 700,
+                                            fontSize: 11,
+                                            display: { xs: "none", sm: "inline-flex" },
+                                            whiteSpace: "nowrap",
+                                        }}>
+                                            {category.label}
+                                        </Box>
+                                    )}
 
                                     <Tooltip title="Edit" arrow>
                                         <IconButton

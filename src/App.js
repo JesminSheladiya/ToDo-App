@@ -1,12 +1,20 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import CategoriesPage from "./pages/CategoriesPage";
 import ListPage from "./pages/ListPage";
 import GoalFormPage from "./pages/GoalFormPage";
+import { fetchCategories } from "./store/configSlice";
 
 function AppRoutes() {
+    const dispatch = useDispatch();
     const location = useLocation();
     const background = location.state?.background;
+
+    useEffect(() => {
+        dispatch(fetchCategories());
+    }, [dispatch]);
 
     return (
         <>
