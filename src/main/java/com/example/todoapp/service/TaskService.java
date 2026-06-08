@@ -76,7 +76,7 @@ public class TaskService {
         if (task.getStatus() == null || task.getStatus().isBlank()) {
             task.setStatus(task.isCompleted() ? "completed" : "active");
         }
-        if (task.isCompleted()) {
+        if (!"paused".equals(task.getStatus()) && task.isCompleted()) {
             task.setStatus("completed");
         }
         if ("completed".equals(task.getStatus())) {
@@ -97,7 +97,9 @@ public class TaskService {
         if (steps != null && !steps.isEmpty()) {
             boolean allDone = steps.stream().allMatch(TaskStep::isDone);
             task.setCompleted(allDone);
-            task.setStatus(allDone ? "completed" : "active");
+            if (!"paused".equals(task.getStatus())) {
+                task.setStatus(allDone ? "completed" : "active");
+            }
         }
     }
 }
