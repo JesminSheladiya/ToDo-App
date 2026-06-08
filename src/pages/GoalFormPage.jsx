@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ICON_OPTIONS, emptyDraft } from "../constants/goals";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createGoal, fetchGoals, updateGoal } from "../store/goalsSlice";
 import { getIconKey } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
@@ -412,7 +413,6 @@ function GoalFormPage() {
                         }}>
                             {ICON_OPTIONS.map((option) => {
                                 const selected = getIconKey(draft.emoji, category?.iconKey) === option.key;
-                                const Icon = option.Icon;
                                 return (
                                     <Tooltip key={option.key} title={option.label} arrow placement="top">
                                         <IconButton
@@ -420,8 +420,8 @@ function GoalFormPage() {
                                             size="small"
                                             disableRipple
                                             sx={{
-                                                width: 36,
-                                                height: 36,
+                                                width: 38,
+                                                height: 38,
                                                 borderRadius: "8px",
                                                 border: `1.5px solid ${selected ? (category?.progress || "#7c3aed") : "hsl(240, 10%, 90%)"}`,
                                                 bgcolor: selected ? (category?.soft || "#f5f3ff") : "transparent",
@@ -433,7 +433,7 @@ function GoalFormPage() {
                                                 },
                                             }}
                                         >
-                                            <Icon style={{ fontSize: 16 }} />
+                                            <FontAwesomeIcon icon={option.iconDef} style={{ fontSize: 18 }} />
                                         </IconButton>
                                     </Tooltip>
                                 );

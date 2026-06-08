@@ -1,12 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getIconOption } from "../utils/goals";
 
 function RoundedGoalIcon({ iconKey, fallbackKey, sx = {}, style = {}, className = "", ...props }) {
-    const Icon = getIconOption(iconKey, fallbackKey).Icon;
+    const option = getIconOption(iconKey, fallbackKey);
 
-    // Convert MUI style properties (sx) to React inline style
     const finalStyle = { ...style };
 
-    // Resolve colors
     if (sx.color) {
         if (sx.color === "primary.main") {
             finalStyle.color = "#7c3aed";
@@ -25,10 +24,8 @@ function RoundedGoalIcon({ iconKey, fallbackKey, sx = {}, style = {}, className 
         finalStyle.flexShrink = sx.flexShrink;
     }
 
-    // Resolve font size (React Icons scale with style.fontSize)
     if (sx.fontSize) {
         if (typeof sx.fontSize === "object") {
-            // Pick sm size or default
             const sizeVal = sx.fontSize.sm || sx.fontSize.xs || 20;
             finalStyle.fontSize = `${sizeVal}px`;
         } else {
@@ -36,7 +33,7 @@ function RoundedGoalIcon({ iconKey, fallbackKey, sx = {}, style = {}, className 
         }
     }
 
-    return <Icon style={finalStyle} className={className} {...props} />;
+    return <FontAwesomeIcon icon={option.iconDef} style={finalStyle} className={className} {...props} />;
 }
 
 export default RoundedGoalIcon;

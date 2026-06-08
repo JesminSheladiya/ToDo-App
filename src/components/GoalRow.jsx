@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CheckCircle, Delete, Edit, ExpandMore, PauseCircle, PlayCircle, RadioButtonUnchecked } from "@mui/icons-material";
+import { CheckCircle, Delete, Edit, ExpandMore, PauseCircle, PauseCircleOutlineRounded, PlayCircleOutlineRounded, RadioButtonUnchecked } from "@mui/icons-material";
 import {
     Box, Button, Checkbox, Collapse, IconButton, LinearProgress, Tooltip, Typography
 } from "@mui/material";
@@ -193,7 +193,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 gap: 0.25,
                                 mt: 0.25,
                             }}>
-                                <PauseCircle sx={{ fontSize: 13 }} /> Paused
+                                <PauseCircleOutlineRounded sx={{ fontSize: 14 }} /> Paused
                             </Typography>
                         )}
                         {hasSteps && (
@@ -242,7 +242,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                     },
                                 }}
                             >
-                                <ExpandMore sx={{ fontSize: 18 }} />
+                                <ExpandMore sx={{ fontSize: 20 }} />
                             </IconButton>
                         )}
 
@@ -260,7 +260,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                     },
                                 }}
                             >
-                                {paused ? <PlayCircle sx={{ fontSize: 16 }} /> : <PauseCircle sx={{ fontSize: 16 }} />}
+                                {paused ? <PlayCircleOutlineRounded sx={{ fontSize: 22 }} /> : <PauseCircleOutlineRounded sx={{ fontSize: 22 }} />}
                             </IconButton>
                         </Tooltip>
 
@@ -278,7 +278,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                     },
                                 }}
                             >
-                                <Edit sx={{ fontSize: 16 }} />
+                                <Edit sx={{ fontSize: 20 }} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete" arrow placement="top">
@@ -295,7 +295,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                     },
                                 }}
                             >
-                                <Delete sx={{ fontSize: 16 }} />
+                                <Delete sx={{ fontSize: 20 }} />
                             </IconButton>
                         </Tooltip>
                     </Box>

@@ -1,27 +1,30 @@
-import { 
-    BsBullseye, BsLightningChargeFill, BsStarFill,
-    BsBookHalf, BsLightbulbFill, BsTrophyFill, BsHeartFill,
-    BsPaletteFill, BsAirplane, BsPiggyBankFill, BsFire, BsRocketTakeoffFill, BsTree
-} from "react-icons/bs";
-import { FaDumbbell, FaRunning, FaSpa } from "react-icons/fa";
+import {
+    faBullseye, faBolt, faTree, faRocket,
+    faTrophy, faPalette, faPlane, faPiggyBank,
+    faFire, faDumbbell, faPersonRunning, faSpa,
+    faBookOpen
+} from "@fortawesome/free-solid-svg-icons";
+import {
+    faStar, faLightbulb, faHeart
+} from "@fortawesome/free-regular-svg-icons";
 
 export const ICON_OPTIONS = [
-    { key: "target", label: "Target", Icon: BsBullseye },
-    { key: "flash", label: "Energy", Icon: BsLightningChargeFill },
-    { key: "growth", label: "Growth", Icon: BsTree },
-    { key: "launch", label: "Launch", Icon: BsRocketTakeoffFill },
-    { key: "star", label: "Star", Icon: BsStarFill },
-    { key: "strength", label: "Strength", Icon: FaDumbbell },
-    { key: "learning", label: "Learning", Icon: BsBookHalf },
-    { key: "idea", label: "Idea", Icon: BsLightbulbFill },
-    { key: "achievement", label: "Achievement", Icon: BsTrophyFill },
-    { key: "heart", label: "Heart", Icon: BsHeartFill },
-    { key: "creative", label: "Creative", Icon: BsPaletteFill },
-    { key: "fitness", label: "Fitness", Icon: FaRunning },
-    { key: "travel", label: "Travel", Icon: BsAirplane },
-    { key: "money", label: "Money", Icon: BsPiggyBankFill },
-    { key: "mindful", label: "Mindful", Icon: FaSpa },
-    { key: "fire", label: "Momentum", Icon: BsFire }
+    { key: "target", label: "Target", iconDef: faBullseye },
+    { key: "flash", label: "Energy", iconDef: faBolt },
+    { key: "growth", label: "Growth", iconDef: faTree },
+    { key: "launch", label: "Launch", iconDef: faRocket },
+    { key: "star", label: "Star", iconDef: faStar },
+    { key: "strength", label: "Strength", iconDef: faDumbbell },
+    { key: "learning", label: "Learning", iconDef: faBookOpen },
+    { key: "idea", label: "Idea", iconDef: faLightbulb },
+    { key: "achievement", label: "Achievement", iconDef: faTrophy },
+    { key: "heart", label: "Heart", iconDef: faHeart },
+    { key: "creative", label: "Creative", iconDef: faPalette },
+    { key: "fitness", label: "Fitness", iconDef: faPersonRunning },
+    { key: "travel", label: "Travel", iconDef: faPlane },
+    { key: "money", label: "Money", iconDef: faPiggyBank },
+    { key: "mindful", label: "Mindful", iconDef: faSpa },
+    { key: "fire", label: "Momentum", iconDef: faFire }
 ];
 
 export const LEGACY_ICON_MAP = {

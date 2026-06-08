@@ -1,5 +1,5 @@
 import { Box, IconButton, InputAdornment, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
-import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete, PauseCircle, PlayCircle } from "@mui/icons-material";
+import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete, PauseCircleOutlineRounded, PlayCircleOutlineRounded } from "@mui/icons-material";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
@@ -218,9 +218,10 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                 color: "hsl(39, 90%, 45%)",
                                                 display: "inline-flex",
                                                 alignItems: "center",
-                                                gap: 0.25,
+                                                gap: 0.50,
+                                                mt: 0.25,
                                             }}>
-                                                <PauseCircle sx={{ fontSize: 13 }} /> Paused
+                                                <PauseCircleOutlineRounded sx={{ fontSize: 14 }} /> Paused
                                             </Typography>
                                         )}
                                     </Box>
@@ -254,7 +255,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                 },
                                             }}
                                         >
-                                            {paused ? <PlayCircle sx={{ fontSize: 17 }} /> : <PauseCircle sx={{ fontSize: 17 }} />}
+                                            {paused ? <PlayCircleOutlineRounded sx={{ fontSize: 22 }} /> : <PauseCircleOutlineRounded sx={{ fontSize: 22 }} />}
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Edit" arrow>
@@ -270,7 +271,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                 },
                                             }}
                                         >
-                                            <Edit sx={{ fontSize: 17 }} />
+                                            <Edit sx={{ fontSize: 20 }} />
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Delete" arrow>
@@ -286,7 +287,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                 },
                                             }}
                                         >
-                                            <Delete sx={{ fontSize: 17 }} />
+                                            <Delete sx={{ fontSize: 20 }} />
                                         </IconButton>
                                     </Tooltip>
                                 </Box>
