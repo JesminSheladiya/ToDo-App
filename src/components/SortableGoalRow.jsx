@@ -1,6 +1,6 @@
 import GoalRow from "./GoalRow";
 
-function SortableGoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, isLast }) {
+function SortableGoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast }) {
     return (
         <GoalRow
             goal={goal}
@@ -10,6 +10,7 @@ function SortableGoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onTog
             onToggleGoal={onToggleGoal}
             onToggleStep={onToggleStep}
             onReorderSteps={onReorderSteps}
+            onPauseToggle={onPauseToggle}
             isLast={isLast}
         />
     );

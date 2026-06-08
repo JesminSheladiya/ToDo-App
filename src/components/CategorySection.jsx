@@ -6,7 +6,7 @@ import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@
 import SortableGoalRow from "./SortableGoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 
-function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderGoals, onReorderSteps }) {
+function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps }) {
     const [expanded, setExpanded] = useState(true);
     const stats = useMemo(() => {
         const total = goals.length;
@@ -160,16 +160,18 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         </Typography>
                     </Box>
 
-                    <IconButton
-                        size="small"
-                        sx={{
-                            color: "hsl(240, 8%, 50%)",
-                            transition: "transform 200ms ease",
-                            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-                        }}
-                    >
-                        <ExpandMore sx={{ fontSize: 20 }} />
-                    </IconButton>
+                    {goals.length > 0 && (
+                        <IconButton
+                            size="small"
+                            sx={{
+                                color: "hsl(240, 8%, 50%)",
+                                transition: "transform 200ms ease",
+                                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+                            }}
+                        >
+                            <ExpandMore sx={{ fontSize: 20 }} />
+                        </IconButton>
+                    )}
                 </Box>
             </Box>
 
@@ -194,6 +196,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                                         onDelete={onDelete}
                                         onToggleGoal={onToggleGoal}
                                         onToggleStep={onToggleStep}
+                                        onPauseToggle={onPauseToggle}
                                         onReorderSteps={onReorderSteps}
                                         isLast={index === goals.length - 1}
                                     />
@@ -202,35 +205,35 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         </DndContext>
                     </Box>
                 )}
-
-                <Box sx={{
-                    px: { xs: 2, sm: 2.5 },
-                    py: 1,
-                    borderTop: "1px solid hsl(240, 10%, 90%)",
-                    bgcolor: "hsl(240, 20%, 99%)",
-                }}>
-                    <Button
-                        variant="text"
-                        size="small"
-                        onClick={() => onCreate(category.key)}
-                        startIcon={<Add sx={{ fontSize: 18 }} />}
-                        sx={{
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: category.text,
-                            borderRadius: "8px",
-                            px: 1.5,
-                            py: 0.5,
-                            textTransform: "none",
-                            "&:hover": {
-                                bgcolor: category.soft,
-                            },
-                        }}
-                    >
-                        Add goal
-                    </Button>
-                </Box>
             </Collapse>
+
+            <Box sx={{
+                px: { xs: 2, sm: 2.5 },
+                py: 1,
+                borderTop: "1px solid hsl(240, 10%, 90%)",
+                bgcolor: "hsl(240, 20%, 99%)",
+            }}>
+                <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => onCreate(category.key)}
+                    startIcon={<Add sx={{ fontSize: 18 }} />}
+                    sx={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: category.text,
+                        borderRadius: "8px",
+                        px: 1.5,
+                        py: 0.5,
+                        textTransform: "none",
+                        "&:hover": {
+                            bgcolor: category.soft,
+                        },
+                    }}
+                >
+                    Add goal
+                </Button>
+            </Box>
         </Box>
     );
 }

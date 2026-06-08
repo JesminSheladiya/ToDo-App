@@ -15,7 +15,8 @@ function CategoriesPage() {
         handleOpenEdit,
         handleDelete,
         handleToggleGoal,
-        handleToggleStep
+        handleToggleStep,
+        handlePauseToggle
     } = useGoalActions();
 
     const handleReorderGoals = useCallback((categoryKey, orderedIds) => {
@@ -53,6 +54,7 @@ function CategoriesPage() {
                     onDelete={handleDelete}
                     onToggleGoal={handleToggleGoal}
                     onToggleStep={handleToggleStep}
+                    onPauseToggle={handlePauseToggle}
                     onReorderGoals={handleReorderGoals}
                     onReorderSteps={handleReorderSteps}
                 />

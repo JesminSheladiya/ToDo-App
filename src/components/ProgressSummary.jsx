@@ -12,6 +12,8 @@ function ProgressSummary({ stats, goals, categories }) {
     const doneSteps = goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0);
     const totalSteps = goals.reduce((s, g) => s + (g.steps?.length || 0), 0);
 
+    const pausedCount = goals.filter((g) => g.status === "paused").length;
+
     return (
         <Box sx={{
             bgcolor: "#ffffff",
@@ -144,85 +146,111 @@ function ProgressSummary({ stats, goals, categories }) {
 
                     <Box sx={{
                         display: "grid",
-                        gridTemplateColumns: "1fr 1fr 1fr",
+                        gridTemplateColumns: "1fr 1fr 1fr 1fr",
                         gap: 1,
                     }}>
                         <Box sx={{
                             bgcolor: "hsl(240, 20%, 97%)",
-                            borderRadius: "12px",
-                            p: 1.25,
+                            borderRadius: "10px",
+                            py: 1.25,
                             textAlign: "center",
-                            borderTop: "3px solid hsl(240, 15%, 10%)",
                         }}>
                             <Typography sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
-                                fontSize: 26,
+                                fontSize: 25,
                                 color: "hsl(240, 15%, 10%)",
-                                letterSpacing: "-0.02em",
-                                lineHeight: 1.1,
+                                lineHeight: 1.2,
                             }}>
                                 {stats.total}
                             </Typography>
                             <Typography sx={{
-                                fontSize: 11,
+                                fontSize: 10,
                                 color: "hsl(240, 8%, 50%)",
-                                fontWeight: 600,
-                                mt: 0.25,
+                                fontWeight: 500,
+                                mt: 0.5,
+                                textTransform: "uppercase",
+                                letterSpacing: "0.04em",
                             }}>
-                                Total Goals
+                                Total
                             </Typography>
                         </Box>
                         <Box sx={{
-                            bgcolor: "hsl(240, 20%, 97%)",
-                            borderRadius: "12px",
-                            p: 1.25,
+                            bgcolor: "hsl(142, 76%, 96%)",
+                            borderRadius: "10px",
+                            py: 1.25,
                             textAlign: "center",
-                            borderTop: "3px solid #16a34a",
                         }}>
                             <Typography sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
-                                fontSize: 26,
+                                fontSize: 25,
                                 color: "#16a34a",
-                                letterSpacing: "-0.02em",
-                                lineHeight: 1.1,
+                                lineHeight: 1.2,
                             }}>
                                 {stats.completed}
                             </Typography>
                             <Typography sx={{
-                                fontSize: 11,
-                                color: "hsl(240, 8%, 50%)",
-                                fontWeight: 600,
-                                mt: 0.25,
+                                fontSize: 10,
+                                color: "#16a34a",
+                                fontWeight: 500,
+                                mt: 0.5,
+                                textTransform: "uppercase",
+                                letterSpacing: "0.04em",
                             }}>
-                                Completed
+                                Done
                             </Typography>
                         </Box>
                         <Box sx={{
-                            bgcolor: "hsl(240, 20%, 97%)",
-                            borderRadius: "12px",
-                            p: 1.25,
+                            bgcolor: "hsl(262, 83%, 96%)",
+                            borderRadius: "10px",
+                            py: 1.25,
                             textAlign: "center",
-                            borderTop: "3px solid #7c3aed",
                         }}>
                             <Typography sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
-                                fontSize: 26,
+                                fontSize: 25,
                                 color: "#7c3aed",
-                                letterSpacing: "-0.02em",
-                                lineHeight: 1.1,
+                                lineHeight: 1.2,
                             }}>
-                                {stats.inProgress}
+                                {stats.inProgress - pausedCount}
                             </Typography>
                             <Typography sx={{
-                                fontSize: 11,
-                                color: "hsl(240, 8%, 50%)",
-                                fontWeight: 600,
-                                mt: 0.25,
+                                fontSize: 10,
+                                color: "#7c3aed",
+                                fontWeight: 500,
+                                mt: 0.5,
+                                textTransform: "uppercase",
+                                letterSpacing: "0.04em",
                             }}>
-                                In Progress
+                                Active
+                            </Typography>
+                        </Box>
+                        <Box sx={{
+                            bgcolor: "hsl(39, 90%, 95%)",
+                            borderRadius: "10px",
+                            py: 1.25,
+                            textAlign: "center",
+                        }}>
+                            <Typography sx={{
+                                fontFamily: "'Sora', sans-serif",
+                                fontWeight: 800,
+                                fontSize: 25,
+                                color: "#d97706",
+                                lineHeight: 1.2,
+                            }}>
+                                {pausedCount}
+                            </Typography>
+                            <Typography sx={{
+                                fontSize: 10,
+                                color: "#d97706",
+                                fontWeight: 500,
+                                mt: 0.5,
+                                textTransform: "uppercase",
+                                letterSpacing: "0.04em",
+                            }}>
+                                Paused
                             </Typography>
                         </Box>
                     </Box>

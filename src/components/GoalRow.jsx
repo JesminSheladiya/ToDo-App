@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CheckCircle, Delete, Edit, ExpandMore, RadioButtonUnchecked } from "@mui/icons-material";
+import { CheckCircle, Delete, Edit, ExpandMore, PauseCircle, PlayCircle, RadioButtonUnchecked } from "@mui/icons-material";
 import {
     Box, Button, Checkbox, Collapse, IconButton, LinearProgress, Tooltip, Typography
 } from "@mui/material";
@@ -72,7 +72,7 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
     );
 }
 
-function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, isLast }) {
+function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast }) {
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -81,6 +81,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
     const [expanded, setExpanded] = useState(false);
     const progress = getStepProgress(goal);
     const completed = goal.status === "completed" || goal.completed;
+    const paused = goal.status === "paused";
     const hasSteps = goal.steps?.length > 0;
 
     const pointerSensor = useSensor(PointerSensor, {
@@ -173,14 +174,28 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
-                                color: completed ? "hsl(240, 8%, 55%)" : "hsl(240, 15%, 10%)",
+                                color: completed ? "hsl(240, 8%, 55%)" : paused ? "hsl(39, 90%, 40%)" : "hsl(240, 15%, 10%)",
                                 textDecoration: completed ? "line-through" : "none",
-                                opacity: completed ? 0.8 : 1,
+                                opacity: completed ? 0.8 : paused ? 0.75 : 1,
                                 lineHeight: 1.4,
+                                fontStyle: paused ? "italic" : "normal",
                             }}
                         >
                             {goal.title}
                         </Typography>
+                        {paused && (
+                            <Typography sx={{
+                                fontSize: 11,
+                                fontWeight: 600,
+                                color: "hsl(39, 90%, 45%)",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 0.25,
+                                mt: 0.25,
+                            }}>
+                                <PauseCircle sx={{ fontSize: 13 }} /> Paused
+                            </Typography>
+                        )}
                         {hasSteps && (
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.25 }}>
                                 <Typography sx={{
@@ -211,6 +226,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                     </Box>
 
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.25 }}>
+
                         {hasSteps && (
                             <IconButton
                                 onClick={() => setExpanded(!expanded)}
@@ -229,6 +245,25 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 <ExpandMore sx={{ fontSize: 18 }} />
                             </IconButton>
                         )}
+
+                        <Tooltip title={paused ? "Resume" : "Pause"} arrow placement="top">
+                            <IconButton
+                                onClick={() => onPauseToggle(goal)}
+                                size="small"
+                                disableRipple
+                                sx={{
+                                    p: 0.5,
+                                    color: paused ? "hsl(39, 90%, 45%)" : "hsl(240, 8%, 65%)",
+                                    "&:hover": {
+                                        color: paused ? "#d97706" : "#7c3aed",
+                                        bgcolor: paused ? "hsl(39, 90%, 95%)" : "hsl(262, 83%, 96%)",
+                                    },
+                                }}
+                            >
+                                {paused ? <PlayCircle sx={{ fontSize: 16 }} /> : <PauseCircle sx={{ fontSize: 16 }} />}
+                            </IconButton>
+                        </Tooltip>
+
                         <Tooltip title="Edit" arrow placement="top">
                             <IconButton
                                 onClick={() => onEdit(goal)}

@@ -66,13 +66,31 @@ export function useGoalActions() {
             stepSnapshots.delete(goal.id);
         }
 
-        const nextGoal = { ...goal, steps: nextSteps, completed, status: completed ? "completed" : "active" };
+        const nextGoal = { ...goal, steps: nextSteps, completed, status: completed ? "completed" : goal.status === "paused" ? "paused" : "active" };
 
         toast.promise(
             dispatch(updateGoal(nextGoal)).unwrap(),
             {
                 pending: "Updating...",
                 success: completed ? "Goal completed!" : "Goal reopened",
+                error: "Failed to update goal"
+            }
+        );
+    }, [dispatch]);
+
+    const handlePauseToggle = useCallback((goal) => {
+        const isPaused = goal.status === "paused";
+        const nextGoal = {
+            ...goal,
+            status: isPaused ? "active" : "paused",
+            completed: isPaused ? false : goal.completed,
+        };
+
+        toast.promise(
+            dispatch(updateGoal(nextGoal)).unwrap(),
+            {
+                pending: isPaused ? "Resuming goal..." : "Pausing goal...",
+                success: isPaused ? "Goal resumed!" : "Goal paused",
                 error: "Failed to update goal"
             }
         );
@@ -96,6 +114,7 @@ export function useGoalActions() {
         handleOpenEdit,
         handleDelete,
         handleToggleGoal,
-        handleToggleStep
+        handleToggleStep,
+        handlePauseToggle
     };
 }

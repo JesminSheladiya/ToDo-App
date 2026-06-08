@@ -14,7 +14,8 @@ function ListPage() {
     const {
         handleOpenEdit,
         handleDelete,
-        handleToggleGoal
+        handleToggleGoal,
+        handlePauseToggle
     } = useGoalActions();
 
     const filteredGoals = useMemo(() => {
@@ -40,6 +41,7 @@ function ListPage() {
             onEdit={handleOpenEdit}
             onDelete={handleDelete}
             onToggleGoal={handleToggleGoal}
+            onPauseToggle={handlePauseToggle}
         />
     );
 }

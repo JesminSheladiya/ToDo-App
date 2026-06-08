@@ -1,9 +1,9 @@
 import { Box, IconButton, InputAdornment, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
-import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete } from "@mui/icons-material";
+import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete, PauseCircle, PlayCircle } from "@mui/icons-material";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
-function ListView({ goals, categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal }) {
+function ListView({ goals, categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
     const categoryCounts = categories.reduce((acc, cat) => {
         acc[cat.key] = goals.filter((g) => g.category === cat.key).length;
         return acc;
@@ -150,14 +150,16 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                     {goals.map((goal, index) => {
                         const category = categories.find((c) => c.key === goal.category) || categories[0];
                         const completed = goal.status === "completed" || goal.completed;
+                        const paused = goal.status === "paused";
 
                         return (
                             <Box
                                 key={goal.id}
                                 sx={{
                                     transition: "background-color 150ms ease",
+                                    bgcolor: paused ? "hsl(39, 90%, 97%)" : "transparent",
                                     "&:hover": {
-                                        bgcolor: "hsl(240, 20%, 98%)",
+                                        bgcolor: paused ? "hsl(39, 90%, 95%)" : "hsl(240, 20%, 98%)",
                                     },
                                     borderBottom: index < goals.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
                                 }}
@@ -193,22 +195,35 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                         sx={{ color: category.text, fontSize: 18, flexShrink: 0 }}
                                     />
 
-                                    <Typography
-                                        sx={{
-                                            flex: 1,
-                                            minWidth: 0,
-                                            fontSize: 14,
-                                            fontWeight: 700,
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            color: completed ? "hsl(240, 8%, 50%)" : "hsl(240, 15%, 10%)",
-                                            textDecoration: completed ? "line-through" : "none",
-                                            opacity: completed ? 0.6 : 1,
-                                        }}
-                                    >
-                                        {goal.title}
-                                    </Typography>
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Typography
+                                            sx={{
+                                                fontSize: 14,
+                                                fontWeight: 700,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                color: completed ? "hsl(240, 8%, 50%)" : paused ? "hsl(39, 90%, 40%)" : "hsl(240, 15%, 10%)",
+                                                textDecoration: completed ? "line-through" : "none",
+                                                opacity: completed ? 0.6 : paused ? 0.75 : 1,
+                                                fontStyle: paused ? "italic" : "normal",
+                                            }}
+                                        >
+                                            {goal.title}
+                                        </Typography>
+                                        {paused && (
+                                            <Typography sx={{
+                                                fontSize: 11,
+                                                fontWeight: 600,
+                                                color: "hsl(39, 90%, 45%)",
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                gap: 0.25,
+                                            }}>
+                                                <PauseCircle sx={{ fontSize: 13 }} /> Paused
+                                            </Typography>
+                                        )}
+                                    </Box>
 
                                     {category && (
                                         <Box sx={{
@@ -226,6 +241,22 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                         </Box>
                                     )}
 
+                                    <Tooltip title={paused ? "Resume" : "Pause"} arrow>
+                                        <IconButton
+                                            onClick={() => onPauseToggle(goal)}
+                                            size="small"
+                                            sx={{
+                                                p: 0.5,
+                                                color: paused ? "hsl(39, 90%, 45%)" : "hsl(240, 8%, 50%)",
+                                                "&:hover": {
+                                                    color: paused ? "#d97706" : "#7c3aed",
+                                                    bgcolor: paused ? "hsl(39, 90%, 92%)" : "hsl(262, 83%, 96%)",
+                                                },
+                                            }}
+                                        >
+                                            {paused ? <PlayCircle sx={{ fontSize: 17 }} /> : <PauseCircle sx={{ fontSize: 17 }} />}
+                                        </IconButton>
+                                    </Tooltip>
                                     <Tooltip title="Edit" arrow>
                                         <IconButton
                                             onClick={() => onEdit(goal)}
