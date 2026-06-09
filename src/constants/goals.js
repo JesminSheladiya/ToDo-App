@@ -1,27 +1,28 @@
-import {
-    PiTargetBold, PiLightningBold, PiTreeBold, PiRocketBold,
-    PiStarBold, PiBarbellBold, PiBookOpenTextBold, PiLightbulbBold,
-    PiTrophyBold, PiHeartBold, PiPaletteBold, PiPersonSimpleRunBold,
-    PiAirplaneBold, PiPiggyBankBold, PiFlowerLotusBold, PiFireBold
-} from "react-icons/pi";
+import { PiBarbellFill } from "react-icons/pi";
+import { GoGoal } from "react-icons/go";
+import { BsLightningChargeFill , BsFillRocketTakeoffFill , BsFillTrophyFill } from "react-icons/bs";
+import { FaStar , FaHeart , FaPersonRunning, FaMoneyBillWave, FaBrain, FaFire, FaSeedling } from "react-icons/fa6";
+import { MdMenuBook } from "react-icons/md";
+import { FaLightbulb } from "react-icons/fa";
+import { IoAirplane, IoColorPalette } from "react-icons/io5";
 
 export const ICON_OPTIONS = [
-    { key: "target", label: "Target", Icon: PiTargetBold },
-    { key: "flash", label: "Energy", Icon: PiLightningBold },
-    { key: "growth", label: "Growth", Icon: PiTreeBold },
-    { key: "launch", label: "Launch", Icon: PiRocketBold },
-    { key: "star", label: "Star", Icon: PiStarBold },
-    { key: "strength", label: "Strength", Icon: PiBarbellBold },
-    { key: "learning", label: "Learning", Icon: PiBookOpenTextBold },
-    { key: "idea", label: "Idea", Icon: PiLightbulbBold },
-    { key: "achievement", label: "Achievement", Icon: PiTrophyBold },
-    { key: "heart", label: "Heart", Icon: PiHeartBold },
-    { key: "creative", label: "Creative", Icon: PiPaletteBold },
-    { key: "fitness", label: "Fitness", Icon: PiPersonSimpleRunBold },
-    { key: "travel", label: "Travel", Icon: PiAirplaneBold },
-    { key: "money", label: "Money", Icon: PiPiggyBankBold },
-    { key: "mindful", label: "Mindful", Icon: PiFlowerLotusBold },
-    { key: "fire", label: "Momentum", Icon: PiFireBold }
+    { key: "target", label: "Target", Icon: GoGoal },
+    { key: "flash", label: "Energy", Icon: BsLightningChargeFill },
+    { key: "growth", label: "Growth", Icon: FaSeedling },
+    { key: "launch", label: "Launch", Icon: BsFillRocketTakeoffFill },
+    { key: "star", label: "Star", Icon: FaStar },
+    { key: "strength", label: "Strength", Icon: PiBarbellFill },
+    { key: "learning", label: "Learning", Icon: MdMenuBook },
+    { key: "idea", label: "Idea", Icon: FaLightbulb },
+    { key: "achievement", label: "Achievement", Icon: BsFillTrophyFill },
+    { key: "heart", label: "Heart", Icon: FaHeart },
+    { key: "creative", label: "Creative", Icon: IoColorPalette },
+    { key: "fitness", label: "Fitness", Icon: FaPersonRunning },
+    { key: "travel", label: "Travel", Icon: IoAirplane },
+    { key: "money", label: "Money", Icon: FaMoneyBillWave },
+    { key: "mindful", label: "Mindful", Icon: FaBrain },
+    { key: "fire", label: "Momentum", Icon: FaFire }
 ];
 
 export const LEGACY_ICON_MAP = {

@@ -8,7 +8,9 @@ import {
     List, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { PiListBold, PiListBulletsBold, PiLayoutBold, PiPlusBold } from "react-icons/pi";
+import { PiListBold, PiPlusBold } from "react-icons/pi";
+import { FaListUl } from "react-icons/fa6";
+import { RiDashboardFill } from "react-icons/ri";
 import { fetchGoals } from "../store/goalsSlice";
 import { setActiveCategory, clearActiveCategory } from "../store/uiSlice";
 import ProgressSummary from "../components/ProgressSummary";
@@ -81,7 +83,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                             boxShadow: "0 2px 8px rgb(124, 58, 237 / .3)",
                         }}
                     >
-                        G
+                        GT
                     </Box>
                     <Box>
                         <Typography
@@ -94,7 +96,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                                 lineHeight: 1.1,
                             }}
                         >
-                            GoalPath
+                            Goal ToDo
                         </Typography>
                         <Typography
                             sx={{
@@ -142,10 +144,10 @@ function Sidebar({ categories, onClose, onCreate }) {
                         },
                     }}
                 >
-                    <ListItemIcon sx={{ minWidth: 34 }}>
-                        <PiLayoutBold sx={{
+                    <ListItemIcon sx={{ minWidth: 34, color: (isDashboard && isOnMainLayout && activeCategory === "all") ? "#7c3aed" : "hsl(240, 8%, 50%)" }}>
+                        <RiDashboardFill sx={{
                             fontSize: 20,
-                            color: (isDashboard && isOnMainLayout && activeCategory === "all") ? "#7c3aed" : "hsl(240, 8%, 50%)",
+
                             transition: "color 150ms ease",
                         }} />
                     </ListItemIcon>
@@ -191,10 +193,12 @@ function Sidebar({ categories, onClose, onCreate }) {
                         },
                     }}
                 >
-                    <ListItemIcon sx={{ minWidth: 34 }}>
-                        <PiListBulletsBold sx={{
+                    <ListItemIcon sx={{
+                        minWidth: 34,
+                        color: isList ? "#7c3aed" : "hsl(240, 8%, 50%)",
+                    }}>
+                        <FaListUl sx={{
                             fontSize: 20,
-                            color: isList ? "#7c3aed" : "hsl(240, 8%, 50%)",
                             transition: "color 150ms ease",
                         }} />
                     </ListItemIcon>
@@ -422,9 +426,9 @@ function MainLayout() {
                             onClick={() => setMobileOpen(true)}
                             size="small"
                             sx={{
-                                bgcolor: "#ffffff",
+                                color: "#fff",
+                                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                                 boxShadow: "0 1px 3px rgb(0 0 0 / .06)",
-                                "&:hover": { bgcolor: "hsl(262, 83%, 97%)" },
                             }}
                         >
                             <PiListBold sx={{ fontSize: 22 }} />

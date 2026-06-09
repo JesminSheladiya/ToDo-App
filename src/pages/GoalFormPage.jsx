@@ -309,7 +309,7 @@ function GoalFormPage() {
                             </Typography>
                             <Box sx={{
                                 display: "grid",
-                                gridTemplateColumns: "repeat(5, 1fr)",
+                                gridTemplateColumns: isMobile ? "repeat(3, 1fr)" : "repeat(5, 1fr)",
                                 gap: 0.75,
                             }}>
                                 {categories.map((item) => {
