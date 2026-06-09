@@ -132,7 +132,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                                 top: "50%",
                                 transform: "translateY(-50%)",
                                 width: 3,
-                                height: 20,
+                                height: 25,
                                 borderRadius: "0 4px 4px 0",
                                 background: "linear-gradient(180deg, #7c3aed, #a855f7)",
                             },
@@ -181,7 +181,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                                 top: "50%",
                                 transform: "translateY(-50%)",
                                 width: 3,
-                                height: 20,
+                                height: 25,
                                 borderRadius: "0 4px 4px 0",
                                 background: "linear-gradient(180deg, #7c3aed, #a855f7)",
                             },
@@ -247,7 +247,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                                         top: "50%",
                                         transform: "translateY(-50%)",
                                         width: 3,
-                                        height: 18,
+                                        height: 25,
                                         borderRadius: "0 4px 4px 0",
                                         background: cat.gradient,
                                     },
@@ -259,7 +259,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                         >
                             <ListItemIcon sx={{ minWidth: 30 }}>
                                 <RoundedGoalIcon iconKey={cat.iconKey} sx={{
-                                    color: isActive ? cat.text : "hsl(240, 8%, 50%)",
+                                    color: cat.text,
                                     fontSize: 16,
                                     transition: "color 150ms ease",
                                 }} />

@@ -1,10 +1,10 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CheckCircle, Delete, Edit, ExpandMore, PauseCircle, PauseCircleOutlineRounded, PlayCircleOutlineRounded, RadioButtonUnchecked } from "@mui/icons-material";
+import { CheckCircle, Delete, Edit, ExpandMore, PauseCircleOutlineRounded, PlayCircleOutlineRounded, RadioButtonUnchecked, MoreVert } from "@mui/icons-material";
 import {
-    Box, Button, Checkbox, Collapse, IconButton, LinearProgress, Tooltip, Typography
+    Box, Button, Checkbox, ClickAwayListener, Collapse, IconButton, LinearProgress, Popper, Tooltip, Typography
 } from "@mui/material";
 import { getStepProgress } from "../utils/goals";
 import RoundedGoalIcon from "./RoundedGoalIcon";
@@ -28,38 +28,45 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
         <div ref={setNodeRef} style={style} className={isDragging ? "" : "group"}>
             <div style={{
                 display: "flex",
-                alignItems: "center",
-                gap: 2,
+                alignItems: "flex-start",
+                gap: "2px",
                 width: "100%",
             }}>
-                <DragHandle
-                    activatorRef={setActivatorNodeRef}
-                    listeners={listeners}
-                    attributes={attributes}
-                    size={22}
-                />
+                <Box sx={{ mt: 0.25 }}>
+                    <DragHandle
+                        activatorRef={setActivatorNodeRef}
+                        listeners={listeners}
+                        attributes={attributes}
+                        size={22}
+                    />
+                </Box>
                 <Button
                     variant="text"
                     onClick={() => onToggleStep(goal, step.stepId)}
                     size="small"
                     disableRipple
                     startIcon={step.done ? (
-                        <CheckCircle sx={{ color: category.text, fontSize: 15 }} />
+                        <CheckCircle sx={{ color: category.text, fontSize: 15, mt: "2px" }} />
                     ) : (
-                        <RadioButtonUnchecked sx={{ fontSize: 15, color: "hsl(240, 10%, 78%)" }} />
+                        <RadioButtonUnchecked sx={{ fontSize: 15, color: "hsl(240, 10%, 78%)", mt: "2px" }} />
                     )}
                     sx={{
                         justifyContent: "flex-start",
+                        alignItems: "flex-start",
+                        textAlign: "left",
                         color: step.done ? "hsl(240, 8%, 55%)" : "hsl(240, 15%, 25%)",
                         textDecoration: step.done ? "line-through" : "none",
                         textTransform: "none",
                         px: 0.5,
-                        py: 0.25,
+                        py: 0.5,
                         minHeight: 28,
                         fontSize: 13,
                         fontWeight: 500,
                         borderRadius: "6px",
                         flex: 1,
+                        "& .MuiButton-startIcon": {
+                            marginTop: 0,
+                        },
                         "&:hover": {
                             bgcolor: "hsl(240, 20%, 96%)",
                         },
@@ -79,6 +86,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
     } = useSortable({ id: String(goal.id) });
 
     const [expanded, setExpanded] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const mobileAnchorRef = useRef(null);
+
     const progress = getStepProgress(goal);
     const completed = goal.status === "completed" || goal.completed;
     const paused = goal.status === "paused";
@@ -139,6 +149,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         onChange={() => onToggleGoal(goal)}
                         disableRipple
                         sx={{
+                            display: { xs: "none", sm: "inline-flex" },
                             p: 0,
                             width: 22,
                             height: 22,
@@ -252,6 +263,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 size="small"
                                 disableRipple
                                 sx={{
+                                    display: { xs: "none", sm: "inline-flex" },
                                     p: 0.5,
                                     color: paused ? "hsl(39, 90%, 45%)" : "hsl(240, 8%, 65%)",
                                     "&:hover": {
@@ -270,6 +282,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 size="small"
                                 disableRipple
                                 sx={{
+                                    display: { xs: "none", sm: "inline-flex" },
                                     p: 0.5,
                                     color: "hsl(240, 8%, 65%)",
                                     "&:hover": {
@@ -287,6 +300,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 size="small"
                                 disableRipple
                                 sx={{
+                                    display: { xs: "none", sm: "inline-flex" },
                                     p: 0.5,
                                     color: "hsl(240, 8%, 65%)",
                                     "&:hover": {
@@ -298,6 +312,98 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 <Delete sx={{ fontSize: 20 }} />
                             </IconButton>
                         </Tooltip>
+
+                        <Box ref={mobileAnchorRef} sx={{ display: { xs: "inline-flex", sm: "none" } }}>
+                            <IconButton
+                                onClick={() => setMobileMenuOpen((v) => !v)}
+                                size="small"
+                                disableRipple
+                                sx={{
+                                    p: 0.5,
+                                    color: "hsl(240, 8%, 55%)",
+                                    "&:hover": {
+                                        bgcolor: "hsl(240, 20%, 95%)",
+                                    },
+                                }}
+                            >
+                                <MoreVert sx={{ fontSize: 20 }} />
+                            </IconButton>
+                            <Popper
+                                open={mobileMenuOpen}
+                                anchorEl={mobileAnchorRef.current}
+                                placement="bottom-end"
+                                sx={{ zIndex: 1400 }}
+                            >
+                                <ClickAwayListener onClickAway={() => setMobileMenuOpen(false)}>
+                                    <Box sx={{
+                                        mt: 0.5,
+                                        bgcolor: "#ffffff",
+                                        borderRadius: "10px",
+                                        border: "1px solid hsl(240, 10%, 90%)",
+                                        boxShadow: "0 4px 16px rgb(0 0 0 / .1)",
+                                        minWidth: 140,
+                                        overflow: "hidden",
+                                    }}>
+                                        <Box
+                                            onClick={() => { onToggleGoal(goal); setMobileMenuOpen(false); }}
+                                            sx={{
+                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                            }}
+                                        >
+                                            {completed ? (
+                                                <CheckCircle sx={{ fontSize: 20, color: category.text }} />
+                                            ) : (
+                                                <RadioButtonUnchecked sx={{ fontSize: 20, color: "hsl(240, 10%, 75%)" }} />
+                                            )}
+                                            {completed ? "Incomplete" : "Complete"}
+                                        </Box>
+                                        <Box
+                                            onClick={() => { onPauseToggle(goal); setMobileMenuOpen(false); }}
+                                            sx={{
+                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                            }}
+                                        >
+                                            {paused ? (
+                                                <PlayCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(39, 90%, 45%)" }} />
+                                            ) : (
+                                                <PauseCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />
+                                            )}
+                                            {paused ? "Resume" : "Pause"}
+                                        </Box>
+                                        <Box
+                                            onClick={() => { onEdit(goal); setMobileMenuOpen(false); }}
+                                            sx={{
+                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                            }}
+                                        >
+                                            <Edit sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />
+                                            Edit
+                                        </Box>
+                                        <Box
+                                            onClick={() => { onDelete(goal); setMobileMenuOpen(false); }}
+                                            sx={{
+                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                color: "#dc2626",
+                                                "&:hover": { bgcolor: "hsl(0, 100%, 98%)" },
+                                            }}
+                                        >
+                                            <Delete sx={{ fontSize: 20, color: "#dc2626" }} />
+                                            Delete
+                                        </Box>
+                                    </Box>
+                                </ClickAwayListener>
+                            </Popper>
+                        </Box>
                     </Box>
                 </Box>
 
@@ -333,6 +439,8 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         </Box>
                     </Collapse>
                 )}
+
+
             </Box>
         </div>
     );

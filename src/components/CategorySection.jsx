@@ -64,6 +64,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                 onClick={() => setExpanded(!expanded)}
                 sx={{
                     display: "flex",
+                    flexWrap: "wrap",
                     alignItems: "center",
                     gap: 1.5,
                     px: { xs: 2, sm: 2.5 },
@@ -111,7 +112,25 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <Box
+                    sx={{
+                        display: { xs: "flex", sm: "none" },
+                        alignItems: "center",
+                        gap: 0.5,
+                        px: 1.25,
+                        py: 0.5,
+                        borderRadius: "8px",
+                        bgcolor: category.soft,
+                        border: `1px solid ${category.border}`,
+                    }}
+                >
+                    <FiberManualRecord sx={{ fontSize: 8, color: category.text }} />
+                    <Typography sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
+                        {stats.completed}/{stats.total}
+                    </Typography>
+                </Box>
+
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, width: { xs: "100%", sm: "auto" } }} >
                     {stats.total > 0 && (
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 100 }}>
                             <Box sx={{ flex: 1 }}>
@@ -144,7 +163,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
 
                     <Box
                         sx={{
-                            display: "flex",
+                            display: { xs: "none", sm: "flex" },
                             alignItems: "center",
                             gap: 0.5,
                             px: 1.25,

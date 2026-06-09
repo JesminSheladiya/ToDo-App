@@ -1,7 +1,133 @@
-import { Box, IconButton, InputAdornment, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
-import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete, PauseCircleOutlineRounded, PlayCircleOutlineRounded } from "@mui/icons-material";
+import { useRef, useState } from "react";
+import { Box, ClickAwayListener, IconButton, InputAdornment, Popper, TextField, Tooltip, Typography } from "@mui/material";
+import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete, PauseCircleOutlineRounded, PlayCircleOutlineRounded, ExpandMore, MoreVert } from "@mui/icons-material";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
+
+function Dropdown({ trigger, options }) {
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+
+    return (
+        <ClickAwayListener onClickAway={() => setOpen(false)}>
+            <Box ref={anchorRef} sx={{ position: "relative" }}>
+                <Box onClick={() => setOpen((v) => !v)} sx={{ cursor: "pointer" }}>
+                    {trigger}
+                </Box>
+                <Popper
+                    open={open}
+                    anchorEl={anchorRef.current?.firstChild || anchorRef.current}
+                    placement="bottom-start"
+                    sx={{ zIndex: 1400 }}
+                >
+                    <Box sx={{
+                        mt: 0.5,
+                        bgcolor: "#ffffff",
+                        borderRadius: "10px",
+                        border: "1px solid hsl(240, 10%, 90%)",
+                        boxShadow: "0 4px 16px rgb(0 0 0 / .1)",
+                        minWidth: anchorRef.current?.offsetWidth || 140,
+                        overflow: "hidden",
+                    }}>
+                        {options.map((opt, i) => (
+                            <Box
+                                key={opt.value}
+                                onClick={() => { opt.onClick(); setOpen(false); }}
+                                sx={{
+                                    px: 1.5,
+                                    py: 1,
+                                    fontSize: 13,
+                                    fontWeight: 500,
+                                    color: opt.color || "hsl(240, 15%, 10%)",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1.5,
+                                    borderBottom: i < options.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
+                                    "&:hover": { bgcolor: opt.hoverBg || "hsl(240, 20%, 97%)" },
+                                }}
+                            >
+                                {opt.icon}
+                                {opt.label}
+                            </Box>
+                        ))}
+                    </Box>
+                </Popper>
+            </Box>
+        </ClickAwayListener>
+    );
+}
+
+function SelectDropdown({ value, options, onChange, sx }) {
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+    const selected = options.find((o) => o.value === value);
+
+    return (
+        <ClickAwayListener onClickAway={() => setOpen(false)}>
+            <Box ref={anchorRef} sx={{ position: "relative", ...sx }}>
+                <Box
+                    onClick={() => setOpen((v) => !v)}
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.75,
+                        px: 1.5,
+                        py: 0.625,
+                        borderRadius: "12px",
+                        bgcolor: "#ffffff",
+                        border: "1px solid hsl(240, 10%, 88%)",
+                        cursor: "pointer",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "hsl(240, 15%, 10%)",
+                        minHeight: 36,
+                        minWidth: 130,
+                        "&:hover": { borderColor: "#7c3aed" },
+                    }}
+                >
+                    <Box sx={{ flex: 1 }}>{selected?.label || value}</Box>
+                    <ExpandMore sx={{ fontSize: 18, color: "hsl(240, 8%, 55%)" }} />
+                </Box>
+                <Popper
+                    open={open}
+                    anchorEl={anchorRef.current}
+                    placement="bottom-start"
+                    sx={{ zIndex: 1400 }}
+                >
+                    <Box sx={{
+                        mt: 0.5,
+                        bgcolor: "#ffffff",
+                        borderRadius: "10px",
+                        border: "1px solid hsl(240, 10%, 90%)",
+                        boxShadow: "0 4px 16px rgb(0 0 0 / .1)",
+                        minWidth: anchorRef.current?.offsetWidth || 140,
+                        overflow: "hidden",
+                    }}>
+                        {options.map((opt, i) => (
+                            <Box
+                                key={opt.value}
+                                onClick={() => { onChange(opt.value); setOpen(false); }}
+                                sx={{
+                                    px: 1.5,
+                                    py: 1,
+                                    fontSize: 13,
+                                    fontWeight: opt.value === value ? 700 : 500,
+                                    color: opt.value === value ? "#7c3aed" : "hsl(240, 15%, 10%)",
+                                    cursor: "pointer",
+                                    borderBottom: i < options.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
+                                    "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                }}
+                            >
+                                {opt.label}
+                            </Box>
+                        ))}
+                    </Box>
+                </Popper>
+            </Box>
+        </ClickAwayListener>
+    );
+}
 
 function ListView({ goals, categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
     const categoryCounts = categories.reduce((acc, cat) => {
@@ -50,50 +176,26 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                         )
                     }}
                 />
-                <Select
-                    size="small"
+                <SelectDropdown
                     value={categoryFilter}
-                    onChange={(e) => onCategoryFilterChange(e.target.value)}
-                    sx={{
-                        flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" },
-                        minWidth: 140,
-                        bgcolor: "#ffffff",
-                        boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "hsl(240, 10%, 88%)",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#7c3aed",
-                        },
-                    }}
-                >
-                    <MenuItem value="all">All Categories ({goals.length})</MenuItem>
-                    {categories.map((cat) => (
-                        <MenuItem key={cat.key} value={cat.key}>{cat.label} ({categoryCounts[cat.key]})</MenuItem>
-                    ))}
-                </Select>
-                <Select
-                    size="small"
+                    options={[
+                        { value: "all", label: `All Categories (${goals.length})` },
+                        ...categories.map((cat) => ({ value: cat.key, label: `${cat.label} (${categoryCounts[cat.key]})` })),
+                    ]}
+                    onChange={onCategoryFilterChange}
+                    sx={{ flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" } }}
+                />
+                <SelectDropdown
                     value={statusFilter}
-                    onChange={(e) => onStatusFilterChange(e.target.value)}
-                    sx={{
-                        flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" },
-                        minWidth: 130,
-                        bgcolor: "#ffffff",
-                        boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "hsl(240, 10%, 88%)",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#7c3aed",
-                        },
-                    }}
-                >
-                    <MenuItem value="all">All Statuses ({goals.length})</MenuItem>
-                    <MenuItem value="active">Active ({statusCounts.active})</MenuItem>
-                    <MenuItem value="completed">Completed ({statusCounts.completed})</MenuItem>
-                    <MenuItem value="paused">Paused ({statusCounts.paused})</MenuItem>
-                </Select>
+                    options={[
+                        { value: "all", label: `All Statuses (${goals.length})` },
+                        { value: "active", label: `Active (${statusCounts.active})` },
+                        { value: "completed", label: `Completed (${statusCounts.completed})` },
+                        { value: "paused", label: `Paused (${statusCounts.paused})` },
+                    ]}
+                    onChange={onStatusFilterChange}
+                    sx={{ flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" } }}
+                />
             </Box>
 
             {goals.length === 0 ? (
@@ -176,6 +278,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                         onClick={() => onToggleGoal(goal)}
                                         size="small"
                                         sx={{
+                                            display: { xs: "none", sm: "inline-flex" },
                                             p: 0.25,
                                             color: completed ? category.text : "hsl(240, 6%, 70%)",
                                             transition: "all 150ms ease",
@@ -247,6 +350,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             onClick={() => onPauseToggle(goal)}
                                             size="small"
                                             sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
                                                 p: 0.5,
                                                 color: paused ? "hsl(39, 90%, 45%)" : "hsl(240, 8%, 50%)",
                                                 "&:hover": {
@@ -263,6 +367,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             onClick={() => onEdit(goal)}
                                             size="small"
                                             sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
                                                 p: 0.5,
                                                 color: "hsl(240, 8%, 50%)",
                                                 "&:hover": {
@@ -279,6 +384,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             onClick={() => onDelete(goal)}
                                             size="small"
                                             sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
                                                 p: 0.5,
                                                 color: "hsl(240, 8%, 60%)",
                                                 "&:hover": {
@@ -290,12 +396,56 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             <Delete sx={{ fontSize: 20 }} />
                                         </IconButton>
                                     </Tooltip>
+
+                                    <Box sx={{ display: { xs: "inline-flex", sm: "none" } }}>
+                                        <Dropdown
+                                            trigger={
+                                                <IconButton size="small" sx={{ p: 0.5, color: "hsl(240, 8%, 50%)" }}>
+                                                    <MoreVert sx={{ fontSize: 20 }} />
+                                                </IconButton>
+                                            }
+                                            options={[
+                                                {
+                                                    value: "toggle",
+                                                    label: (goal.status === "completed" || goal.completed) ? "Mark Incomplete" : "Mark Complete",
+                                                    icon: (goal.status === "completed" || goal.completed)
+                                                        ? <CheckCircle sx={{ fontSize: 20, color: (categories.find(c => c.key === goal.category) || categories[0]).text }} />
+                                                        : <RadioButtonUnchecked sx={{ fontSize: 20, color: "hsl(240, 10%, 75%)" }} />,
+                                                    onClick: () => onToggleGoal(goal),
+                                                },
+                                                {
+                                                    value: "pause",
+                                                    label: goal.status === "paused" ? "Resume" : "Pause",
+                                                    icon: goal.status === "paused"
+                                                        ? <PlayCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(39, 90%, 45%)" }} />
+                                                        : <PauseCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />,
+                                                    onClick: () => onPauseToggle(goal),
+                                                },
+                                                {
+                                                    value: "edit",
+                                                    label: "Edit",
+                                                    icon: <Edit sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />,
+                                                    onClick: () => onEdit(goal),
+                                                },
+                                                {
+                                                    value: "delete",
+                                                    label: "Delete",
+                                                    icon: <Delete sx={{ fontSize: 20, color: "#dc2626" }} />,
+                                                    onClick: () => onDelete(goal),
+                                                    color: "#dc2626",
+                                                    hoverBg: "hsl(0, 100%, 98%)",
+                                                },
+                                            ]}
+                                        />
+                                    </Box>
                                 </Box>
                             </Box>
                         );
                     })}
                 </Box>
             )}
+
+
         </Stack>
     );
 }
