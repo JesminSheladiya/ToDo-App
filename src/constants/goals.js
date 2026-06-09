@@ -1,30 +1,27 @@
 import {
-    faBullseye, faBolt, faTree, faRocket,
-    faTrophy, faPalette, faPlane, faPiggyBank,
-    faFire, faDumbbell, faPersonRunning, faSpa,
-    faBookOpen
-} from "@fortawesome/free-solid-svg-icons";
-import {
-    faStar, faLightbulb, faHeart
-} from "@fortawesome/free-regular-svg-icons";
+    PiTargetBold, PiLightningBold, PiTreeBold, PiRocketBold,
+    PiStarBold, PiBarbellBold, PiBookOpenTextBold, PiLightbulbBold,
+    PiTrophyBold, PiHeartBold, PiPaletteBold, PiPersonSimpleRunBold,
+    PiAirplaneBold, PiPiggyBankBold, PiFlowerLotusBold, PiFireBold
+} from "react-icons/pi";
 
 export const ICON_OPTIONS = [
-    { key: "target", label: "Target", iconDef: faBullseye },
-    { key: "flash", label: "Energy", iconDef: faBolt },
-    { key: "growth", label: "Growth", iconDef: faTree },
-    { key: "launch", label: "Launch", iconDef: faRocket },
-    { key: "star", label: "Star", iconDef: faStar },
-    { key: "strength", label: "Strength", iconDef: faDumbbell },
-    { key: "learning", label: "Learning", iconDef: faBookOpen },
-    { key: "idea", label: "Idea", iconDef: faLightbulb },
-    { key: "achievement", label: "Achievement", iconDef: faTrophy },
-    { key: "heart", label: "Heart", iconDef: faHeart },
-    { key: "creative", label: "Creative", iconDef: faPalette },
-    { key: "fitness", label: "Fitness", iconDef: faPersonRunning },
-    { key: "travel", label: "Travel", iconDef: faPlane },
-    { key: "money", label: "Money", iconDef: faPiggyBank },
-    { key: "mindful", label: "Mindful", iconDef: faSpa },
-    { key: "fire", label: "Momentum", iconDef: faFire }
+    { key: "target", label: "Target", Icon: PiTargetBold },
+    { key: "flash", label: "Energy", Icon: PiLightningBold },
+    { key: "growth", label: "Growth", Icon: PiTreeBold },
+    { key: "launch", label: "Launch", Icon: PiRocketBold },
+    { key: "star", label: "Star", Icon: PiStarBold },
+    { key: "strength", label: "Strength", Icon: PiBarbellBold },
+    { key: "learning", label: "Learning", Icon: PiBookOpenTextBold },
+    { key: "idea", label: "Idea", Icon: PiLightbulbBold },
+    { key: "achievement", label: "Achievement", Icon: PiTrophyBold },
+    { key: "heart", label: "Heart", Icon: PiHeartBold },
+    { key: "creative", label: "Creative", Icon: PiPaletteBold },
+    { key: "fitness", label: "Fitness", Icon: PiPersonSimpleRunBold },
+    { key: "travel", label: "Travel", Icon: PiAirplaneBold },
+    { key: "money", label: "Money", Icon: PiPiggyBankBold },
+    { key: "mindful", label: "Mindful", Icon: PiFlowerLotusBold },
+    { key: "fire", label: "Momentum", Icon: PiFireBold }
 ];
 
 export const LEGACY_ICON_MAP = {

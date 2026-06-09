@@ -8,7 +8,7 @@ import {
     List, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Menu as MenuIcon, ViewList, Dashboard, Add } from "@mui/icons-material";
+import { PiListBold, PiListBulletsBold, PiLayoutBold, PiPlusBold } from "react-icons/pi";
 import { fetchGoals } from "../store/goalsSlice";
 import { setActiveCategory, clearActiveCategory } from "../store/uiSlice";
 import ProgressSummary from "../components/ProgressSummary";
@@ -143,7 +143,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                     }}
                 >
                     <ListItemIcon sx={{ minWidth: 34 }}>
-                        <Dashboard sx={{
+                        <PiLayoutBold sx={{
                             fontSize: 20,
                             color: (isDashboard && isOnMainLayout && activeCategory === "all") ? "#7c3aed" : "hsl(240, 8%, 50%)",
                             transition: "color 150ms ease",
@@ -192,7 +192,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                     }}
                 >
                     <ListItemIcon sx={{ minWidth: 34 }}>
-                        <ViewList sx={{
+                        <PiListBulletsBold sx={{
                             fontSize: 20,
                             color: isList ? "#7c3aed" : "hsl(240, 8%, 50%)",
                             transition: "color 150ms ease",
@@ -294,7 +294,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                     variant="contained"
                     fullWidth
                     onClick={onCreate}
-                    startIcon={<Add />}
+                    startIcon={<PiPlusBold />}
                     sx={{
                         background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                         color: "#fff",
@@ -427,7 +427,7 @@ function MainLayout() {
                                 "&:hover": { bgcolor: "hsl(262, 83%, 97%)" },
                             }}
                         >
-                            <MenuIcon sx={{ fontSize: 22 }} />
+                            <PiListBold sx={{ fontSize: 22 }} />
                         </IconButton>
                     )}
                     <Box sx={{ flex: 1 }}>
@@ -460,7 +460,7 @@ function MainLayout() {
                         <Button
                             variant="contained"
                             onClick={handleOpenCreate}
-                            startIcon={<Add />}
+                            startIcon={<PiPlusBold />}
                             size="small"
                             sx={{
                                 background: "linear-gradient(135deg, #7c3aed, #a855f7)",
@@ -536,7 +536,7 @@ function MainLayout() {
                                 <Button
                                     variant="contained"
                                     onClick={() => handleOpenCreate()}
-                                    startIcon={<Add />}
+                                    startIcon={<PiPlusBold />}
                                     sx={{
                                         background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                                         color: "#fff",

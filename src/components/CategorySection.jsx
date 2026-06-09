@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Add, ExpandMore, FiberManualRecord } from "@mui/icons-material";
+import { FaAngleDown } from "react-icons/fa6";
+import { HiOutlinePlusSm } from "react-icons/hi";
 import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@mui/material";
 import SortableGoalRow from "./SortableGoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
@@ -124,7 +125,13 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         border: `1px solid ${category.border}`,
                     }}
                 >
-                    <FiberManualRecord sx={{ fontSize: 8, color: category.text }} />
+                    <Box sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: category.gradient,
+                        flexShrink: 0,
+                    }} />
                     <Typography sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
                         {stats.completed}/{stats.total}
                     </Typography>
@@ -173,7 +180,13 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                             border: `1px solid ${category.border}`,
                         }}
                     >
-                        <FiberManualRecord sx={{ fontSize: 8, color: category.text }} />
+                        <Box sx={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: "50%",
+                            background: category.gradient,
+                            flexShrink: 0,
+                        }} />
                         <Typography sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
                             {stats.completed}/{stats.total}
                         </Typography>
@@ -188,7 +201,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                                 transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
                             }}
                         >
-                            <ExpandMore sx={{ fontSize: 20 }} />
+                            <FaAngleDown sx={{ fontSize: 20 }} />
                         </IconButton>
                     )}
                 </Box>
@@ -236,7 +249,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     variant="text"
                     size="small"
                     onClick={() => onCreate(category.key)}
-                    startIcon={<Add sx={{ fontSize: 18 }} />}
+                    startIcon={<HiOutlinePlusSm />}
                     sx={{
                         fontSize: 13,
                         fontWeight: 600,

@@ -2,7 +2,12 @@ import { useCallback, useRef, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CheckCircle, Delete, Edit, ExpandMore, PauseCircleOutlineRounded, PlayCircleOutlineRounded, RadioButtonUnchecked, MoreVert } from "@mui/icons-material";
+import { PiDotsThreeVerticalBold } from "react-icons/pi";
+import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
+import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
+import { IoChevronDownOutline } from "react-icons/io5";
+import { TbPencil } from "react-icons/tb";
+import { FiTrash } from "react-icons/fi";
 import {
     Box, Button, Checkbox, ClickAwayListener, Collapse, IconButton, LinearProgress, Popper, Tooltip, Typography
 } from "@mui/material";
@@ -40,40 +45,42 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
                         size={22}
                     />
                 </Box>
-                <Button
-                    variant="text"
+                <IconButton
                     onClick={() => onToggleStep(goal, step.stepId)}
                     size="small"
                     disableRipple
-                    startIcon={step.done ? (
-                        <CheckCircle sx={{ color: category.text, fontSize: 15, mt: "2px" }} />
-                    ) : (
-                        <RadioButtonUnchecked sx={{ fontSize: 15, color: "hsl(240, 10%, 78%)", mt: "2px" }} />
-                    )}
                     sx={{
-                        justifyContent: "flex-start",
-                        alignItems: "flex-start",
-                        textAlign: "left",
-                        color: step.done ? "hsl(240, 8%, 55%)" : "hsl(240, 15%, 25%)",
-                        textDecoration: step.done ? "line-through" : "none",
-                        textTransform: "none",
-                        px: 0.5,
-                        py: 0.5,
-                        minHeight: 28,
-                        fontSize: 13,
-                        fontWeight: 500,
-                        borderRadius: "6px",
-                        flex: 1,
-                        "& .MuiButton-startIcon": {
-                            marginTop: 0,
-                        },
-                        "&:hover": {
-                            bgcolor: "hsl(240, 20%, 96%)",
-                        },
+                        p: 0.25,
+                        mt: "2px",
+                        flexShrink: 0,
+                        color: step.done ? category.text : "hsl(240, 10%, 60%)",
+                        "&:hover": { bgcolor: "transparent" },
                     }}
                 >
+                    {step.done ? (
+                        <FaCircleCheck sx={{ fontSize: 15 }} />
+                    ) : (
+                        <FaRegCircle sx={{ fontSize: 15 }} />
+                    )}
+                </IconButton>
+                <Typography sx={{
+                    flex: 1,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: step.done ? "hsl(240, 8%, 50%)" : "hsl(240, 15%, 0%)",
+                    textDecoration: step.done ? "line-through" : "none",
+                    py: 0.5,
+                    px: 0.5,
+                    borderRadius: "6px",
+                    cursor: "default",
+                    transition: "0.4s all",
+                    "&:hover": {
+                        bgcolor: "hsl(240, 20%, 96%)",
+                        textDecoration: "none",
+                    },
+                }}>
                     {step.text}
-                </Button>
+                </Typography>
             </div>
         </div>
     );
@@ -153,7 +160,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             p: 0,
                             width: 22,
                             height: 22,
-                            color: "hsl(240, 10%, 80%)",
+                            color: "hsl(240, 8%, 50%)",
                             "&.Mui-checked": {
                                 color: category.text,
                             },
@@ -167,8 +174,8 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 bgcolor: "transparent",
                             },
                         }}
-                        icon={<RadioButtonUnchecked sx={{ fontSize: 22 }} />}
-                        checkedIcon={<CheckCircle sx={{ fontSize: 22 }} />}
+                        icon={<FaRegCircle sx={{ fontSize: 22 }} />}
+                        checkedIcon={<FaCircleCheck sx={{ fontSize: 22 }} />}
                     />
 
                     <RoundedGoalIcon
@@ -185,7 +192,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
-                                color: completed ? "hsl(240, 8%, 55%)" : paused ? "hsl(39, 90%, 40%)" : "hsl(240, 15%, 10%)",
+                                color: completed ? "hsl(240, 8%, 50%)" : paused ? "hsl(39, 90%, 40%)" : "hsl(240, 15%, 10%)",
                                 textDecoration: completed ? "line-through" : "none",
                                 opacity: completed ? 0.8 : paused ? 0.75 : 1,
                                 lineHeight: 1.4,
@@ -204,7 +211,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 gap: 0.25,
                                 mt: 0.25,
                             }}>
-                                <PauseCircleOutlineRounded sx={{ fontSize: 14 }} /> Paused
+                                <BsFillPauseFill size={14} /> Paused
                             </Typography>
                         )}
                         {hasSteps && (
@@ -244,8 +251,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 size="small"
                                 disableRipple
                                 sx={{
-                                    p: 0.5,
-                                    color: "hsl(240, 8%, 55%)",
+                                    p: 0.6,
+                                    bgcolor: "hsl(240, 20%, 97%)",
+                                    color: "hsl(240, 8%, 50%)",
                                     transition: "transform 200ms ease",
                                     transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
                                     "&:hover": {
@@ -253,7 +261,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                     },
                                 }}
                             >
-                                <ExpandMore sx={{ fontSize: 20 }} />
+                                <IoChevronDownOutline sx={{ fontSize: 16 }} />
                             </IconButton>
                         )}
 
@@ -264,15 +272,15 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 disableRipple
                                 sx={{
                                     display: { xs: "none", sm: "inline-flex" },
-                                    p: 0.5,
-                                    color: paused ? "hsl(39, 90%, 45%)" : "hsl(240, 8%, 65%)",
+                                    p: 0.6,
+                                    bgcolor: "hsl(240, 20%, 97%)",
+                                    color: paused ? "hsl(39, 90%, 45%)" : "#d97706",
                                     "&:hover": {
-                                        color: paused ? "#d97706" : "#7c3aed",
-                                        bgcolor: paused ? "hsl(39, 90%, 95%)" : "hsl(262, 83%, 96%)",
+                                        bgcolor: "hsl(39, 90%, 95%)"
                                     },
                                 }}
                             >
-                                {paused ? <PlayCircleOutlineRounded sx={{ fontSize: 22 }} /> : <PauseCircleOutlineRounded sx={{ fontSize: 22 }} />}
+                                {paused ? <BsFillPlayFill size={18} /> : <BsFillPauseFill size={18} />}
                             </IconButton>
                         </Tooltip>
 
@@ -283,15 +291,16 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 disableRipple
                                 sx={{
                                     display: { xs: "none", sm: "inline-flex" },
-                                    p: 0.5,
-                                    color: "hsl(240, 8%, 65%)",
+                                    p: 0.6,
+                                    bgcolor: "hsl(240, 20%, 97%)",
+                                    color: "#7c3aed",
                                     "&:hover": {
                                         color: "#7c3aed",
                                         bgcolor: "hsl(262, 83%, 96%)",
                                     },
                                 }}
                             >
-                                <Edit sx={{ fontSize: 20 }} />
+                                <TbPencil size={18} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete" arrow placement="top">
@@ -301,15 +310,16 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 disableRipple
                                 sx={{
                                     display: { xs: "none", sm: "inline-flex" },
-                                    p: 0.5,
-                                    color: "hsl(240, 8%, 65%)",
+                                    p: 0.6,
+                                    bgcolor: "hsl(240, 20%, 97%)",
+                                    color: "#dc2626",
                                     "&:hover": {
                                         color: "#dc2626",
                                         bgcolor: "hsl(0, 84%, 96%)",
                                     },
                                 }}
                             >
-                                <Delete sx={{ fontSize: 20 }} />
+                                <FiTrash size={18} />
                             </IconButton>
                         </Tooltip>
 
@@ -319,15 +329,17 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 size="small"
                                 disableRipple
                                 sx={{
-                                    p: 0.5,
-                                    color: "hsl(240, 8%, 55%)",
+                                    p: 0.6,
+                                    bgcolor: "hsl(240, 20%, 97%)",
+                                    color: "hsl(240, 8%, 50%)",
                                     "&:hover": {
                                         bgcolor: "hsl(240, 20%, 95%)",
                                     },
                                 }}
                             >
-                                <MoreVert sx={{ fontSize: 20 }} />
+                                <PiDotsThreeVerticalBold size={20} />
                             </IconButton>
+
                             <Popper
                                 open={mobileMenuOpen}
                                 anchorEl={mobileAnchorRef.current}
@@ -335,69 +347,151 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 sx={{ zIndex: 1400 }}
                             >
                                 <ClickAwayListener onClickAway={() => setMobileMenuOpen(false)}>
-                                    <Box sx={{
-                                        mt: 0.5,
-                                        bgcolor: "#ffffff",
-                                        borderRadius: "10px",
-                                        border: "1px solid hsl(240, 10%, 90%)",
-                                        boxShadow: "0 4px 16px rgb(0 0 0 / .1)",
-                                        minWidth: 140,
-                                        overflow: "hidden",
-                                    }}>
+                                    <Box
+                                        sx={{
+                                            mt: 0.5,
+                                            bgcolor: "#fff",
+                                            borderRadius: "10px",
+                                            border: "1px solid hsl(240, 10%, 90%)",
+                                            boxShadow: "0 4px 16px rgb(0 0 0 / 10%)",
+                                            minWidth: 140,
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        {/* Complete */}
                                         <Box
-                                            onClick={() => { onToggleGoal(goal); setMobileMenuOpen(false); }}
+                                            onClick={() => {
+                                                onToggleGoal(goal);
+                                                setMobileMenuOpen(false);
+                                            }}
                                             sx={{
-                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
-                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                px: 1.5,
+                                                py: 1,
+                                                fontSize: 13,
+                                                fontWeight: 500,
+                                                color: "hsl(240, 8%, 20%)",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 1.5,
                                                 borderBottom: "1px solid hsl(240, 10%, 93%)",
-                                                "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                                transition: "0.3s all ease",
+                                                "&:hover": {
+                                                    bgcolor: category.soft,
+                                                    color: category.text,
+                                                },
                                             }}
                                         >
                                             {completed ? (
-                                                <CheckCircle sx={{ fontSize: 20, color: category.text }} />
+                                                <FaCircleCheck
+                                                    size={16}
+                                                    color={category.text}
+                                                />
                                             ) : (
-                                                <RadioButtonUnchecked sx={{ fontSize: 20, color: "hsl(240, 10%, 75%)" }} />
+                                                <FaRegCircle
+                                                    size={16}
+                                                    color={category.text}
+                                                />
                                             )}
                                             {completed ? "Incomplete" : "Complete"}
                                         </Box>
+
+                                        {/* Pause */}
                                         <Box
-                                            onClick={() => { onPauseToggle(goal); setMobileMenuOpen(false); }}
+                                            onClick={() => {
+                                                onPauseToggle(goal);
+                                                setMobileMenuOpen(false);
+                                            }}
                                             sx={{
-                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
-                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                px: 1.5,
+                                                py: 1,
+                                                fontSize: 13,
+                                                fontWeight: 500,
+                                                color: "hsl(240, 8%, 20%)",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 1.5,
                                                 borderBottom: "1px solid hsl(240, 10%, 93%)",
-                                                "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                                transition: "0.3s all ease",
+                                                "&:hover": {
+                                                    bgcolor: "hsla(38, 100%, 95%, 1)",
+                                                    color: "hsl(39, 90%, 45%)",
+                                                },
                                             }}
                                         >
                                             {paused ? (
-                                                <PlayCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(39, 90%, 45%)" }} />
+                                                <BsFillPlayFill
+                                                    size={18}
+                                                    color="hsl(39, 90%, 45%)"
+                                                />
                                             ) : (
-                                                <PauseCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />
+                                                <BsFillPauseFill
+                                                    size={18}
+                                                    color="#d97706"
+                                                />
                                             )}
                                             {paused ? "Resume" : "Pause"}
                                         </Box>
+
+                                        {/* Edit */}
                                         <Box
-                                            onClick={() => { onEdit(goal); setMobileMenuOpen(false); }}
+                                            onClick={() => {
+                                                onEdit(goal);
+                                                setMobileMenuOpen(false);
+                                            }}
                                             sx={{
-                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
-                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                px: 1.5,
+                                                py: 1,
+                                                fontSize: 13,
+                                                fontWeight: 500,
+                                                color: "hsl(240, 8%, 20%)",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 1.5,
                                                 borderBottom: "1px solid hsl(240, 10%, 93%)",
-                                                "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                                transition: "0.3s all ease",
+                                                "&:hover": {
+                                                    bgcolor: "hsl(240, 100%, 98%)",
+                                                    color: "#7c3aed",
+                                                },
                                             }}
                                         >
-                                            <Edit sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />
+                                            <TbPencil
+                                                size={18}
+                                                color="#7c3aed"
+                                            />
                                             Edit
                                         </Box>
+
+                                        {/* Delete */}
                                         <Box
-                                            onClick={() => { onDelete(goal); setMobileMenuOpen(false); }}
+                                            onClick={() => {
+                                                onDelete(goal);
+                                                setMobileMenuOpen(false);
+                                            }}
                                             sx={{
-                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
-                                                cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
-                                                color: "#dc2626",
-                                                "&:hover": { bgcolor: "hsl(0, 100%, 98%)" },
+                                                px: 1.5,
+                                                py: 1,
+                                                fontSize: 13,
+                                                fontWeight: 500,
+                                                color: "hsl(240, 8%, 20%)",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 1.5,
+                                                transition: "0.3s all ease",
+                                                "&:hover": {
+                                                    bgcolor: "hsl(0, 100%, 98%)",
+                                                    color: "#dc2626",
+                                                },
                                             }}
                                         >
-                                            <Delete sx={{ fontSize: 20, color: "#dc2626" }} />
+                                            <FiTrash
+                                                size={16}
+                                                color="#dc2626"
+                                            />
                                             Delete
                                         </Box>
                                     </Box>

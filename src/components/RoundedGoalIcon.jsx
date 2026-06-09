@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getIconOption } from "../utils/goals";
 
 function RoundedGoalIcon({ iconKey, fallbackKey, sx = {}, style = {}, className = "", ...props }) {
@@ -33,7 +32,8 @@ function RoundedGoalIcon({ iconKey, fallbackKey, sx = {}, style = {}, className 
         }
     }
 
-    return <FontAwesomeIcon icon={option.iconDef} style={finalStyle} className={className} {...props} />;
+    const Icon = option.Icon;
+    return <Icon style={finalStyle} className={className} {...props} />;
 }
 
 export default RoundedGoalIcon;

@@ -6,15 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
-    ArrowBack, CalendarToday, Delete, Edit, Check, Close
-} from "@mui/icons-material";
-import {
     Box, Button, Dialog, IconButton, InputAdornment,
     TextField, Tooltip, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ICON_OPTIONS, emptyDraft } from "../constants/goals";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PiArrowLeftBold, PiCalendarBold, PiTrashBold, PiPencilBold, PiCheckBold, PiXBold } from "react-icons/pi";
 import { createGoal, fetchGoals, updateGoal } from "../store/goalsSlice";
 import { getIconKey } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
@@ -227,7 +224,7 @@ function GoalFormPage() {
                             },
                         }}
                     >
-                        <ArrowBack sx={{ fontSize: 18 }} />
+                        <PiArrowLeftBold sx={{ fontSize: 18 }} />
                     </IconButton>
                     <Typography
                         sx={{
@@ -433,7 +430,7 @@ function GoalFormPage() {
                                                 },
                                             }}
                                         >
-                                            <FontAwesomeIcon icon={option.iconDef} style={{ fontSize: 18 }} />
+                                            <option.Icon style={{ fontSize: 18 }} />
                                         </IconButton>
                                     </Tooltip>
                                 );
@@ -462,7 +459,7 @@ function GoalFormPage() {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <CalendarToday sx={{ color: "hsl(240, 8%, 55%)", fontSize: 16 }} />
+                                        <PiCalendarBold sx={{ color: "hsl(240, 8%, 55%)", fontSize: 16 }} />
                                     </InputAdornment>
                                 )
                             }}
@@ -751,7 +748,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                     },
                                 }}
                             >
-                                <Check sx={{ fontSize: 16 }} />
+                                <PiCheckBold sx={{ fontSize: 16 }} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Cancel" arrow placement="top">
@@ -767,7 +764,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                     },
                                 }}
                             >
-                                <Close sx={{ fontSize: 16 }} />
+                                <PiXBold sx={{ fontSize: 16 }} />
                             </IconButton>
                         </Tooltip>
                     </>
@@ -787,7 +784,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                     },
                                 }}
                             >
-                                <Edit sx={{ fontSize: 14 }} />
+                                <PiPencilBold sx={{ fontSize: 14 }} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete" arrow placement="top">
@@ -804,7 +801,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                     },
                                 }}
                             >
-                                <Delete sx={{ fontSize: 15 }} />
+                                <PiTrashBold sx={{ fontSize: 15 }} />
                             </IconButton>
                         </Tooltip>
                     </>

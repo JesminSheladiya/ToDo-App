@@ -1,62 +1,13 @@
 import { useRef, useState } from "react";
 import { Box, ClickAwayListener, IconButton, InputAdornment, Popper, TextField, Tooltip, Typography } from "@mui/material";
-import { Search, CheckCircle, RadioButtonUnchecked, Edit, Delete, PauseCircleOutlineRounded, PlayCircleOutlineRounded, ExpandMore, MoreVert } from "@mui/icons-material";
+import { PiMagnifyingGlassBold, PiDotsThreeVerticalBold } from "react-icons/pi";
+import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
+import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
+import { IoChevronDownOutline } from "react-icons/io5";
+import { TbPencil } from "react-icons/tb";
+import { FiTrash } from "react-icons/fi";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
-
-function Dropdown({ trigger, options }) {
-    const [open, setOpen] = useState(false);
-    const anchorRef = useRef(null);
-
-    return (
-        <ClickAwayListener onClickAway={() => setOpen(false)}>
-            <Box ref={anchorRef} sx={{ position: "relative" }}>
-                <Box onClick={() => setOpen((v) => !v)} sx={{ cursor: "pointer" }}>
-                    {trigger}
-                </Box>
-                <Popper
-                    open={open}
-                    anchorEl={anchorRef.current?.firstChild || anchorRef.current}
-                    placement="bottom-start"
-                    sx={{ zIndex: 1400 }}
-                >
-                    <Box sx={{
-                        mt: 0.5,
-                        bgcolor: "#ffffff",
-                        borderRadius: "10px",
-                        border: "1px solid hsl(240, 10%, 90%)",
-                        boxShadow: "0 4px 16px rgb(0 0 0 / .1)",
-                        minWidth: anchorRef.current?.offsetWidth || 140,
-                        overflow: "hidden",
-                    }}>
-                        {options.map((opt, i) => (
-                            <Box
-                                key={opt.value}
-                                onClick={() => { opt.onClick(); setOpen(false); }}
-                                sx={{
-                                    px: 1.5,
-                                    py: 1,
-                                    fontSize: 13,
-                                    fontWeight: 500,
-                                    color: opt.color || "hsl(240, 15%, 10%)",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1.5,
-                                    borderBottom: i < options.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
-                                    "&:hover": { bgcolor: opt.hoverBg || "hsl(240, 20%, 97%)" },
-                                }}
-                            >
-                                {opt.icon}
-                                {opt.label}
-                            </Box>
-                        ))}
-                    </Box>
-                </Popper>
-            </Box>
-        </ClickAwayListener>
-    );
-}
 
 function SelectDropdown({ value, options, onChange, sx }) {
     const [open, setOpen] = useState(false);
@@ -74,20 +25,20 @@ function SelectDropdown({ value, options, onChange, sx }) {
                         gap: 0.75,
                         px: 1.5,
                         py: 0.625,
-                        borderRadius: "12px",
+                        borderRadius: "8px",
                         bgcolor: "#ffffff",
                         border: "1px solid hsl(240, 10%, 88%)",
                         cursor: "pointer",
                         fontSize: 13,
                         fontWeight: 600,
                         color: "hsl(240, 15%, 10%)",
-                        minHeight: 36,
+                        minHeight: 40,
                         minWidth: 130,
                         "&:hover": { borderColor: "#7c3aed" },
                     }}
                 >
                     <Box sx={{ flex: 1 }}>{selected?.label || value}</Box>
-                    <ExpandMore sx={{ fontSize: 18, color: "hsl(240, 8%, 55%)" }} />
+                    <IoChevronDownOutline size={14} />
                 </Box>
                 <Popper
                     open={open}
@@ -130,6 +81,9 @@ function SelectDropdown({ value, options, onChange, sx }) {
 }
 
 function ListView({ goals, categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
+    const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
+    const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+
     const categoryCounts = categories.reduce((acc, cat) => {
         acc[cat.key] = goals.filter((g) => g.category === cat.key).length;
         return acc;
@@ -156,6 +110,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                         minWidth: { sm: 220 },
                         "& .MuiOutlinedInput-root": {
                             bgcolor: "#ffffff",
+                            borderRadius: "8px",
                             boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
                             "& .MuiOutlinedInput-notchedOutline": {
                                 borderColor: "hsl(240, 10%, 88%)",
@@ -171,7 +126,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Search sx={{ fontSize: 18, color: "hsl(240, 8%, 50%)" }} />
+                                <PiMagnifyingGlassBold sx={{ fontSize: 18, color: "hsl(240, 8%, 50%)" }} />
                             </InputAdornment>
                         )
                     }}
@@ -212,7 +167,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                         mb: 1,
                         opacity: 0.7,
                     }}>
-                        🔍
+                        <PiMagnifyingGlassBold sx={{ fontSize: 24, color: "hsl(240, 8%, 50%)" }} />
                     </Typography>
                     <Typography sx={{
                         fontSize: 15,
@@ -269,7 +224,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                 <Box sx={{
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: 1,
+                                    gap: 0.75,
                                     px: { xs: 2, sm: 2.5 },
                                     py: 1.25,
                                     minHeight: 52,
@@ -280,15 +235,16 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                         sx={{
                                             display: { xs: "none", sm: "inline-flex" },
                                             p: 0.25,
-                                            color: completed ? category.text : "hsl(240, 6%, 70%)",
+                                            color: completed ? category.text : "hsl(240, 8%, 50%)",
                                             transition: "all 150ms ease",
                                             "&:hover": { transform: "scale(1.1)" },
+                                            "&:active": { transform: "scale(0.95)" },
                                         }}
                                     >
                                         {completed ? (
-                                            <CheckCircle sx={{ fontSize: 22 }} />
+                                            <FaCircleCheck size={16} />
                                         ) : (
-                                            <RadioButtonUnchecked sx={{ fontSize: 22 }} />
+                                            <FaRegCircle size={16} />
                                         )}
                                     </IconButton>
 
@@ -324,7 +280,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                 gap: 0.50,
                                                 mt: 0.25,
                                             }}>
-                                                <PauseCircleOutlineRounded sx={{ fontSize: 14 }} /> Paused
+                                                <BsFillPauseFill size={14} /> Paused
                                             </Typography>
                                         )}
                                     </Box>
@@ -351,15 +307,15 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             size="small"
                                             sx={{
                                                 display: { xs: "none", sm: "inline-flex" },
-                                                p: 0.5,
-                                                color: paused ? "hsl(39, 90%, 45%)" : "hsl(240, 8%, 50%)",
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: paused ? "hsl(39, 90%, 45%)" : "#d97706",
                                                 "&:hover": {
-                                                    color: paused ? "#d97706" : "#7c3aed",
-                                                    bgcolor: paused ? "hsl(39, 90%, 92%)" : "hsl(262, 83%, 96%)",
+                                                    bgcolor: "hsl(39, 90%, 95%)"
                                                 },
                                             }}
                                         >
-                                            {paused ? <PlayCircleOutlineRounded sx={{ fontSize: 22 }} /> : <PauseCircleOutlineRounded sx={{ fontSize: 22 }} />}
+                                            {paused ? <BsFillPlayFill size={18} /> : <BsFillPauseFill size={18} />}
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Edit" arrow>
@@ -368,15 +324,16 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             size="small"
                                             sx={{
                                                 display: { xs: "none", sm: "inline-flex" },
-                                                p: 0.5,
-                                                color: "hsl(240, 8%, 50%)",
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: "#7c3aed",
                                                 "&:hover": {
                                                     color: "#7c3aed",
                                                     bgcolor: "hsl(262, 83%, 96%)",
                                                 },
                                             }}
                                         >
-                                            <Edit sx={{ fontSize: 20 }} />
+                                            <TbPencil size={18} />
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Delete" arrow>
@@ -385,58 +342,119 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             size="small"
                                             sx={{
                                                 display: { xs: "none", sm: "inline-flex" },
-                                                p: 0.5,
-                                                color: "hsl(240, 8%, 60%)",
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: "#dc2626",
                                                 "&:hover": {
                                                     color: "#dc2626",
-                                                    bgcolor: "hsl(0, 84%, 95%)",
+                                                    bgcolor: "hsl(0, 84%, 96%)",
                                                 },
                                             }}
                                         >
-                                            <Delete sx={{ fontSize: 20 }} />
+                                            <FiTrash size={18} />
                                         </IconButton>
                                     </Tooltip>
 
                                     <Box sx={{ display: { xs: "inline-flex", sm: "none" } }}>
-                                        <Dropdown
-                                            trigger={
-                                                <IconButton size="small" sx={{ p: 0.5, color: "hsl(240, 8%, 50%)" }}>
-                                                    <MoreVert sx={{ fontSize: 20 }} />
-                                                </IconButton>
-                                            }
-                                            options={[
-                                                {
-                                                    value: "toggle",
-                                                    label: (goal.status === "completed" || goal.completed) ? "Mark Incomplete" : "Mark Complete",
-                                                    icon: (goal.status === "completed" || goal.completed)
-                                                        ? <CheckCircle sx={{ fontSize: 20, color: (categories.find(c => c.key === goal.category) || categories[0]).text }} />
-                                                        : <RadioButtonUnchecked sx={{ fontSize: 20, color: "hsl(240, 10%, 75%)" }} />,
-                                                    onClick: () => onToggleGoal(goal),
-                                                },
-                                                {
-                                                    value: "pause",
-                                                    label: goal.status === "paused" ? "Resume" : "Pause",
-                                                    icon: goal.status === "paused"
-                                                        ? <PlayCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(39, 90%, 45%)" }} />
-                                                        : <PauseCircleOutlineRounded sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />,
-                                                    onClick: () => onPauseToggle(goal),
-                                                },
-                                                {
-                                                    value: "edit",
-                                                    label: "Edit",
-                                                    icon: <Edit sx={{ fontSize: 20, color: "hsl(240, 8%, 55%)" }} />,
-                                                    onClick: () => onEdit(goal),
-                                                },
-                                                {
-                                                    value: "delete",
-                                                    label: "Delete",
-                                                    icon: <Delete sx={{ fontSize: 20, color: "#dc2626" }} />,
-                                                    onClick: () => onDelete(goal),
-                                                    color: "#dc2626",
-                                                    hoverBg: "hsl(0, 100%, 98%)",
-                                                },
-                                            ]}
-                                        />
+                                        <IconButton
+                                            onClick={(e) => { setMobileMenuAnchor(e.currentTarget); setMobileMenuGoal(goal.id); }}
+                                            size="small"
+                                            sx={{ p: 0.6, bgcolor: "hsl(240, 20%, 97%)", color: "hsl(240, 8%, 50%)" }}
+                                        >
+                                            <PiDotsThreeVerticalBold size={20} />
+                                        </IconButton>
+                                        <Popper
+                                            open={mobileMenuGoal === goal.id}
+                                            anchorEl={mobileMenuAnchor}
+                                            placement="bottom-end"
+                                            sx={{ zIndex: 1400 }}
+                                        >
+                                            <ClickAwayListener onClickAway={() => { setMobileMenuGoal(null); setMobileMenuAnchor(null); }}>
+                                                <Box sx={{
+                                                    mt: 0.5,
+                                                    bgcolor: "#fff",
+                                                    borderRadius: "10px",
+                                                    border: "1px solid hsl(240, 10%, 90%)",
+                                                    boxShadow: "0 4px 16px rgb(0 0 0 / 10%)",
+                                                    minWidth: 140,
+                                                    overflow: "hidden",
+                                                }}>
+                                                    <Box
+                                                        onClick={() => { onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: category.soft,
+                                                                color: category.text,
+                                                            },
+                                                        }}
+                                                    >
+                                                        {(goal.status === "completed" || goal.completed)
+                                                            ? <FaCircleCheck size={16} color={category.text} />
+                                                            : <FaRegCircle size={16} color={category.text} />
+                                                        }
+                                                        {(goal.status === "completed" || goal.completed) ? "Incomplete" : "Complete"}
+                                                    </Box>
+                                                    <Box
+                                                        onClick={() => { onPauseToggle(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: "hsla(38, 100%, 95%, 1)",
+                                                                color: "hsl(39, 90%, 45%)",
+                                                            },
+                                                        }}
+                                                    >
+                                                        {goal.status === "paused"
+                                                            ? <BsFillPlayFill size={18} color="hsl(39, 90%, 45%)" />
+                                                            : <BsFillPauseFill size={18} color="#d97706" />
+                                                        }
+                                                        {goal.status === "paused" ? "Resume" : "Pause"}
+                                                    </Box>
+                                                    <Box
+                                                        onClick={() => { onEdit(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: "hsl(240, 100%, 98%)",
+                                                                color: "#7c3aed",
+                                                            },
+                                                        }}
+                                                    >
+                                                        <TbPencil size={18} color="#7c3aed" />
+                                                        Edit
+                                                    </Box>
+                                                    <Box
+                                                        onClick={() => { onDelete(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: "hsl(0, 100%, 98%)",
+                                                                color: "#dc2626",
+                                                            },
+                                                        }}
+                                                    >
+                                                        <FiTrash size={16} color="#dc2626" />
+                                                        Delete
+                                                    </Box>
+                                                </Box>
+                                            </ClickAwayListener>
+                                        </Popper>
                                     </Box>
                                 </Box>
                             </Box>
