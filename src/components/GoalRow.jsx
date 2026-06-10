@@ -51,16 +51,17 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
                     disableRipple
                     sx={{
                         p: 0.25,
-                        mt: "2px",
+                        mt: "5px",
+                        fontSize: 14,
                         flexShrink: 0,
                         color: step.done ? category.text : "hsl(240, 10%, 60%)",
                         "&:hover": { bgcolor: "transparent" },
                     }}
                 >
                     {step.done ? (
-                        <FaCircleCheck sx={{ fontSize: 15 }} />
+                        <FaCircleCheck />
                     ) : (
-                        <FaRegCircle sx={{ fontSize: 15 }} />
+                        <FaRegCircle />
                     )}
                 </IconButton>
                 <Typography sx={{
@@ -155,14 +156,22 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         checked={completed}
                         onChange={() => onToggleGoal(goal)}
                         disableRipple
+                        disabled={paused}
                         sx={{
                             display: { xs: "none", sm: "inline-flex" },
                             p: 0,
                             width: 22,
                             height: 22,
-                            color: "hsl(240, 8%, 50%)",
+                            color: paused ? "hsl(240, 10%, 78%)" : "hsl(240, 8%, 50%)",
                             "&.Mui-checked": {
                                 color: category.text,
+                            },
+                            "&.Mui-disabled": {
+                                opacity: 0.35,
+                                cursor: "not-allowed",
+                                "&.Mui-checked": {
+                                    color: "hsl(240, 10%, 78%)",
+                                },
                             },
                             "& .MuiSvgIcon-root": {
                                 fontSize: 22,
@@ -265,7 +274,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             </IconButton>
                         )}
 
-                        <Tooltip title={paused ? "Resume" : "Pause"} arrow placement="top">
+                        <Tooltip title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow placement="top">
                             <IconButton
                                 onClick={() => onPauseToggle(goal)}
                                 size="small"
@@ -275,8 +284,10 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                     p: 0.6,
                                     bgcolor: "hsl(240, 20%, 97%)",
                                     color: paused ? "hsl(39, 90%, 45%)" : "#d97706",
+                                    opacity: completed ? 0.35 : 1,
+                                    cursor: completed ? "not-allowed" : "pointer",
                                     "&:hover": {
-                                        bgcolor: "hsl(39, 90%, 95%)"
+                                        bgcolor: completed ? "hsl(240, 20%, 97%)" : "hsl(39, 90%, 95%)"
                                     },
                                 }}
                             >
@@ -361,8 +372,10 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                         {/* Complete */}
                                         <Box
                                             onClick={() => {
-                                                onToggleGoal(goal);
-                                                setMobileMenuOpen(false);
+                                                if (!paused) {
+                                                    onToggleGoal(goal);
+                                                    setMobileMenuOpen(false);
+                                                }
                                             }}
                                             sx={{
                                                 px: 1.5,
@@ -370,15 +383,16 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                                 fontSize: 13,
                                                 fontWeight: 500,
                                                 color: "hsl(240, 8%, 20%)",
-                                                cursor: "pointer",
+                                                cursor: paused ? "not-allowed" : "pointer",
+                                                opacity: paused ? 0.35 : 1,
                                                 display: "flex",
                                                 alignItems: "center",
                                                 gap: 1.5,
                                                 borderBottom: "1px solid hsl(240, 10%, 93%)",
                                                 transition: "0.3s all ease",
                                                 "&:hover": {
-                                                    bgcolor: category.soft,
-                                                    color: category.text,
+                                                    bgcolor: paused ? "inherit" : category.soft,
+                                                    color: paused ? "inherit" : category.text,
                                                 },
                                             }}
                                         >
@@ -399,8 +413,10 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                         {/* Pause */}
                                         <Box
                                             onClick={() => {
-                                                onPauseToggle(goal);
-                                                setMobileMenuOpen(false);
+                                                if (!completed) {
+                                                    onPauseToggle(goal);
+                                                    setMobileMenuOpen(false);
+                                                }
                                             }}
                                             sx={{
                                                 px: 1.5,
@@ -408,15 +424,16 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                                 fontSize: 13,
                                                 fontWeight: 500,
                                                 color: "hsl(240, 8%, 20%)",
-                                                cursor: "pointer",
+                                                cursor: completed ? "not-allowed" : "pointer",
+                                                opacity: completed ? 0.35 : 1,
                                                 display: "flex",
                                                 alignItems: "center",
                                                 gap: 1.5,
                                                 borderBottom: "1px solid hsl(240, 10%, 93%)",
                                                 transition: "0.3s all ease",
                                                 "&:hover": {
-                                                    bgcolor: "hsla(38, 100%, 95%, 1)",
-                                                    color: "hsl(39, 90%, 45%)",
+                                                    bgcolor: completed ? "inherit" : "hsla(38, 100%, 95%, 1)",
+                                                    color: completed ? "inherit" : "hsl(39, 90%, 45%)",
                                                 },
                                             }}
                                         >

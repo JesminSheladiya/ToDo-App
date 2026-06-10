@@ -48,6 +48,7 @@ export function useGoalActions() {
     }, [dispatch]);
 
     const handleToggleGoal = useCallback((goal) => {
+        if (goal.status === "paused") return;
         const completed = !(goal.completed || goal.status === "completed");
         const steps = goal.steps || [];
 
@@ -79,6 +80,7 @@ export function useGoalActions() {
     }, [dispatch]);
 
     const handlePauseToggle = useCallback((goal) => {
+        if (goal.completed || goal.status === "completed") return;
         const isPaused = goal.status === "paused";
         const nextGoal = {
             ...goal,

@@ -236,9 +236,11 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                             display: { xs: "none", sm: "inline-flex" },
                                             p: 0.25,
                                             color: completed ? category.text : "hsl(240, 8%, 50%)",
+                                            opacity: paused ? 0.35 : 1,
+                                            cursor: paused ? "not-allowed" : "pointer",
                                             transition: "all 150ms ease",
-                                            "&:hover": { transform: "scale(1.1)" },
-                                            "&:active": { transform: "scale(0.95)" },
+                                            "&:hover": { transform: paused ? "none" : "scale(1.1)" },
+                                            "&:active": { transform: paused ? "none" : "scale(0.95)" },
                                         }}
                                     >
                                         {completed ? (
@@ -301,7 +303,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                         </Box>
                                     )}
 
-                                    <Tooltip title={paused ? "Resume" : "Pause"} arrow>
+                                    <Tooltip title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow>
                                         <IconButton
                                             onClick={() => onPauseToggle(goal)}
                                             size="small"
@@ -310,8 +312,10 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                 p: 0.6,
                                                 bgcolor: "hsl(240, 20%, 97%)",
                                                 color: paused ? "hsl(39, 90%, 45%)" : "#d97706",
+                                                opacity: completed ? 0.35 : 1,
+                                                cursor: completed ? "not-allowed" : "pointer",
                                                 "&:hover": {
-                                                    bgcolor: "hsl(39, 90%, 95%)"
+                                                    bgcolor: completed ? "hsl(240, 20%, 97%)" : "hsl(39, 90%, 95%)"
                                                 },
                                             }}
                                         >
@@ -380,16 +384,18 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                     overflow: "hidden",
                                                 }}>
                                                     <Box
-                                                        onClick={() => { onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        onClick={() => { if (goal.status !== "paused") { onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
                                                         sx={{
                                                             px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
                                                             color: "hsl(240, 8%, 20%)",
-                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            cursor: goal.status === "paused" ? "not-allowed" : "pointer",
+                                                            opacity: goal.status === "paused" ? 0.35 : 1,
+                                                            display: "flex", alignItems: "center", gap: 1.5,
                                                             borderBottom: "1px solid hsl(240, 10%, 93%)",
                                                             transition: "0.3s all ease",
                                                             "&:hover": {
-                                                                bgcolor: category.soft,
-                                                                color: category.text,
+                                                                bgcolor: goal.status === "paused" ? "inherit" : category.soft,
+                                                                color: goal.status === "paused" ? "inherit" : category.text,
                                                             },
                                                         }}
                                                     >
@@ -400,16 +406,18 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                                                         {(goal.status === "completed" || goal.completed) ? "Incomplete" : "Complete"}
                                                     </Box>
                                                     <Box
-                                                        onClick={() => { onPauseToggle(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        onClick={() => { if (!(goal.completed || goal.status === "completed")) { onPauseToggle(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
                                                         sx={{
                                                             px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
                                                             color: "hsl(240, 8%, 20%)",
-                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            cursor: (goal.status === "completed" || goal.completed) ? "not-allowed" : "pointer",
+                                                            opacity: (goal.status === "completed" || goal.completed) ? 0.35 : 1,
+                                                            display: "flex", alignItems: "center", gap: 1.5,
                                                             borderBottom: "1px solid hsl(240, 10%, 93%)",
                                                             transition: "0.3s all ease",
                                                             "&:hover": {
-                                                                bgcolor: "hsla(38, 100%, 95%, 1)",
-                                                                color: "hsl(39, 90%, 45%)",
+                                                                bgcolor: (goal.status === "completed" || goal.completed) ? "inherit" : "hsla(38, 100%, 95%, 1)",
+                                                                color: (goal.status === "completed" || goal.completed) ? "inherit" : "hsl(39, 90%, 45%)",
                                                             },
                                                         }}
                                                     >

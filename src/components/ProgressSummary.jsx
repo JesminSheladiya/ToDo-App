@@ -4,8 +4,12 @@ import Stack from "./Stack";
 function ProgressSummary({ stats, goals, categories }) {
     const overallProgress = goals.length > 0
         ? Math.round(
-            goals.reduce((sum, g) => sum + (g.steps?.filter((s) => s.done).length || 0), 0) /
-            Math.max(goals.reduce((sum, g) => sum + (g.steps?.length || 0), 0), 1) * 100
+            goals.reduce((sum, g) => {
+                const steps = g.steps || [];
+                if (steps.length === 0) return sum + (g.completed ? 1 : 0);
+                const done = steps.filter((s) => s.done).length;
+                return sum + done / steps.length;
+            }, 0) / goals.length * 100
         )
         : 0;
 

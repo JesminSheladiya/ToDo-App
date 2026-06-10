@@ -14,12 +14,22 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
         const completed = goals.filter((g) => g.completed || g.status === "completed").length;
         const totalSteps = goals.reduce((s, g) => s + (g.steps?.length || 0), 0);
         const doneSteps = goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0);
+        const stepProgress = total > 0
+            ? Math.round(
+                goals.reduce((sum, g) => {
+                    const steps = g.steps || [];
+                    if (steps.length === 0) return sum + (g.completed ? 1 : 0);
+                    const done = steps.filter((s) => s.done).length;
+                    return sum + done / steps.length;
+                }, 0) / total * 100
+            )
+            : 0;
         return {
             total,
             completed,
             totalSteps,
             doneSteps,
-            stepProgress: totalSteps > 0 ? Math.round((doneSteps / totalSteps) * 100) : 0
+            stepProgress
         };
     }, [goals]);
 
@@ -89,7 +99,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         flexShrink: 0,
                     }}
                 >
-                    <RoundedGoalIcon iconKey={category.iconKey} sx={{ color: category.text, fontSize: 20 }} />
+                    <RoundedGoalIcon iconKey={category.iconKey} sx={{ color: category.text, fontSize: 22 }} />
                 </Box>
 
                 <Box sx={{ flex: 1, minWidth: 0 }}>

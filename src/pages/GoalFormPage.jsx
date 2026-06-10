@@ -11,7 +11,10 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ICON_OPTIONS, emptyDraft } from "../constants/goals";
-import { PiArrowLeftBold, PiCalendarBold, PiTrashBold, PiPencilBold, PiCheckBold, PiXBold } from "react-icons/pi";
+import { PiArrowLeftBold, PiCheckBold, PiXBold } from "react-icons/pi";
+import { IoCalendarNumber } from "react-icons/io5";
+import { TbPencil } from "react-icons/tb";
+import { FiTrash } from "react-icons/fi";
 import { createGoal, fetchGoals, updateGoal } from "../store/goalsSlice";
 import { getIconKey } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
@@ -83,11 +86,12 @@ function GoalFormPage() {
     }, [newStepText]);
 
     const handleRemoveStep = useCallback((id) => {
+        const step = draft.steps.find((s) => s.stepId === id || s._tempId === id);
         toast(
             ({ closeToast }) => (
                 <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
                     <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
-                    <span style={{ flex: 1, fontWeight: 600 }}>Remove "{draft.steps.find((s) => s.stepId === id || s._tempId === id)?.text}"?</span>
+                    <span style={{ flex: 1, fontWeight: 600 }}>Remove "{step?.text}"?</span>
                     <button onClick={() => {
                         closeToast();
                         setDraft((prev) => ({
@@ -108,7 +112,7 @@ function GoalFormPage() {
             ),
             { autoClose: 5000, closeButton: true, draggable: true, pauseOnHover: false, pauseOnFocusLoss: false }
         );
-    }, [editingStep]);
+    }, [draft, editingStep]);
 
     const handleStartEditStep = useCallback((step) => {
         setEditingStep(step);
@@ -459,7 +463,7 @@ function GoalFormPage() {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <PiCalendarBold sx={{ color: "hsl(240, 8%, 55%)", fontSize: 16 }} />
+                                        <IoCalendarNumber sx={{ color: "hsl(240, 8%, 55%)", fontSize: 16 }} />
                                     </InputAdornment>
                                 )
                             }}
@@ -568,6 +572,7 @@ function GoalFormPage() {
                             <Button
                                 variant="contained"
                                 onClick={handleAddStep}
+                                disabled={!newStepText.trim()}
                                 disableElevation
                                 sx={{
                                     px: 0,
@@ -576,6 +581,10 @@ function GoalFormPage() {
                                     boxShadow: "none",
                                     "&:hover": {
                                         boxShadow: "0 2px 6px rgb(0 0 0 / .1)",
+                                    },
+                                    "&.Mui-disabled": {
+                                        background: "hsl(240, 10%, 92%)",
+                                        color: "hsl(240, 6%, 70%)",
                                     },
                                 }}
                             >
@@ -777,14 +786,15 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                 disableRipple
                                 sx={{
                                     p: 0.375,
-                                    color: "hsl(240, 8%, 65%)",
+                                    color: "#7c3aed",
+                                    bgcolor: "hsla(0, 0%, 100%, 1.00)",
                                     "&:hover": {
                                         color: "#7c3aed",
                                         bgcolor: "hsl(262, 83%, 96%)",
                                     },
                                 }}
                             >
-                                <PiPencilBold sx={{ fontSize: 14 }} />
+                                <TbPencil size={15} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete" arrow placement="top">
@@ -794,14 +804,15 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                 disableRipple
                                 sx={{
                                     p: 0.375,
-                                    color: "hsl(240, 8%, 65%)",
+                                    color: "#dc2626",
+                                    bgcolor: "hsla(0, 0%, 100%, 1.00)",
                                     "&:hover": {
                                         color: "#dc2626",
                                         bgcolor: "hsl(0, 84%, 96%)",
                                     },
                                 }}
                             >
-                                <PiTrashBold sx={{ fontSize: 15 }} />
+                                <FiTrash size={16} />
                             </IconButton>
                         </Tooltip>
                     </>
