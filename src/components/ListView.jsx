@@ -80,18 +80,28 @@ function SelectDropdown({ value, options, onChange, sx }) {
     );
 }
 
-function ListView({ goals, categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
+function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
     const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
 
+    const goalsWithoutCategory = allGoals.filter((g) => {
+        const matchesQuery = g.title.toLowerCase().includes(query.toLowerCase());
+        const matchesStatus = statusFilter === "all" || g.status === statusFilter;
+        return matchesQuery && matchesStatus;
+    });
+    const goalsWithoutStatus = allGoals.filter((g) => {
+        const matchesQuery = g.title.toLowerCase().includes(query.toLowerCase());
+        const matchesCategory = categoryFilter === "all" || g.category === categoryFilter;
+        return matchesQuery && matchesCategory;
+    });
     const categoryCounts = categories.reduce((acc, cat) => {
-        acc[cat.key] = goals.filter((g) => g.category === cat.key).length;
+        acc[cat.key] = goalsWithoutCategory.filter((g) => g.category === cat.key).length;
         return acc;
     }, {});
     const statusCounts = {
-        active: goals.filter((g) => g.status === "active" && !g.completed).length,
-        completed: goals.filter((g) => g.completed || g.status === "completed").length,
-        paused: goals.filter((g) => g.status === "paused").length,
+        active: goalsWithoutStatus.filter((g) => g.status === "active" && !g.completed).length,
+        completed: goalsWithoutStatus.filter((g) => g.completed || g.status === "completed").length,
+        paused: goalsWithoutStatus.filter((g) => g.status === "paused").length,
     };
     return (
         <Stack spacing={2}>
@@ -134,7 +144,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                 <SelectDropdown
                     value={categoryFilter}
                     options={[
-                        { value: "all", label: `All Categories (${goals.length})` },
+                        { value: "all", label: `All Categories (${goalsWithoutCategory.length})` },
                         ...categories.map((cat) => ({ value: cat.key, label: `${cat.label} (${categoryCounts[cat.key]})` })),
                     ]}
                     onChange={onCategoryFilterChange}
@@ -143,7 +153,7 @@ function ListView({ goals, categories, query, categoryFilter, statusFilter, onQu
                 <SelectDropdown
                     value={statusFilter}
                     options={[
-                        { value: "all", label: `All Statuses (${goals.length})` },
+                        { value: "all", label: `All Statuses (${goalsWithoutStatus.length})` },
                         { value: "active", label: `Active (${statusCounts.active})` },
                         { value: "completed", label: `Completed (${statusCounts.completed})` },
                         { value: "paused", label: `Paused (${statusCounts.paused})` },

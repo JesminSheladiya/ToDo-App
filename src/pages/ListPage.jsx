@@ -31,6 +31,7 @@ function ListPage() {
     return (
         <ListView
             goals={filteredGoals}
+            allGoals={goals}
             categories={categories}
             query={query}
             categoryFilter={categoryFilter}
