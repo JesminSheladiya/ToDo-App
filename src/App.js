@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import MainLayout from "./layouts/MainLayout";
 import CategoriesPage from "./pages/CategoriesPage";
 import ListPage from "./pages/ListPage";
@@ -36,7 +38,9 @@ function AppRoutes() {
 function App() {
     return (
         <BrowserRouter>
-            <AppRoutes />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <AppRoutes />
+            </LocalizationProvider>
         </BrowserRouter>
     );
 }
