@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -6,21 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
-    Box, Button, ClickAwayListener, Dialog, IconButton,
-    Popper, TextField, Tooltip, Typography, useMediaQuery
+    Box, Button, Dialog, IconButton,
+    TextField, Tooltip, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { DayPicker } from "react-day-picker";
-import "react-day-picker/style.css";
-import dayjs from "dayjs";
 import { ICON_OPTIONS, emptyDraft } from "../constants/goals";
 import { PiArrowLeftBold, PiCheckBold, PiXBold } from "react-icons/pi";
-import { IoCalendarNumber } from "react-icons/io5";
 import { TbPencil } from "react-icons/tb";
 import { FiTrash } from "react-icons/fi";
 import { createGoal, fetchGoals, updateGoal } from "../store/goalsSlice";
 import { getIconKey } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
+import CustomDateTimePicker from "../components/CustomDateTimePicker";
 import Stack from "../components/Stack";
 import DragHandle from "../components/DragHandle";
 
@@ -65,8 +62,6 @@ function GoalFormPage() {
     const [newStepText, setNewStepText] = useState("");
     const [editingStep, setEditingStep] = useState(null);
     const [editingStepText, setEditingStepText] = useState("");
-    const [calendarOpen, setCalendarOpen] = useState(false);
-    const calendarAnchorRef = useRef(null);
 
     useEffect(() => {
         if (isEditing && existingGoal) {
@@ -455,7 +450,7 @@ function GoalFormPage() {
                         </Box>
                     </Box>
 
-                    <Box className="goal-form-page__field" ref={calendarAnchorRef}>
+                    <Box className="goal-form-page__field">
                         <Typography className="goal-form-page__field-label" sx={{
                             fontSize: 12,
                             fontWeight: 700,
@@ -463,157 +458,14 @@ function GoalFormPage() {
                             mb: 0.5,
                             letterSpacing: "0.06em",
                         }}>
-                            Target Date
+                            Target Date & Time
                         </Typography>
-                        <Box
-                            onClick={() => setCalendarOpen(true)}
-                            sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                                px: 1.5,
-                                py: 0.875,
-                                borderRadius: "10px",
-                                fontSize: 14,
-                                bgcolor: "hsl(240, 20%, 98%)",
-                                border: "1px solid hsl(240, 10%, 88%)",
-                                cursor: "pointer",
-                                color: draft.targetDate ? "hsl(240, 15%, 10%)" : "hsl(240, 10%, 65%)",
-                                fontWeight: draft.targetDate ? 600 : 400,
-                                transition: "border-color 150ms ease",
-                                "&:hover": {
-                                    borderColor: "hsl(240, 10%, 78%)",
-                                },
-                            }}
-                        >
-                            <IoCalendarNumber size={16} style={{ color: "hsl(240, 8%, 55%)", flexShrink: 0 }} />
-                            {draft.targetDate ? dayjs(draft.targetDate).format("DD/MM/YYYY") : "DD/MM/YYYY"}
-                            {draft.targetDate && (
-                                <Box
-                                    onClick={(e) => { e.stopPropagation(); updateDraft({ targetDate: "" }); }}
-                                    sx={{
-                                        ml: "auto",
-                                        fontSize: 14,
-                                        color: "hsl(240, 8%, 60%)",
-                                        lineHeight: 1,
-                                        "&:hover": { color: "#dc2626" },
-                                    }}
-                                >
-                                    ×
-                                </Box>
-                            )}
-                        </Box>
-                        <Popper
-                            open={calendarOpen}
-                            anchorEl={calendarAnchorRef.current}
-                            placement="bottom-start"
-                            sx={{ zIndex: 1400 }}
-                        >
-                            <ClickAwayListener onClickAway={() => setCalendarOpen(false)}>
-                                <Box sx={{
-                                    mt: 0.5,
-                                    bgcolor: "#fff",
-                                    borderRadius: "14px",
-                                    border: "1px solid hsl(240, 10%, 90%)",
-                                    boxShadow: "0 8px 24px rgb(0 0 0 / .1)",
-                                    overflow: "hidden",
-                                    ".rdp-root": {
-                                        "--rdp-accent-color": category?.progress || "#7c3aed",
-                                        "--rdp-day-font-weight": 600,
-                                        "--rdp-day-font-size": 13,
-                                        "--rdp-day-width": 38,
-                                        "--rdp-day-height": 38,
-                                        "--rdp-today-color": category?.progress || "#7c3aed",
-                                        "--rdp-selected-font-weight": 700,
-                                        "--rdp-day-button-border-radius": "8px",
-                                        "--rdp-outside-opacity": 0.4,
-                                        "--rdp-disabled-opacity": 0.3,
-                                    },
-                                    ".rdp-month_grid": {
-                                        width: "100%",
-                                        px: 1.5,
-                                        pb: 1.5,
-                                    },
-                                    ".rdp-month": {
-                                        px: 1.5,
-                                        pt: 1,
-                                    },
-                                    ".rdp-nav": {
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
-                                        px: 1.5,
-                                        pt: 1.25,
-                                        pb: 0.5,
-                                    },
-                                    ".rdp-nav button": {
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: "8px",
-                                        border: "none",
-                                        background: "transparent",
-                                        cursor: "pointer",
-                                        display: "grid",
-                                        placeItems: "center",
-                                        fontSize: 18,
-                                        color: "hsl(240, 8%, 50%)",
-                                        "&:hover": {
-                                            bgcolor: "hsl(240, 20%, 95%)",
-                                        },
-                                    },
-                                    ".rdp-month_label": {
-                                        fontWeight: 700,
-                                        fontSize: 15,
-                                        fontFamily: "'Sora', sans-serif",
-                                        color: "hsl(240, 15%, 10%)",
-                                    },
-                                    ".rdp-weekday": {
-                                        fontSize: 12,
-                                        fontWeight: 600,
-                                        color: "hsl(240, 8%, 50%)",
-                                        pb: 0.5,
-                                        textTransform: "none",
-                                    },
-                                    ".rdp-day_button": {
-                                        borderRadius: "8px",
-                                        fontWeight: 600,
-                                        fontSize: 13,
-                                        transition: "all 150ms ease",
-                                        "&:hover": {
-                                            bgcolor: "hsl(240, 20%, 95%) !important",
-                                        },
-                                        "&[data-selected]": {
-                                            bgcolor: `${category?.progress || "#7c3aed"} !important`,
-                                            color: "#fff",
-                                            fontWeight: 700,
-                                        },
-                                        "&[data-today]:not([data-selected])": {
-                                            border: `1px solid ${category?.progress || "#7c3aed"}`,
-                                        },
-                                    },
-                                    ".rdp-weekdays": {
-                                        px: 1.5,
-                                    },
-                                    ".rdp-chevron": {
-                                        fill: "hsl(240, 8%, 50%)",
-                                        width: 18,
-                                        height: 18,
-                                    },
-                                }}>
-                                    <DayPicker
-                                        mode="single"
-                                        selected={draft.targetDate ? dayjs(draft.targetDate).toDate() : undefined}
-                                        onSelect={(date) => {
-                                            updateDraft({ targetDate: date ? dayjs(date).format("YYYY-MM-DD") : "" });
-                                            setCalendarOpen(false);
-                                        }}
-                                        defaultMonth={draft.targetDate ? dayjs(draft.targetDate).toDate() : new Date()}
-                                        disabled={{ before: new Date() }}
-                                        weekStartsOn={1}
-                                    />
-                                </Box>
-                            </ClickAwayListener>
-                        </Popper>
+                        <CustomDateTimePicker
+                            value={{ date: draft.targetDate, time: draft.targetTime }}
+                            onChange={({ date, time }) => updateDraft({ targetDate: date, targetTime: time })}
+                            accentColor={category?.progress || "#7c3aed"}
+                            softColor={category?.soft || "#f5f3ff"}
+                        />
                     </Box>
 
                     <Box className="goal-form-page__field">
