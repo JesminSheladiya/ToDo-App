@@ -19,14 +19,14 @@ function ProgressSummary({ stats, goals, categories }) {
     const pausedCount = goals.filter((g) => g.status === "paused").length;
 
     return (
-        <Box sx={{
+        <Box className="progress-summary" sx={{
             bgcolor: "#ffffff",
             borderRadius: "16px",
             border: "1px solid hsl(240, 10%, 90%)",
             overflow: "hidden",
             boxShadow: "0 1px 2px rgb(0 0 0 / .05)",
         }}>
-            <Box sx={{
+            <Box className="progress-summary__accent-bar" sx={{
                 height: 3,
                 background: `linear-gradient(90deg, 
                     hsl(var(--short-term)), 
@@ -37,10 +37,10 @@ function ProgressSummary({ stats, goals, categories }) {
                 )`,
             }} />
 
-            <Box sx={{ p: { xs: 2, sm: 2.5 } }}>
-                <Stack spacing={2}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Typography sx={{
+            <Box className="progress-summary__content" sx={{ p: { xs: 2, sm: 2.5 } }}>
+                <Stack spacing={2} className="progress-summary__body">
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" className="progress-summary__header">
+                        <Typography className="progress-summary__title" sx={{
                             fontWeight: 700,
                             fontSize: 15,
                             color: "hsl(240, 15%, 10%)",
@@ -48,7 +48,7 @@ function ProgressSummary({ stats, goals, categories }) {
                         }}>
                             Overall Progress
                         </Typography>
-                        <Box sx={{
+                        <Box className="progress-summary__percentage" sx={{
                             px: 1.5,
                             py: 0.5,
                             borderRadius: "8px",
@@ -62,10 +62,11 @@ function ProgressSummary({ stats, goals, categories }) {
                         </Box>
                     </Stack>
 
-                    <Box>
+                    <Box className="progress-summary__progress">
                         <LinearProgress
                             variant="determinate"
                             value={overallProgress}
+                            className="progress-summary__progress-bar"
                             sx={{
                                 height: 8,
                                 borderRadius: 99,
@@ -82,15 +83,15 @@ function ProgressSummary({ stats, goals, categories }) {
                                 }
                             }}
                         />
-                        <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.75 }}>
-                            <Typography sx={{
+                        <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.75 }} className="progress-summary__stats">
+                            <Typography className="progress-summary__stat" sx={{
                                 fontSize: 12,
                                 color: "hsl(240, 8%, 50%)",
                                 fontWeight: 500,
                             }}>
                                 {stats.completed}/{stats.total} goals completed
                             </Typography>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat" sx={{
                                 fontSize: 12,
                                 color: "hsl(240, 8%, 50%)",
                                 fontWeight: 500,
@@ -100,7 +101,7 @@ function ProgressSummary({ stats, goals, categories }) {
                         </Stack>
                     </Box>
 
-                    <Box sx={{
+                    <Box className="progress-summary__categories" sx={{
                         display: "flex",
                         flexWrap: "wrap",
                         gap: 0.75,
@@ -110,6 +111,7 @@ function ProgressSummary({ stats, goals, categories }) {
                             return (
                                 <Box
                                     key={category.key}
+                                    className="progress-summary__category-pill"
                                     sx={{
                                         display: "inline-flex",
                                         alignItems: "center",
@@ -121,21 +123,21 @@ function ProgressSummary({ stats, goals, categories }) {
                                         border: `1px solid ${category.border}`,
                                     }}
                                 >
-                                    <Box sx={{
+                                    <Box className="progress-summary__category-dot" sx={{
                                         width: 8,
                                         height: 8,
                                         borderRadius: "50%",
                                         background: category.gradient,
                                         flexShrink: 0,
                                     }} />
-                                    <Typography sx={{
+                                    <Typography className="progress-summary__category-label" sx={{
                                         fontSize: 12,
                                         fontWeight: 600,
                                         color: category.text,
                                     }}>
                                         {category.label}
                                     </Typography>
-                                    <Typography sx={{
+                                    <Typography className="progress-summary__category-count" sx={{
                                         fontSize: 12,
                                         fontWeight: 800,
                                         color: category.text,
@@ -148,18 +150,18 @@ function ProgressSummary({ stats, goals, categories }) {
                         })}
                     </Box>
 
-                    <Box sx={{
+                    <Box className="progress-summary__stats-grid" sx={{
                         display: "grid",
                         gridTemplateColumns: "1fr 1fr 1fr 1fr",
                         gap: 1,
                     }}>
-                        <Box sx={{
+                        <Box className="progress-summary__stat-box" sx={{
                             bgcolor: "hsl(240, 20%, 97%)",
                             borderRadius: "10px",
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-value" sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
@@ -168,7 +170,7 @@ function ProgressSummary({ stats, goals, categories }) {
                             }}>
                                 {stats.total}
                             </Typography>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "hsl(240, 8%, 50%)",
                                 fontWeight: 500,
@@ -179,13 +181,13 @@ function ProgressSummary({ stats, goals, categories }) {
                                 Total
                             </Typography>
                         </Box>
-                        <Box sx={{
+                        <Box className="progress-summary__stat-box" sx={{
                             bgcolor: "hsl(142, 76%, 96%)",
                             borderRadius: "10px",
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-value" sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
@@ -194,7 +196,7 @@ function ProgressSummary({ stats, goals, categories }) {
                             }}>
                                 {stats.completed}
                             </Typography>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "#16a34a",
                                 fontWeight: 500,
@@ -205,13 +207,13 @@ function ProgressSummary({ stats, goals, categories }) {
                                 Done
                             </Typography>
                         </Box>
-                        <Box sx={{
+                        <Box className="progress-summary__stat-box" sx={{
                             bgcolor: "hsl(262, 83%, 96%)",
                             borderRadius: "10px",
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-value" sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
@@ -220,7 +222,7 @@ function ProgressSummary({ stats, goals, categories }) {
                             }}>
                                 {stats.inProgress - pausedCount}
                             </Typography>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "#7c3aed",
                                 fontWeight: 500,
@@ -231,13 +233,13 @@ function ProgressSummary({ stats, goals, categories }) {
                                 Active
                             </Typography>
                         </Box>
-                        <Box sx={{
+                        <Box className="progress-summary__stat-box" sx={{
                             bgcolor: "hsl(39, 90%, 95%)",
                             borderRadius: "10px",
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-value" sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
@@ -246,7 +248,7 @@ function ProgressSummary({ stats, goals, categories }) {
                             }}>
                                 {pausedCount}
                             </Typography>
-                            <Typography sx={{
+                            <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "#d97706",
                                 fontWeight: 500,

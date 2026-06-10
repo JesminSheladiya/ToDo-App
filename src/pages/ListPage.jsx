@@ -30,6 +30,7 @@ function ListPage() {
 
     return (
         <ListView
+            className="list-page"
             goals={filteredGoals}
             allGoals={goals}
             categories={categories}

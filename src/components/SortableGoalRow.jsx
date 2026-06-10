@@ -2,7 +2,7 @@ import GoalRow from "./GoalRow";
 
 function SortableGoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast }) {
     return (
-        <GoalRow
+        <GoalRow className="sortable-goal-row"
             goal={goal}
             category={category}
             onEdit={onEdit}

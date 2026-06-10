@@ -52,7 +52,7 @@ function Stack({
     });
 
     return (
-        <div style={combinedStyle} {...props}>
+        <div className="stack" style={combinedStyle} {...props}>
             {children}
         </div>
     );

@@ -89,10 +89,10 @@ function GoalFormPage() {
         const step = draft.steps.find((s) => s.stepId === id || s._tempId === id);
         toast(
             ({ closeToast }) => (
-                <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
-                    <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
-                    <span style={{ flex: 1, fontWeight: 600 }}>Remove "{step?.text}"?</span>
-                    <button onClick={() => {
+                <div className="goal-form-page__toast" style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
+                    <span className="goal-form-page__toast-icon" style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+                    <span className="goal-form-page__toast-message" style={{ flex: 1, fontWeight: 600 }}>Remove "{step?.text}"?</span>
+                    <button className="goal-form-page__toast-delete-btn" onClick={() => {
                         closeToast();
                         setDraft((prev) => ({
                             ...prev,
@@ -194,7 +194,7 @@ function GoalFormPage() {
     const content = (
         <>
             {category && (
-                <Box sx={{
+                <Box className="goal-form-page__category-bar" sx={{
                     height: 4,
                     background: category.gradient,
                     flexShrink: 0,
@@ -202,6 +202,7 @@ function GoalFormPage() {
             )}
 
             <Box
+                className="goal-form-page__header"
                 sx={{
                     display: "flex",
                     alignItems: "center",
@@ -212,8 +213,9 @@ function GoalFormPage() {
                     bgcolor: "#ffffff",
                 }}
             >
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack className="goal-form-page__header-left" direction="row" spacing={1} alignItems="center">
                     <IconButton
+                        className="goal-form-page__back-btn"
                         onClick={handleClose}
                         size="small"
                         disableRipple
@@ -231,6 +233,7 @@ function GoalFormPage() {
                         <PiArrowLeftBold sx={{ fontSize: 18 }} />
                     </IconButton>
                     <Typography
+                        className="goal-form-page__header-title"
                         sx={{
                             fontFamily: "'Sora', sans-serif",
                             fontWeight: 700,
@@ -243,6 +246,7 @@ function GoalFormPage() {
                 </Stack>
 
                 <Button
+                    className="goal-form-page__save-btn"
                     variant="contained"
                     onClick={handleSave}
                     disabled={!draft.title.trim()}
@@ -271,10 +275,11 @@ function GoalFormPage() {
                 </Button>
             </Box>
 
-            <Box sx={{ px: 3, py: 2.5, overflow: "auto", flex: 1, bgcolor: "#ffffff" }}>
-                <Stack spacing={2.5}>
-                    <Box>
+            <Box className="goal-form-page__content" sx={{ px: 3, py: 2.5, overflow: "auto", flex: 1, bgcolor: "#ffffff" }}>
+                <Stack className="goal-form-page__form" spacing={2.5}>
+                    <Box className="goal-form-page__field">
                         <TextField
+                            className="goal-form-page__title-input"
                             placeholder="What's your goal?"
                             value={draft.title}
                             onChange={(e) => updateDraft({ title: e.target.value })}
@@ -301,8 +306,8 @@ function GoalFormPage() {
                     </Box>
 
                     {categories.length > 0 && (
-                        <Box>
-                            <Typography sx={{
+                        <Box className="goal-form-page__field">
+                            <Typography className="goal-form-page__field-label" sx={{
                                 fontSize: 12,
                                 fontWeight: 700,
                                 color: "hsl(240, 8%, 45%)",
@@ -311,7 +316,7 @@ function GoalFormPage() {
                             }}>
                                 Category
                             </Typography>
-                            <Box sx={{
+                            <Box className="goal-form-page__category-grid" sx={{
                                 display: "grid",
                                 gridTemplateColumns: isMobile ? "repeat(3, 1fr)" : "repeat(5, 1fr)",
                                 gap: 0.75,
@@ -321,6 +326,7 @@ function GoalFormPage() {
                                     return (
                                         <Button
                                             key={item.key}
+                                            className="goal-form-page__category-btn"
                                             onClick={() => updateDraft({ category: item.key, emoji: draft.emoji || item.iconKey })}
                                             disableRipple
                                             sx={{
@@ -342,7 +348,7 @@ function GoalFormPage() {
                                             }}
                                         >
                                             <RoundedGoalIcon iconKey={item.iconKey} sx={{ color: item.text, fontSize: 18 }} />
-                                            <Typography sx={{
+                                            <Typography className="goal-form-page__category-label" sx={{
                                                 fontSize: 10,
                                                 fontWeight: 700,
                                                 textAlign: "center",
@@ -358,8 +364,8 @@ function GoalFormPage() {
                         </Box>
                     )}
 
-                    <Box>
-                        <Typography sx={{
+                    <Box className="goal-form-page__field">
+                        <Typography className="goal-form-page__field-label" sx={{
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
@@ -369,6 +375,7 @@ function GoalFormPage() {
                             Description
                         </Typography>
                         <TextField
+                            className="goal-form-page__description-input"
                             placeholder="Add a short description (optional)"
                             value={draft.description}
                             onChange={(e) => updateDraft({ description: e.target.value })}
@@ -397,8 +404,8 @@ function GoalFormPage() {
                         />
                     </Box>
 
-                    <Box>
-                        <Typography sx={{
+                    <Box className="goal-form-page__field">
+                        <Typography className="goal-form-page__field-label" sx={{
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
@@ -407,7 +414,7 @@ function GoalFormPage() {
                         }}>
                             Icon
                         </Typography>
-                        <Box sx={{
+                        <Box className="goal-form-page__icon-grid" sx={{
                             display: "flex",
                             flexWrap: "wrap",
                             gap: 0.5,
@@ -417,6 +424,7 @@ function GoalFormPage() {
                                 return (
                                     <Tooltip key={option.key} title={option.label} arrow placement="top">
                                         <IconButton
+                                            className="goal-form-page__icon-btn"
                                             onClick={() => updateDraft({ emoji: option.key })}
                                             size="small"
                                             disableRipple
@@ -442,8 +450,8 @@ function GoalFormPage() {
                         </Box>
                     </Box>
 
-                    <Box>
-                        <Typography sx={{
+                    <Box className="goal-form-page__field">
+                        <Typography className="goal-form-page__field-label" sx={{
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
@@ -453,6 +461,7 @@ function GoalFormPage() {
                             Target Date
                         </Typography>
                         <TextField
+                            className="goal-form-page__date-input"
                             type="date"
                             value={draft.targetDate}
                             onChange={(e) => updateDraft({ targetDate: e.target.value })}
@@ -462,7 +471,7 @@ function GoalFormPage() {
                             InputLabelProps={{ shrink: true }}
                             InputProps={{
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="goal-form-page__date-adornment" position="start">
                                         <IoCalendarNumber sx={{ color: "hsl(240, 8%, 55%)", fontSize: 16 }} />
                                     </InputAdornment>
                                 )
@@ -490,8 +499,8 @@ function GoalFormPage() {
                         />
                     </Box>
 
-                    <Box>
-                        <Typography sx={{
+                    <Box className="goal-form-page__field">
+                        <Typography className="goal-form-page__field-label" sx={{
                             fontSize: 12,
                             fontWeight: 700,
                             color: "hsl(240, 8%, 45%)",
@@ -510,7 +519,7 @@ function GoalFormPage() {
                                     items={draft.steps.map((s) => s.stepId || s._tempId)}
                                     strategy={verticalListSortingStrategy}
                                 >
-                                    <Stack spacing={0.5} sx={{ mb: 1.5 }}>
+                                    <Stack className="goal-form-page__steps-list" spacing={0.5} sx={{ mb: 1.5 }}>
                                         {draft.steps.map((step, idx) => {
                                             const stepId = step.stepId || step._tempId;
                                             const isEditingStep = editingStep && (editingStep.stepId === stepId || editingStep._tempId === stepId);
@@ -536,13 +545,14 @@ function GoalFormPage() {
                             </DndContext>
                         )}
 
-                        <Box sx={{
+                        <Box className="goal-form-page__add-step" sx={{
                             display: "flex",
                             gap: 0.75,
                             alignItems: "flex-start",
                             pt: 0.8,
                         }}>
                             <TextField
+                                className="goal-form-page__add-step-input"
                                 value={newStepText}
                                 onChange={(e) => setNewStepText(e.target.value)}
                                 onKeyDown={(e) => {
@@ -570,6 +580,7 @@ function GoalFormPage() {
                                 }}
                             />
                             <Button
+                                className="goal-form-page__add-step-btn"
                                 variant="contained"
                                 onClick={handleAddStep}
                                 disabled={!newStepText.trim()}
@@ -593,7 +604,7 @@ function GoalFormPage() {
                         </Box>
                     </Box>
 
-                    <Box sx={{ height: 2 }} />
+                    <Box className="goal-form-page__spacer" sx={{ height: 2 }} />
                 </Stack>
             </Box>
         </>
@@ -602,6 +613,7 @@ function GoalFormPage() {
     if (isOverlay) {
         return (
             <Dialog
+                className="goal-form-page"
                 open
                 onClose={handleClose}
                 fullWidth
@@ -629,13 +641,13 @@ function GoalFormPage() {
     }
 
     return (
-        <Box sx={{
+        <Box className="goal-form-page" sx={{
             minHeight: "100vh",
             background: "hsl(240, 20%, 97%)",
             display: "flex",
             flexDirection: "column",
         }}>
-            <Box sx={{
+            <Box className="goal-form-page__container" sx={{
                 maxWidth: 640,
                 mx: "auto",
                 width: "100%",
@@ -658,7 +670,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
     return (
         <Box
             ref={setNodeRef}
-            className={isDragging ? "" : "group"}
+            className={`goal-form-page__step ${isDragging ? "" : "group"}`}
             style={{
                 transform: CSS.Transform.toString(transform),
                 transition: isDragging ? transition : "none",
@@ -686,7 +698,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                 attributes={attributes}
             />
 
-            <Box sx={{
+            <Box className="goal-form-page__step-index" sx={{
                 width: 24,
                 height: 24,
                 borderRadius: "6px",
@@ -704,6 +716,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
 
             {isEditing ? (
                 <TextField
+                    className="goal-form-page__step-input"
                     value={editingStepText}
                     onChange={(e) => setEditingStepText(e.target.value)}
                     onKeyDown={(e) => {
@@ -731,7 +744,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                     }}
                 />
             ) : (
-                <Typography sx={{
+                <Typography className="goal-form-page__step-text" sx={{
                     flex: 1,
                     fontSize: 13,
                     fontWeight: 500,
@@ -741,11 +754,12 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                 </Typography>
             )}
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.25, flexShrink: 0 }}>
+            <Box className="goal-form-page__step-actions" sx={{ display: "flex", alignItems: "center", gap: 0.25, flexShrink: 0 }}>
                 {isEditing ? (
                     <>
                         <Tooltip title="Save" arrow placement="top">
                             <IconButton
+                                className="goal-form-page__step-save-btn"
                                 onClick={handleSaveEditStep}
                                 size="small"
                                 disableRipple
@@ -762,6 +776,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                         </Tooltip>
                         <Tooltip title="Cancel" arrow placement="top">
                             <IconButton
+                                className="goal-form-page__step-cancel-btn"
                                 onClick={handleCancelEditStep}
                                 size="small"
                                 disableRipple
@@ -781,6 +796,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                     <>
                         <Tooltip title="Edit" arrow placement="top">
                             <IconButton
+                                className="goal-form-page__step-edit-btn"
                                 onClick={() => handleStartEditStep(step)}
                                 size="small"
                                 disableRipple
@@ -799,6 +815,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                         </Tooltip>
                         <Tooltip title="Delete" arrow placement="top">
                             <IconButton
+                                className="goal-form-page__step-delete-btn"
                                 onClick={() => handleRemoveStep(stepId)}
                                 size="small"
                                 disableRipple

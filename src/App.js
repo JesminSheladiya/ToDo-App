@@ -17,7 +17,7 @@ function AppRoutes() {
     }, [dispatch]);
 
     return (
-        <>
+        <div className="app">
             <Routes location={background || location}>
                 <Route element={<MainLayout />}>
                     <Route index element={<CategoriesPage />} />
@@ -29,7 +29,7 @@ function AppRoutes() {
                 <Route path="goals/new" element={<GoalFormPage />} />
                 <Route path="goals/:id/edit" element={<GoalFormPage />} />
             </Routes>
-        </>
+        </div>
     );
 }
 

@@ -4,6 +4,7 @@ function DragHandle({ listeners, attributes, activatorRef, size = 28 }) {
     const iconSize = size <= 22 ? 14 : 18;
     return (
         <button
+            className="drag-handle"
             ref={activatorRef}
             {...listeners}
             {...attributes}

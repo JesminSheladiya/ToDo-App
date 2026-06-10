@@ -51,7 +51,7 @@ function Sidebar({ categories, onClose, onCreate }) {
     };
 
     return (
-        <Box
+        <Box className="sidebar"
             sx={{
                 width: SIDEBAR_WIDTH,
                 height: "100vh",
@@ -65,9 +65,9 @@ function Sidebar({ categories, onClose, onCreate }) {
                 overflow: "hidden",
             }}
         >
-            <Box sx={{ px: 2.5, py: 2.5, pb: 1.5 }}>
-                <Stack direction="row" spacing={1.25} alignItems="center">
-                    <Box
+            <Box className="sidebar__logo" sx={{ px: 2.5, py: 2.5, pb: 1.5 }}>
+                    <Stack className="sidebar__brand" direction="row" spacing={1.25} alignItems="center">
+                    <Box className="sidebar__brand-icon"
                         sx={{
                             width: 36,
                             height: 36,
@@ -85,8 +85,8 @@ function Sidebar({ categories, onClose, onCreate }) {
                     >
                         GT
                     </Box>
-                    <Box>
-                        <Typography
+                    <Box className="sidebar__brand-text">
+                        <Typography className="sidebar__brand-title"
                             sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
@@ -98,7 +98,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                         >
                             Goal ToDo
                         </Typography>
-                        <Typography
+                        <Typography className="sidebar__brand-subtitle"
                             sx={{
                                 fontSize: 11,
                                 color: "hsl(240, 8%, 50%)",
@@ -112,10 +112,10 @@ function Sidebar({ categories, onClose, onCreate }) {
                 </Stack>
             </Box>
 
-            <Box sx={{ mx: 2, height: "1px", bgcolor: "hsl(240, 10%, 90%)" }} />
+            <Box className="sidebar__divider" sx={{ mx: 2, height: "1px", bgcolor: "hsl(240, 10%, 90%)" }} />
 
-            <List sx={{ px: 1.5, pt: 1.5, pb: 1, flex: 1, overflowY: "auto" }}>
-                <ListItemButton
+            <List className="sidebar__nav" sx={{ px: 1.5, pt: 1.5, pb: 1, flex: 1, overflowY: "auto" }}>
+                <ListItemButton className="sidebar__nav-item"
                     selected={isDashboard && isOnMainLayout && activeCategory === "all"}
                     onClick={handleDashboardClick}
                     sx={{
@@ -144,14 +144,14 @@ function Sidebar({ categories, onClose, onCreate }) {
                         },
                     }}
                 >
-                    <ListItemIcon sx={{ minWidth: 34, color: (isDashboard && isOnMainLayout && activeCategory === "all") ? "#7c3aed" : "hsl(240, 8%, 50%)" }}>
+                    <ListItemIcon className="sidebar__nav-icon" sx={{ minWidth: 34, color: (isDashboard && isOnMainLayout && activeCategory === "all") ? "#7c3aed" : "hsl(240, 8%, 50%)" }}>
                         <RiDashboardFill sx={{
                             fontSize: 20,
 
                             transition: "color 150ms ease",
                         }} />
                     </ListItemIcon>
-                    <ListItemText
+                    <ListItemText className="sidebar__nav-text"
                         primary="Dashboard"
                         slotProps={{
                             primary: {
@@ -164,7 +164,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                     />
                 </ListItemButton>
 
-                <ListItemButton
+                <ListItemButton className="sidebar__nav-item"
                     selected={isList}
                     onClick={handleListClick}
                     sx={{
@@ -193,7 +193,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                         },
                     }}
                 >
-                    <ListItemIcon sx={{
+                    <ListItemIcon className="sidebar__nav-icon" sx={{
                         minWidth: 34,
                         color: isList ? "#7c3aed" : "hsl(240, 8%, 50%)",
                     }}>
@@ -202,7 +202,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                             transition: "color 150ms ease",
                         }} />
                     </ListItemIcon>
-                    <ListItemText
+                    <ListItemText className="sidebar__nav-text"
                         primary="All Goals"
                         slotProps={{
                             primary: {
@@ -215,7 +215,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                     />
                 </ListItemButton>
 
-                <Typography sx={{
+                <Typography className="sidebar__nav-section" sx={{
                     fontSize: 10.5,
                     fontWeight: 800,
                     color: "hsl(240, 8%, 50%)",
@@ -231,7 +231,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                 {categories.map((cat) => {
                     const isActive = isDashboard && isOnMainLayout && activeCategory === cat.key;
                     return (
-                        <ListItemButton
+                        <ListItemButton className="sidebar__nav-item"
                             key={cat.key}
                             selected={isActive}
                             onClick={() => handleCategoryClick(cat.key)}
@@ -261,14 +261,14 @@ function Sidebar({ categories, onClose, onCreate }) {
                                 },
                             }}
                         >
-                            <ListItemIcon sx={{ minWidth: 30 }}>
-                                <RoundedGoalIcon iconKey={cat.iconKey} sx={{
+                            <ListItemIcon className="sidebar__nav-icon" sx={{ minWidth: 30 }}>
+                                <RoundedGoalIcon className="sidebar__nav-icon-element" iconKey={cat.iconKey} sx={{
                                     color: cat.text,
                                     fontSize: 16,
                                     transition: "color 150ms ease",
                                 }} />
                             </ListItemIcon>
-                            <ListItemText
+                            <ListItemText className="sidebar__nav-text"
                                 primary={cat.label}
                                 slotProps={{
                                     primary: {
@@ -280,7 +280,7 @@ function Sidebar({ categories, onClose, onCreate }) {
                                 }}
                             />
                             {isActive && (
-                                <Box sx={{
+                                <Box className="sidebar__nav-dot" sx={{
                                     width: 6,
                                     height: 6,
                                     borderRadius: "50%",
@@ -293,8 +293,8 @@ function Sidebar({ categories, onClose, onCreate }) {
                 })}
             </List>
 
-            <Box sx={{ px: 2, pb: 2, pt: 1 }}>
-                <Button
+            <Box className="sidebar__footer" sx={{ px: 2, pb: 2, pt: 1 }}>
+                <Button className="sidebar__create-btn"
                     variant="contained"
                     fullWidth
                     onClick={onCreate}
@@ -369,7 +369,7 @@ function MainLayout() {
     );
 
     return (
-        <Box sx={{
+        <Box className="main-layout" sx={{
             minHeight: "100vh",
             background: "hsl(240, 20%, 97%)",
             display: "flex",
@@ -389,7 +389,7 @@ function MainLayout() {
             />
 
             {isMobile ? (
-                <Drawer
+                <Drawer className="main-layout__drawer"
                     open={mobileOpen}
                     onClose={() => setMobileOpen(false)}
                     PaperProps={{
@@ -405,13 +405,13 @@ function MainLayout() {
                 sidebar
             )}
 
-            <Box sx={{
+            <Box className="main-layout__content" sx={{
                 flex: 1,
                 minWidth: 0,
                 display: "flex",
                 flexDirection: "column",
             }}>
-                <Box
+                <Box className="main-layout__header"
                     sx={{
                         px: { xs: 2, sm: 3.5 },
                         pt: { xs: 2, sm: 3 },
@@ -422,7 +422,7 @@ function MainLayout() {
                     }}
                 >
                     {isMobile && (
-                        <IconButton
+                        <IconButton className="main-layout__menu-btn"
                             onClick={() => setMobileOpen(true)}
                             size="small"
                             sx={{
@@ -434,8 +434,8 @@ function MainLayout() {
                             <PiListBold sx={{ fontSize: 22 }} />
                         </IconButton>
                     )}
-                    <Box sx={{ flex: 1 }}>
-                        <Typography
+                    <Box className="main-layout__title" sx={{ flex: 1 }}>
+                        <Typography className="main-layout__page-title"
                             component="h1"
                             sx={{
                                 fontFamily: "'Sora', sans-serif",
@@ -448,7 +448,7 @@ function MainLayout() {
                         >
                             {location.pathname === "/list" ? "All Goals" : "Dashboard"}
                         </Typography>
-                        <Typography sx={{
+                        <Typography className="main-layout__subtitle" sx={{
                             mt: 0.25,
                             fontSize: { xs: 13, sm: 14 },
                             color: "hsl(240, 8%, 50%)",
@@ -461,7 +461,7 @@ function MainLayout() {
                         </Typography>
                     </Box>
                     {isMobile && (
-                        <Button
+                        <Button className="main-layout__new-btn"
                             variant="contained"
                             onClick={handleOpenCreate}
                             startIcon={<PiPlusBold />}
@@ -482,28 +482,28 @@ function MainLayout() {
                     )}
                 </Box>
 
-                <Box sx={{
+                <Box className="main-layout__page" sx={{
                     px: { xs: 2, sm: 3.5 },
                     pb: 4,
                     flex: 1,
                     overflowY: "auto",
                 }}>
-                    <Stack spacing={2.5}>
+                    <Stack className="main-layout__stack" spacing={2.5}>
                         <ProgressSummary stats={stats} goals={goals} categories={categories} />
 
                         {loading ? (
-                            <Box sx={{
+                            <Box className="main-layout__loading" sx={{
                                 display: "flex",
                                 justifyContent: "center",
                                 py: 10,
                             }}>
-                                <CircularProgress
+                                <CircularProgress className="main-layout__spinner"
                                     size={36}
                                     sx={{ color: "#7c3aed" }}
                                 />
                             </Box>
                         ) : goals.length === 0 ? (
-                            <Box
+                            <Box className="main-layout__empty"
                                 sx={{
                                     textAlign: "center",
                                     py: 10,
@@ -513,14 +513,14 @@ function MainLayout() {
                                     animation: "fadeInUp 300ms ease-out forwards",
                                 }}
                             >
-                                <Typography sx={{
+                                <Typography className="main-layout__empty-emoji" sx={{
                                     fontSize: 48,
                                     mb: 1.5,
                                     opacity: 0.8,
                                 }}>
                                     🎯
                                 </Typography>
-                                <Typography sx={{
+                                <Typography className="main-layout__empty-title" sx={{
                                     fontSize: 18,
                                     fontWeight: 800,
                                     fontFamily: "'Sora', sans-serif",
@@ -529,7 +529,7 @@ function MainLayout() {
                                 }}>
                                     No goals yet
                                 </Typography>
-                                <Typography sx={{
+                                <Typography className="main-layout__empty-description" sx={{
                                     fontSize: 14,
                                     color: "hsl(240, 8%, 50%)",
                                     mb: 3,
@@ -537,7 +537,7 @@ function MainLayout() {
                                 }}>
                                     Create your first goal to start tracking your progress
                                 </Typography>
-                                <Button
+                                <Button className="main-layout__empty-action"
                                     variant="contained"
                                     onClick={() => handleOpenCreate()}
                                     startIcon={<PiPlusBold />}
@@ -559,7 +559,7 @@ function MainLayout() {
                                 </Button>
                             </Box>
                         ) : (
-                            <Box sx={{ animation: "fadeInUp 300ms ease-out forwards" }}>
+                            <Box className="main-layout__outlet" sx={{ animation: "fadeInUp 300ms ease-out forwards" }}>
                                 <Outlet />
                             </Box>
                         )}

@@ -30,14 +30,14 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
     };
 
     return (
-        <div ref={setNodeRef} style={style} className={isDragging ? "" : "group"}>
-            <div style={{
+        <div ref={setNodeRef} style={style} className={isDragging ? "sortable-step sortable-step--dragging" : "sortable-step group"}>
+            <div className="sortable-step__content" style={{
                 display: "flex",
                 alignItems: "flex-start",
                 gap: "2px",
                 width: "100%",
             }}>
-                <Box sx={{ mt: 0.25 }}>
+                <Box className="sortable-step__drag" sx={{ mt: 0.25 }}>
                     <DragHandle
                         activatorRef={setActivatorNodeRef}
                         listeners={listeners}
@@ -46,6 +46,7 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
                     />
                 </Box>
                 <IconButton
+                    className="sortable-step__toggle"
                     onClick={() => onToggleStep(goal, step.stepId)}
                     size="small"
                     disableRipple
@@ -64,7 +65,7 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
                         <FaRegCircle />
                     )}
                 </IconButton>
-                <Typography sx={{
+                <Typography className="sortable-step__text" sx={{
                     flex: 1,
                     fontSize: 13,
                     fontWeight: 500,
@@ -129,9 +130,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
     };
 
     return (
-        <div ref={setNodeRef} style={wrapperStyle} className={isDragging ? "" : "group"}>
-            <Box>
-                <Box
+        <div ref={setNodeRef} style={wrapperStyle} className={isDragging ? "goal-row goal-row--dragging" : "goal-row group"}>
+            <Box className="goal-row__card">
+                <Box className="goal-row__header"
                     sx={{
                         display: "flex",
                         alignItems: "center",
@@ -153,6 +154,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                     />
 
                     <Checkbox
+                        className="goal-row__checkbox"
                         checked={completed}
                         onChange={() => onToggleGoal(goal)}
                         disableRipple
@@ -188,13 +190,15 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                     />
 
                     <RoundedGoalIcon
+                        className="goal-row__icon"
                         iconKey={goal.emoji}
                         fallbackKey={category.iconKey}
                         sx={{ color: category.text, fontSize: 16, flexShrink: 0 }}
                     />
 
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Box className="goal-row__info" sx={{ flex: 1, minWidth: 0 }}>
                         <Typography
+                            className="goal-row__title"
                             sx={{
                                 fontSize: 14,
                                 fontWeight: 600,
@@ -211,7 +215,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             {goal.title}
                         </Typography>
                         {paused && (
-                            <Typography sx={{
+                            <Typography className="goal-row__paused-label" sx={{
                                 fontSize: 11,
                                 fontWeight: 600,
                                 color: "hsl(39, 90%, 45%)",
@@ -224,16 +228,17 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             </Typography>
                         )}
                         {hasSteps && (
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.25 }}>
-                                <Typography sx={{
+                            <Box className="goal-row__progress-area" sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.25 }}>
+                                <Typography className="goal-row__steps-count" sx={{
                                     fontSize: 12,
                                     color: "hsl(240, 8%, 50%)",
                                     fontWeight: 500,
                                 }}>
                                     {goal.steps.filter((s) => s.done).length}/{goal.steps.length} steps
                                 </Typography>
-                                <Box sx={{ flex: 1, maxWidth: 60 }}>
+                                <Box className="goal-row__progress-track" sx={{ flex: 1, maxWidth: 60 }}>
                                     <LinearProgress
+                                        className="goal-row__progress-bar"
                                         variant="determinate"
                                         value={progress}
                                         sx={{
@@ -252,10 +257,11 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         )}
                     </Box>
 
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.25 }}>
+                    <Box className="goal-row__actions" sx={{ display: "flex", alignItems: "center", gap: 0.25 }}>
 
                         {hasSteps && (
                             <IconButton
+                                className="goal-row__expand-btn"
                                 onClick={() => setExpanded(!expanded)}
                                 size="small"
                                 disableRipple
@@ -274,8 +280,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             </IconButton>
                         )}
 
-                        <Tooltip title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow placement="top">
+                        <Tooltip className="goal-row__pause-tooltip" title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow placement="top">
                             <IconButton
+                                className="goal-row__pause-btn"
                                 onClick={() => onPauseToggle(goal)}
                                 size="small"
                                 disableRipple
@@ -295,8 +302,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Edit" arrow placement="top">
+                        <Tooltip className="goal-row__edit-tooltip" title="Edit" arrow placement="top">
                             <IconButton
+                                className="goal-row__edit-btn"
                                 onClick={() => onEdit(goal)}
                                 size="small"
                                 disableRipple
@@ -314,8 +322,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 <TbPencil size={18} />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete" arrow placement="top">
+                        <Tooltip className="goal-row__delete-tooltip" title="Delete" arrow placement="top">
                             <IconButton
+                                className="goal-row__delete-btn"
                                 onClick={() => onDelete(goal)}
                                 size="small"
                                 disableRipple
@@ -334,8 +343,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             </IconButton>
                         </Tooltip>
 
-                        <Box ref={mobileAnchorRef} sx={{ display: { xs: "inline-flex", sm: "none" } }}>
+                        <Box className="goal-row__mobile-wrapper" ref={mobileAnchorRef} sx={{ display: { xs: "inline-flex", sm: "none" } }}>
                             <IconButton
+                                className="goal-row__mobile-trigger"
                                 onClick={() => setMobileMenuOpen((v) => !v)}
                                 size="small"
                                 disableRipple
@@ -352,25 +362,28 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                             </IconButton>
 
                             <Popper
+                                className="goal-row__mobile-popper"
                                 open={mobileMenuOpen}
                                 anchorEl={mobileAnchorRef.current}
                                 placement="bottom-end"
                                 sx={{ zIndex: 1400 }}
                             >
-                                <ClickAwayListener onClickAway={() => setMobileMenuOpen(false)}>
-                                    <Box
-                                        sx={{
-                                            mt: 0.5,
-                                            bgcolor: "#fff",
-                                            borderRadius: "10px",
-                                            border: "1px solid hsl(240, 10%, 90%)",
-                                            boxShadow: "0 4px 16px rgb(0 0 0 / 10%)",
-                                            minWidth: 140,
-                                            overflow: "hidden",
-                                        }}
-                                    >
-                                        {/* Complete */}
+                                <ClickAwayListener className="goal-row__click-away" onClickAway={() => setMobileMenuOpen(false)}>
                                         <Box
+                                            className="goal-row__mobile-dropdown"
+                                            sx={{
+                                                mt: 0.5,
+                                                bgcolor: "#fff",
+                                                borderRadius: "10px",
+                                                border: "1px solid hsl(240, 10%, 90%)",
+                                                boxShadow: "0 4px 16px rgb(0 0 0 / 10%)",
+                                                minWidth: 140,
+                                                overflow: "hidden",
+                                            }}
+                                        >
+                                            {/* Complete */}
+                                        <Box
+                                            className="goal-row__menu-item goal-row__menu-complete"
                                             onClick={() => {
                                                 if (!paused) {
                                                     onToggleGoal(goal);
@@ -412,6 +425,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
 
                                         {/* Pause */}
                                         <Box
+                                            className="goal-row__menu-item goal-row__menu-pause"
                                             onClick={() => {
                                                 if (!completed) {
                                                     onPauseToggle(goal);
@@ -453,6 +467,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
 
                                         {/* Edit */}
                                         <Box
+                                            className="goal-row__menu-item goal-row__menu-edit"
                                             onClick={() => {
                                                 onEdit(goal);
                                                 setMobileMenuOpen(false);
@@ -484,6 +499,7 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
 
                                         {/* Delete */}
                                         <Box
+                                            className="goal-row__menu-item goal-row__menu-delete"
                                             onClick={() => {
                                                 onDelete(goal);
                                                 setMobileMenuOpen(false);
@@ -519,8 +535,8 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                 </Box>
 
                 {hasSteps && (
-                    <Collapse in={expanded} timeout={200}>
-                        <Box sx={{
+                    <Collapse className="goal-row__steps-collapse" in={expanded} timeout={200}>
+                        <Box className="goal-row__steps-list" sx={{
                             px: 1.25,
                             py: 0.75,
                             bgcolor: "hsl(240, 20%, 98.5%)",

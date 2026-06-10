@@ -15,10 +15,11 @@ function SelectDropdown({ value, options, onChange, sx }) {
     const selected = options.find((o) => o.value === value);
 
     return (
-        <ClickAwayListener onClickAway={() => setOpen(false)}>
-            <Box ref={anchorRef} sx={{ position: "relative", ...sx }}>
+        <ClickAwayListener className="list-view__select" onClickAway={() => setOpen(false)}>
+            <Box ref={anchorRef} sx={{ position: "relative", ...sx }} className="list-view__select-trigger">
                 <Box
                     onClick={() => setOpen((v) => !v)}
+                    className="list-view__select-value"
                     sx={{
                         display: "flex",
                         alignItems: "center",
@@ -37,16 +38,17 @@ function SelectDropdown({ value, options, onChange, sx }) {
                         "&:hover": { borderColor: "#7c3aed" },
                     }}
                 >
-                    <Box sx={{ flex: 1 }}>{selected?.label || value}</Box>
+                    <Box sx={{ flex: 1 }} className="list-view__select-label">{selected?.label || value}</Box>
                     <IoChevronDownOutline size={14} />
                 </Box>
                 <Popper
                     open={open}
                     anchorEl={anchorRef.current}
                     placement="bottom-start"
+                    className="list-view__select-popper"
                     sx={{ zIndex: 1400 }}
                 >
-                    <Box sx={{
+                    <Box className="list-view__select-menu" sx={{
                         mt: 0.5,
                         bgcolor: "#ffffff",
                         borderRadius: "10px",
@@ -59,6 +61,7 @@ function SelectDropdown({ value, options, onChange, sx }) {
                             <Box
                                 key={opt.value}
                                 onClick={() => { onChange(opt.value); setOpen(false); }}
+                                className="list-view__select-item"
                                 sx={{
                                     px: 1.5,
                                     py: 1,
@@ -104,8 +107,8 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
         paused: goalsWithoutStatus.filter((g) => g.status === "paused").length,
     };
     return (
-        <Stack spacing={2}>
-            <Box sx={{
+        <Stack spacing={2} className="list-view">
+            <Box className="list-view__toolbar" sx={{
                 display: "flex",
                 gap: 1,
                 flexWrap: "wrap",
@@ -115,6 +118,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                     value={query}
                     onChange={(e) => onQueryChange(e.target.value)}
                     placeholder="Search goals..."
+                    className="list-view__search"
                     sx={{
                         flex: { xs: "1 1 100%", sm: "1 1 auto" },
                         minWidth: { sm: 220 },
@@ -135,7 +139,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                     }}
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position="start">
+                            <InputAdornment position="start" className="list-view__search-adornment">
                                 <PiMagnifyingGlassBold sx={{ fontSize: 18, color: "hsl(240, 8%, 50%)" }} />
                             </InputAdornment>
                         )
@@ -164,7 +168,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
             </Box>
 
             {goals.length === 0 ? (
-                <Box sx={{
+                <Box className="list-view__empty" sx={{
                     bgcolor: "#ffffff",
                     borderRadius: "16px",
                     border: "1px dashed hsl(240, 10%, 85%)",
@@ -172,14 +176,14 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                     textAlign: "center",
                     animation: "fadeInUp 300ms ease-out forwards",
                 }}>
-                    <Typography sx={{
+                    <Typography className="list-view__empty-icon" sx={{
                         fontSize: 40,
                         mb: 1,
                         opacity: 0.7,
                     }}>
                         <PiMagnifyingGlassBold sx={{ fontSize: 24, color: "hsl(240, 8%, 50%)" }} />
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="list-view__empty-title" sx={{
                         fontSize: 15,
                         fontWeight: 700,
                         color: "hsl(240, 15%, 10%)",
@@ -187,7 +191,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                     }}>
                         No goals found
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="list-view__empty-text" sx={{
                         fontSize: 13,
                         color: "hsl(240, 8%, 50%)",
                     }}>
@@ -195,7 +199,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                     </Typography>
                 </Box>
             ) : (
-                <Box sx={{
+                <Box className="list-view__goals" sx={{
                     bgcolor: "#ffffff",
                     borderRadius: "16px",
                     border: "1px solid hsl(240, 10%, 90%)",
@@ -222,6 +226,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                         return (
                             <Box
                                 key={goal.id}
+                                className="list-view__goal-row"
                                 sx={{
                                     transition: "background-color 150ms ease",
                                     bgcolor: paused ? "hsl(39, 90%, 97%)" : "transparent",
@@ -231,7 +236,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                     borderBottom: index < goals.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
                                 }}
                             >
-                                <Box sx={{
+                                <Box className="list-view__goal-content" sx={{
                                     display: "flex",
                                     alignItems: "center",
                                     gap: 0.75,
@@ -242,6 +247,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                     <IconButton
                                         onClick={() => onToggleGoal(goal)}
                                         size="small"
+                                        className="list-view__toggle-btn"
                                         sx={{
                                             display: { xs: "none", sm: "inline-flex" },
                                             p: 0.25,
@@ -266,8 +272,9 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                         sx={{ color: category.text, fontSize: 18, flexShrink: 0 }}
                                     />
 
-                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                    <Box className="list-view__goal-info" sx={{ flex: 1, minWidth: 0 }}>
                                         <Typography
+                                            className="list-view__goal-title"
                                             sx={{
                                                 fontSize: 14,
                                                 fontWeight: 700,
@@ -283,7 +290,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                             {goal.title}
                                         </Typography>
                                         {paused && (
-                                            <Typography sx={{
+                                            <Typography className="list-view__paused-badge" sx={{
                                                 fontSize: 11,
                                                 fontWeight: 600,
                                                 color: "hsl(39, 90%, 45%)",
@@ -298,7 +305,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                     </Box>
 
                                     {category && (
-                                        <Box sx={{
+                                        <Box className="list-view__category-badge" sx={{
                                             px: 1.25,
                                             py: 0.375,
                                             borderRadius: "8px",
@@ -313,10 +320,11 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                         </Box>
                                     )}
 
-                                    <Tooltip title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow>
+                                    <Tooltip className="list-view__pause-tooltip" title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow>
                                         <IconButton
                                             onClick={() => onPauseToggle(goal)}
                                             size="small"
+                                            className="list-view__pause-btn"
                                             sx={{
                                                 display: { xs: "none", sm: "inline-flex" },
                                                 p: 0.6,
@@ -332,10 +340,11 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                             {paused ? <BsFillPlayFill size={18} /> : <BsFillPauseFill size={18} />}
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Edit" arrow>
+                                    <Tooltip className="list-view__edit-tooltip" title="Edit" arrow>
                                         <IconButton
                                             onClick={() => onEdit(goal)}
                                             size="small"
+                                            className="list-view__edit-btn"
                                             sx={{
                                                 display: { xs: "none", sm: "inline-flex" },
                                                 p: 0.6,
@@ -350,10 +359,11 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                             <TbPencil size={18} />
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Delete" arrow>
+                                    <Tooltip className="list-view__delete-tooltip" title="Delete" arrow>
                                         <IconButton
                                             onClick={() => onDelete(goal)}
                                             size="small"
+                                            className="list-view__delete-btn"
                                             sx={{
                                                 display: { xs: "none", sm: "inline-flex" },
                                                 p: 0.6,
@@ -369,10 +379,11 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                         </IconButton>
                                     </Tooltip>
 
-                                    <Box sx={{ display: { xs: "inline-flex", sm: "none" } }}>
+                                    <Box className="list-view__mobile-wrapper" sx={{ display: { xs: "inline-flex", sm: "none" } }}>
                                         <IconButton
                                             onClick={(e) => { setMobileMenuAnchor(e.currentTarget); setMobileMenuGoal(goal.id); }}
                                             size="small"
+                                            className="list-view__mobile-trigger"
                                             sx={{ p: 0.6, bgcolor: "hsl(240, 20%, 97%)", color: "hsl(240, 8%, 50%)" }}
                                         >
                                             <PiDotsThreeVerticalBold size={20} />
@@ -381,10 +392,11 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                             open={mobileMenuGoal === goal.id}
                                             anchorEl={mobileMenuAnchor}
                                             placement="bottom-end"
+                                            className="list-view__mobile-popper"
                                             sx={{ zIndex: 1400 }}
                                         >
-                                            <ClickAwayListener onClickAway={() => { setMobileMenuGoal(null); setMobileMenuAnchor(null); }}>
-                                                <Box sx={{
+                                            <ClickAwayListener className="list-view__mobile-clickaway" onClickAway={() => { setMobileMenuGoal(null); setMobileMenuAnchor(null); }}>
+                                                <Box className="list-view__mobile-menu" sx={{
                                                     mt: 0.5,
                                                     bgcolor: "#fff",
                                                     borderRadius: "10px",
@@ -395,6 +407,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                                 }}>
                                                     <Box
                                                         onClick={() => { if (goal.status !== "paused") { onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
+                                                        className="list-view__dropdown-item"
                                                         sx={{
                                                             px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
                                                             color: "hsl(240, 8%, 20%)",
@@ -417,6 +430,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                                     </Box>
                                                     <Box
                                                         onClick={() => { if (!(goal.completed || goal.status === "completed")) { onPauseToggle(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
+                                                        className="list-view__dropdown-item"
                                                         sx={{
                                                             px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
                                                             color: "hsl(240, 8%, 20%)",
@@ -439,6 +453,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                                     </Box>
                                                     <Box
                                                         onClick={() => { onEdit(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        className="list-view__dropdown-item"
                                                         sx={{
                                                             px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
                                                             color: "hsl(240, 8%, 20%)",
@@ -456,6 +471,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                                     </Box>
                                                     <Box
                                                         onClick={() => { onDelete(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        className="list-view__dropdown-item"
                                                         sx={{
                                                             px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
                                                             color: "hsl(240, 8%, 20%)",

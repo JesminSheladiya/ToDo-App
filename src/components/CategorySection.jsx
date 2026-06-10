@@ -53,7 +53,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
     }, [goals, onReorderGoals, category.key]);
 
     return (
-        <Box
+        <Box className="category-section"
             sx={{
                 bgcolor: "#ffffff",
                 borderRadius: "16px",
@@ -66,12 +66,12 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                 },
             }}
         >
-            <Box sx={{
+            <Box className="category-section__bar" sx={{
                 height: 3,
                 background: category.gradient,
             }} />
 
-            <Box
+            <Box className="category-section__header"
                 onClick={() => setExpanded(!expanded)}
                 sx={{
                     display: "flex",
@@ -88,7 +88,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     },
                 }}
             >
-                <Box
+                <Box className="category-section__icon"
                     sx={{
                         width: 40,
                         height: 40,
@@ -99,11 +99,11 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         flexShrink: 0,
                     }}
                 >
-                    <RoundedGoalIcon iconKey={category.iconKey} sx={{ color: category.text, fontSize: 22 }} />
+                    <RoundedGoalIcon className="category-section__icon-element" iconKey={category.iconKey} sx={{ color: category.text, fontSize: 22 }} />
                 </Box>
 
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography sx={{
+                <Box className="category-section__info" sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography className="category-section__label" sx={{
                         fontSize: 16,
                         fontWeight: 700,
                         fontFamily: "'Sora', sans-serif",
@@ -113,7 +113,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     }}>
                         {category.label}
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="category-section__sublabel" sx={{
                         fontSize: 13,
                         color: "hsl(240, 8%, 50%)",
                         fontWeight: 500,
@@ -123,7 +123,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                     </Typography>
                 </Box>
 
-                <Box
+                <Box className="category-section__stats-mobile"
                     sx={{
                         display: { xs: "flex", sm: "none" },
                         alignItems: "center",
@@ -135,23 +135,23 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         border: `1px solid ${category.border}`,
                     }}
                 >
-                    <Box sx={{
+                    <Box className="category-section__dot" sx={{
                         width: 6,
                         height: 6,
                         borderRadius: "50%",
                         background: category.gradient,
                         flexShrink: 0,
                     }} />
-                    <Typography sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
+                    <Typography className="category-section__count" sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
                         {stats.completed}/{stats.total}
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, width: { xs: "100%", sm: "auto" } }} >
+                <Box className="category-section__actions" sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, width: { xs: "100%", sm: "auto" } }} >
                     {stats.total > 0 && (
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 100 }}>
-                            <Box sx={{ flex: 1 }}>
-                                <LinearProgress
+                        <Box className="category-section__progress" sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 100 }}>
+                            <Box className="category-section__progress-bar" sx={{ flex: 1 }}>
+                                <LinearProgress className="category-section__progress-track"
                                     variant="determinate"
                                     value={stats.stepProgress}
                                     sx={{
@@ -166,7 +166,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                                     }}
                                 />
                             </Box>
-                            <Typography sx={{
+                            <Typography className="category-section__percentage" sx={{
                                 fontSize: 12,
                                 fontWeight: 600,
                                 color: "hsl(240, 8%, 50%)",
@@ -178,7 +178,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                         </Box>
                     )}
 
-                    <Box
+                    <Box className="category-section__stats"
                         sx={{
                             display: { xs: "none", sm: "flex" },
                             alignItems: "center",
@@ -190,20 +190,20 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                             border: `1px solid ${category.border}`,
                         }}
                     >
-                        <Box sx={{
+                        <Box className="category-section__dot" sx={{
                             width: 6,
                             height: 6,
                             borderRadius: "50%",
                             background: category.gradient,
                             flexShrink: 0,
                         }} />
-                        <Typography sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
+                        <Typography className="category-section__count" sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
                             {stats.completed}/{stats.total}
                         </Typography>
                     </Box>
 
                     {goals.length > 0 && (
-                        <IconButton
+                        <IconButton className="category-section__expand"
                             size="small"
                             sx={{
                                 color: "hsl(240, 8%, 50%)",
@@ -217,9 +217,9 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                 </Box>
             </Box>
 
-            <Collapse in={expanded} timeout={200}>
+            <Collapse className="category-section__goals" in={expanded} timeout={200}>
                 {goals.length > 0 && (
-                    <Box sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
+                    <Box className="category-section__goals-list" sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
                         <DndContext
                             sensors={sensors}
                             collisionDetection={closestCenter}
@@ -249,13 +249,13 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                 )}
             </Collapse>
 
-            <Box sx={{
+            <Box className="category-section__footer" sx={{
                 px: { xs: 2, sm: 2.5 },
                 py: 1,
                 borderTop: "1px solid hsl(240, 10%, 90%)",
                 bgcolor: "hsl(240, 20%, 99%)",
             }}>
-                <Button
+                <Button className="category-section__add-goal"
                     variant="text"
                     size="small"
                     onClick={() => onCreate(category.key)}

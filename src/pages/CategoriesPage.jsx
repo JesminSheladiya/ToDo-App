@@ -40,7 +40,7 @@ function CategoriesPage() {
         : categories.filter((cat) => cat.key === activeCategory);
 
     return (
-        <Stack spacing={2.5}>
+        <Stack className="categories-page" spacing={2.5}>
             {filteredCategories.map((category) => (
                 <CategorySection
                     key={category.key}
