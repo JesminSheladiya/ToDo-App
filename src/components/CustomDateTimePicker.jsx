@@ -3,9 +3,10 @@ import {
     Box, Button, ClickAwayListener, Grow, Paper, Popper,
 } from "@mui/material";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { TimeClock } from "@mui/x-date-pickers/TimeClock";
+import { StaticTimePicker } from "@mui/x-date-pickers/StaticTimePicker";
 import dayjs from "dayjs";
-import { IoCalendarNumber, IoTimeOutline } from "react-icons/io5";
+import { IoCalendarNumber } from "react-icons/io5";
+import { FaClock } from "react-icons/fa6";
 
 const ACCENT_FALLBACK = "#7c3aed";
 const SOFT_FALLBACK = "#f5f3ff";
@@ -13,7 +14,9 @@ const SOFT_FALLBACK = "#f5f3ff";
 export default function CustomDateTimePicker({
     value = { date: "", time: "" },
     onChange,
+    accentTextColor = ACCENT_FALLBACK,
     accentColor = ACCENT_FALLBACK,
+    gradientColor,
     softColor = SOFT_FALLBACK,
     label = "Target Date & Time",
 }) {
@@ -24,10 +27,11 @@ export default function CustomDateTimePicker({
     const hasValue = !!(value.date);
 
     const displayText = (() => {
-        if (!value.date) return "DD/MM/YYYY HH:mm";
+        if (!value.date) return "DD/MM/YYYY hh:mm A";
         const d = dayjs(value.date);
         if (value.time) {
-            return `${d.format("DD/MM/YYYY")} ${value.time}`;
+            const t = dayjs(value.time, "HH:mm");
+            return `${d.format("DD/MM/YYYY")} ${t.format("hh:mm A")}`;
         }
         return d.format("DD/MM/YYYY");
     })();
@@ -127,7 +131,6 @@ export default function CustomDateTimePicker({
                                 borderRadius: "14px",
                                 border: "1px solid hsl(240, 10%, 90%)",
                                 boxShadow: "0 8px 24px rgb(0 0 0 / .12)",
-                                overflow: "hidden",
                                 width: "fit-content",
                             }}
                         >
@@ -147,13 +150,13 @@ export default function CustomDateTimePicker({
                                                 gap: 0.75,
                                                 py: 1.25,
                                                 cursor: "pointer",
-                                                fontSize: 13,
+                                                fontSize: 14,
                                                 fontWeight: 600,
                                                 fontFamily: "'Inter', sans-serif",
-                                                color: activeTab === "date" ? accentColor : "hsl(240, 8%, 55%)",
+                                                color: activeTab === "date" ? accentTextColor : "hsl(240, 8%, 55%)",
                                                 borderBottom: activeTab === "date"
-                                                    ? `2px solid ${accentColor}`
-                                                    : "2px solid transparent",
+                                                    ? `1px solid ${accentColor}`
+                                                    : "1px solid transparent",
                                                 transition: "all 150ms ease",
                                                 bgcolor: activeTab === "date" ? `${softColor}40` : "transparent",
                                                 "&:hover": {
@@ -161,7 +164,7 @@ export default function CustomDateTimePicker({
                                                 },
                                             }}
                                         >
-                                            <IoCalendarNumber size={15} />
+                                            <IoCalendarNumber size={18} style={{ marginTop: "-2px" }} />
                                             Date
                                         </Box>
                                         <Box
@@ -174,13 +177,13 @@ export default function CustomDateTimePicker({
                                                 gap: 0.75,
                                                 py: 1.25,
                                                 cursor: "pointer",
-                                                fontSize: 13,
+                                                fontSize: 14,
                                                 fontWeight: 600,
                                                 fontFamily: "'Inter', sans-serif",
-                                                color: activeTab === "time" ? accentColor : "hsl(240, 8%, 55%)",
+                                                color: activeTab === "time" ? accentTextColor : "hsl(240, 8%, 55%)",
                                                 borderBottom: activeTab === "time"
-                                                    ? `2px solid ${accentColor}`
-                                                    : "2px solid transparent",
+                                                    ? `1px solid ${accentColor}`
+                                                    : "1px solid transparent",
                                                 transition: "all 150ms ease",
                                                 bgcolor: activeTab === "time" ? `${softColor}40` : "transparent",
                                                 "&:hover": {
@@ -188,7 +191,7 @@ export default function CustomDateTimePicker({
                                                 },
                                             }}
                                         >
-                                            <IoTimeOutline size={15} />
+                                            <FaClock size={18} style={{ marginTop: "-1px" }} />
                                             Time
                                         </Box>
                                     </Box>
@@ -251,15 +254,31 @@ export default function CustomDateTimePicker({
                                                     },
                                                 },
                                                 ".MuiPickerDay-root.Mui-selected": {
-                                                    backgroundColor: `${accentColor} !important`,
+                                                    background: `${gradientColor || accentColor} !important`,
+                                                    color: "#fff !important",
+                                                    fontWeight: 700,
+                                                    "&:hover": {
+                                                        background: `${gradientColor || accentColor} !important`,
+                                                    },
+                                                },
+                                                ".MuiPickersDay-today:not(.Mui-selected)": {
+                                                    borderColor: accentColor,
+                                                },
+                                                ".MuiYearCalendar-button.Mui-selected": {
+                                                    background: `${gradientColor || accentColor} !important`,
+                                                    color: "#fff !important",
+                                                    fontWeight: 700,
+                                                    "&:hover": {
+                                                        background: `${gradientColor || accentColor} !important`,
+                                                    },
+                                                },
+                                                ".MuiMonthCalendar-button.Mui-selected": {
+                                                    background: `${gradientColor || accentColor} !important`,
                                                     color: "#fff !important",
                                                     fontWeight: 700,
                                                     "&:hover": {
                                                         backgroundColor: `${accentColor} !important`,
                                                     },
-                                                },
-                                                ".MuiPickersDay-today:not(.Mui-selected)": {
-                                                    borderColor: accentColor,
                                                 },
                                                 ".MuiPickersDay-hiddenDaySpacing": {
                                                     display: "none",
@@ -276,13 +295,26 @@ export default function CustomDateTimePicker({
 
                                         {activeTab === "time" && (
                                             <Box sx={{
+                                                px: 1,
                                                 ".MuiTimeClock-root": {
-                                                    width: 250,
-                                                    height: 250,
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    transform: "scale(0.9)",
+                                                    transformOrigin: "center center",
+                                                    margin: "0 auto",
+                                                    overflow: "visible !important",
                                                 },
-                                                ".MuiPickersClock-root": {
-                                                    width: 250,
-                                                    height: 250,
+
+                                                ".MuiPickersLayout-root": {
+                                                    flexDirection: "column",
+                                                    minWidth: "auto",
+                                                    overflow: "visible !important",
+                                                },
+                                                ".MuiPickersLayout-contentWrapper": {
+                                                    overflow: "visible !important",
+                                                },
+                                                ".MuiDateCalendar-viewTransitionContainer": {
+                                                    overflow: "visible !important",
                                                 },
                                                 ".MuiPickersClock-squareMask": {
                                                     borderRadius: "50%",
@@ -291,14 +323,19 @@ export default function CustomDateTimePicker({
                                                     backgroundColor: accentColor,
                                                     height: "calc(50% - 20px)",
                                                 },
+                                                ".MuiClock-root": {
+                                                    m: "0"
+                                                },
                                                 ".MuiClockPointer-root": {
-                                                    backgroundColor: accentColor,
+                                                    background: `${gradientColor || accentColor} !important`,
                                                 },
                                                 ".MuiClockPointer-thumb": {
-                                                    backgroundColor: accentColor,
-                                                    border: `2px solid ${accentColor}`,
-                                                    width: 32,
-                                                    height: 32,
+                                                    background: `${gradientColor || accentColor} !important`,
+                                                    border: `2px solid transparent`,
+                                                    width: 30,
+                                                    height: 30,
+                                                    top: "-20px",
+                                                    left: "calc(50% - 17px)"
                                                 },
                                                 ".MuiClock-pin": {
                                                     backgroundColor: accentColor,
@@ -311,67 +348,112 @@ export default function CustomDateTimePicker({
                                                     height: 8,
                                                 },
                                                 ".MuiPickersClockNumber-root": {
-                                                    fontSize: 13,
+                                                    fontSize: 12,
                                                     fontWeight: 600,
                                                     fontFamily: "'Inter', sans-serif",
                                                     color: "hsl(240, 15%, 20%)",
                                                 },
                                                 ".MuiPickersClockNumber-root.Mui-selected": {
-                                                    backgroundColor: `${accentColor} !important`,
-                                                    color: "#fff",
+                                                    background: `${gradientColor || accentColor} !important`,
+                                                    color: "#fff !important",
                                                     fontWeight: 700,
-                                                    width: 32,
-                                                    height: 32,
+                                                    width: 30,
+                                                    height: 30,
                                                     borderRadius: "50%",
                                                 },
                                                 ".MuiPickersClockNumber-label": {
                                                     transform: "none",
                                                 },
                                                 ".MuiPickersArrowSwitcher-root": {
-                                                    mt: 0.5,
-                                                    "& button": {
-                                                        color: "hsl(240, 8%, 50%)",
-                                                        width: 32,
-                                                        height: 32,
-                                                        borderRadius: "8px",
-                                                        "&:hover": {
-                                                            bgcolor: "hsl(240, 20%, 95%)",
-                                                        },
-                                                    },
+                                                    display: "none",
                                                 },
                                                 ".MuiPickersToolbar-content": {
-                                                    px: 2,
-                                                    mt: 0.5,
+                                                    px: 1.5,
+                                                    py: 0.5,
+                                                    justifyContent: "center",
+                                                    gap: 0,
                                                 },
                                                 ".MuiTimeClockToolbarContent": {
                                                     display: "flex",
                                                     justifyContent: "center",
-                                                    alignItems: "center",
-                                                    gap: 0.5,
-                                                    py: 0.5,
+                                                    alignItems: "baseline",
+                                                    gap: 0,
                                                 },
                                                 ".MuiPickersToolbar-text": {
                                                     fontFamily: "'Sora', sans-serif",
                                                     fontWeight: 700,
-                                                    fontSize: 28,
-                                                    color: accentColor,
+                                                    fontSize: 30,
+                                                    lineHeight: 1,
+                                                    color: "hsl(240, 15%, 10%)",
+                                                    opacity: 0.3,
+                                                    transition: "all 150ms ease",
+                                                    border: "none",
+                                                    background: "none",
+                                                    padding: 0,
+                                                    margin: 0,
+                                                    cursor: "pointer",
                                                     "&.Mui-selected": {
                                                         color: accentColor,
+                                                        opacity: 1,
                                                     },
                                                 },
+                                                ".MuiTimePickerToolbar-ampmLabel[data-selected]": {
+                                                    padding: "0 8px",
+                                                    backgroundColor: softColor,
+                                                    color: accentTextColor,
+                                                    borderRadius: "6px",
+                                                    opacity: 1,
+                                                },
                                                 ".MuiPickersToolbarSeparator": {
-                                                    mx: 0.5,
+                                                    mx: 0.15,
                                                     fontWeight: 700,
-                                                    fontSize: 28,
+                                                    fontSize: 30,
+                                                    lineHeight: 1,
                                                     fontFamily: "'Sora', sans-serif",
                                                     color: "hsl(240, 8%, 70%)",
                                                 },
+                                                ".MuiPickersToolbarButton-root": {
+                                                    padding: "2px 4px",
+                                                    margin: 0,
+                                                    borderRadius: "6px",
+                                                    minWidth: "auto",
+                                                    "&:hover": {
+                                                        bgcolor: "hsl(240, 20%, 95%)",
+                                                    },
+                                                },
+                                                ".MuiClock-amButton, .MuiClock-pmButton": {
+                                                    display: "none",
+                                                },
+                                                ".MuiPickersLayout-root": {
+                                                    flexDirection: "column",
+                                                    minWidth: "auto",
+                                                },
+                                                ".MuiPickersLayout-actionBar": {
+                                                    display: "none",
+                                                },
+                                                ".MuiPickersLayout-contentWrapper": {
+                                                    overflow: "hidden",
+                                                },
+                                                ".MuiPickersToolbar-root": {
+                                                    minHeight: "auto",
+                                                    py: 0,
+                                                },
+                                                ".MuiPickersToolbar-title": {
+                                                    display: "none",
+                                                },
                                             }}>
-                                                <TimeClock
+                                                <StaticTimePicker
                                                     value={clockValue}
                                                     onChange={handleTimeChange}
                                                     views={["hours", "minutes"]}
-                                                    ampm={false}
+                                                    ampm={true}
+                                                    ampmInClock={false}
+                                                    disableToolbar={false}
+                                                    slotProps={{
+                                                        toolbar: {
+                                                            hidden: false,
+                                                        },
+                                                    }}
                                                 />
                                             </Box>
                                         )}
@@ -412,7 +494,7 @@ export default function CustomDateTimePicker({
                                                 fontWeight: 700,
                                                 fontFamily: "'Inter', sans-serif",
                                                 color: "#fff",
-                                                bgcolor: accentColor,
+                                                background: gradientColor || accentColor,
                                                 textTransform: "none",
                                                 borderRadius: "8px",
                                                 px: 2.5,
@@ -420,7 +502,7 @@ export default function CustomDateTimePicker({
                                                 minWidth: "auto",
                                                 boxShadow: `0 2px 8px ${accentColor}40`,
                                                 "&:hover": {
-                                                    bgcolor: accentColor,
+                                                    background: gradientColor || accentColor,
                                                     filter: "brightness(1.1)",
                                                 },
                                             }}

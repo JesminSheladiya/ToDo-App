@@ -463,7 +463,9 @@ function GoalFormPage() {
                         <CustomDateTimePicker
                             value={{ date: draft.targetDate, time: draft.targetTime }}
                             onChange={({ date, time }) => updateDraft({ targetDate: date, targetTime: time })}
+                            accentTextColor={category?.text || "#7c3aed"}
                             accentColor={category?.progress || "#7c3aed"}
+                            gradientColor={category?.gradient || "#7c3aed"}
                             softColor={category?.soft || "#f5f3ff"}
                         />
                     </Box>
