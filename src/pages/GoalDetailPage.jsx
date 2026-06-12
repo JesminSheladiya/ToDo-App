@@ -37,8 +37,8 @@ function SortableDetailStep({ step, category, onToggle, index }) {
                 sx={{
                     display: "flex", alignItems: "center", gap: 0.75,
                     px: 1, py: 0.75, borderRadius: "8px",
-                    bgcolor: step.done ? "hsl(142, 71%, 97%)" : "transparent",
-                    border: step.done ? "1px solid hsl(142, 71%, 90%)" : "1px solid transparent",
+                    bgcolor: step.done ? "hsl(142, 71%, 97%)" : "hsl(210, 76%, 99%)",
+                    border: step.done ? "1px solid hsl(142, 71%, 90%)" : "1px solid hsl(210, 76%, 95%)",
                     transition: "all 200ms ease",
                     "&:hover": {
                         bgcolor: step.done ? "hsl(142, 71%, 95%)" : "hsl(240, 20%, 98%)",
@@ -193,45 +193,64 @@ function GoalDetailPage() {
 
             <Box sx={{ px: 2.5, py: 2.5, bgcolor: "#fff" }}>
                 <Stack spacing={2.5}>
-                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
-                        <Box sx={{
-                            width: 48, height: 48, borderRadius: "14px",
-                            bgcolor: category.soft, display: "grid", placeItems: "center",
-                            flexShrink: 0,
-                        }}>
-                            <RoundedGoalIcon iconKey={goal.emoji} fallbackKey={category.iconKey}
-                                sx={{ color: category.text, fontSize: 24 }} />
-                        </Box>
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Typography sx={{
-                                fontSize: 22, fontWeight: 700, fontFamily: "'Sora', sans-serif",
-                                color: "hsl(240, 15%, 5%)",
-                                wordBreak: "break-word",
+                    <Box>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                            <Box sx={{
+                                width: 48, height: 48, borderRadius: "14px",
+                                bgcolor: category.soft, display: "grid", placeItems: "center",
+                                flexShrink: 0,
                             }}>
-                                {goal.title}
-                            </Typography>
-                            <Box sx={{ display: "flex", gap: 1, mt: 1.25, flexWrap: "wrap" }}>
-                                <Chip label={category.label} size="small" sx={{
-                                    bgcolor: category.soft, color: category.text,
-                                    fontWeight: 600, fontSize: 12, borderRadius: "6px",
-                                }} />
-                                {goal.status === "paused" ? (
-                                    <Chip label="Paused" size="small" sx={{
-                                        bgcolor: "hsl(39, 90%, 95%)", color: "hsl(39, 90%, 40%)",
-                                        fontWeight: 600, fontSize: 12, borderRadius: "6px",
-                                    }} />
-                                ) : goal.status === "completed" || goal.completed ? (
-                                    <Chip label="Completed" size="small" sx={{
-                                        bgcolor: "hsl(142, 71%, 95%)", color: "hsl(142, 71%, 35%)",
-                                        fontWeight: 600, fontSize: 12, borderRadius: "6px",
-                                    }} />
-                                ) : (
-                                    <Chip label="Active" size="small" sx={{
-                                        bgcolor: "hsl(142, 71%, 95%)", color: "hsl(142, 71%, 35%)",
-                                        fontWeight: 600, fontSize: 12, borderRadius: "6px",
-                                    }} />
+                                <RoundedGoalIcon iconKey={goal.emoji} fallbackKey={category.iconKey}
+                                    sx={{ color: category.text, fontSize: 24 }} />
+                            </Box>
+                            <Box>
+                                <Typography sx={{
+                                    fontSize: 24, fontWeight: 700, fontFamily: "'Sora', sans-serif",
+                                    color: "hsl(240, 15%, 5%)",
+                                    wordBreak: "break-word",
+                                    lineHeight: "1"
+                                }}>
+                                    {goal.title}
+                                </Typography>
+                                {goal.createdAt && (
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mt: 1 }}>
+                                        <Box component="span" sx={{
+                                            fontFamily: "'Sora', sans-serif",
+                                            fontSize: 10, fontWeight: 600, color: "hsl(240, 8%, 55%)", letterSpacing: "0.04em",
+                                        }}>
+                                            Created
+                                        </Box>
+                                        <Typography component="span" sx={{
+                                            fontSize: 12, fontStyle: "italic", fontWeight: 500,
+                                            color: "hsl(240, 8%, 40%)",
+                                        }}>
+                                            {dayjs(goal.createdAt).format("DD MMM, YYYY")} | {dayjs(goal.createdAt).format("hh:mm A")}
+                                        </Typography>
+                                    </Box>
                                 )}
                             </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", gap: 1, mt: 1.25, flexWrap: "wrap" }}>
+                            <Chip label={category.label} size="small" sx={{
+                                bgcolor: category.soft, color: category.text,
+                                fontWeight: 600, fontSize: 12, borderRadius: "6px",
+                            }} />
+                            {goal.status === "paused" ? (
+                                <Chip label="Paused" size="small" sx={{
+                                    bgcolor: "hsl(39, 90%, 95%)", color: "hsl(39, 90%, 40%)",
+                                    fontWeight: 600, fontSize: 12, borderRadius: "6px",
+                                }} />
+                            ) : goal.status === "completed" || goal.completed ? (
+                                <Chip label="Completed" size="small" sx={{
+                                    bgcolor: "hsl(142, 71%, 95%)", color: "hsl(142, 71%, 35%)",
+                                    fontWeight: 600, fontSize: 12, borderRadius: "6px",
+                                }} />
+                            ) : (
+                                <Chip label="Active" size="small" sx={{
+                                    bgcolor: "hsl(142, 71%, 95%)", color: "hsl(142, 71%, 35%)",
+                                    fontWeight: 600, fontSize: 12, borderRadius: "6px",
+                                }} />
+                            )}
                         </Box>
                     </Box>
 
