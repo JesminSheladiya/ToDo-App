@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ public class TaskService {
     public Task createTask(Task task) {
         normalizeTask(task);
         syncCompletion(task);
+        task.setCreatedAt(LocalDateTime.now());
         return taskRepository.save(task);
     }
 
