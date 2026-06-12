@@ -12,7 +12,8 @@ export function useGoalActions() {
     const location = useLocation();
 
     const handleOpenCreate = useCallback((category) => {
-        const params = category ? `?category=${category}` : "";
+        const cat = (typeof category === "string") ? category : "";
+        const params = cat ? `?category=${cat}` : "";
         navigate(`/goals/new${params}`, { state: { background: location } });
     }, [navigate, location]);
 

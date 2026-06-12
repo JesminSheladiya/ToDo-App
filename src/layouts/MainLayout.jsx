@@ -54,7 +54,7 @@ function Sidebar({ categories, onClose, onCreate }) {
         <Box className="sidebar"
             sx={{
                 width: SIDEBAR_WIDTH,
-                height: "100vh",
+                height: "100dvh",
                 position: "sticky",
                 top: 0,
                 display: "flex",
@@ -370,7 +370,7 @@ function MainLayout() {
 
     return (
         <Box className="main-layout" sx={{
-            minHeight: "100vh",
+            minHeight: "100dvh",
             background: "hsl(240, 20%, 97%)",
             display: "flex",
         }}>
@@ -463,7 +463,7 @@ function MainLayout() {
                     {isMobile && (
                         <Button className="main-layout__new-btn"
                             variant="contained"
-                            onClick={handleOpenCreate}
+                            onClick={() => handleOpenCreate()}
                             startIcon={<PiPlusBold />}
                             size="small"
                             sx={{

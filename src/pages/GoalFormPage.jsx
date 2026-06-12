@@ -594,8 +594,8 @@ function GoalFormPage() {
                     paper: {
                         sx: {
                             borderRadius: isMobile ? 0 : "10px",
-                            minHeight: isMobile ? "100vh" : "auto",
-                            maxHeight: isMobile ? "100vh" : "88vh",
+                            minHeight: isMobile ? "100dvh" : "auto",
+                            maxHeight: isMobile ? "100dvh" : "88dvh",
                             bgcolor: "#fff",
                             m: isMobile ? 0 : 1.5,
                             overflow: "hidden",
@@ -615,7 +615,7 @@ function GoalFormPage() {
 
     return (
         <Box className="goal-form-page" sx={{
-            minHeight: "100vh",
+            minHeight: "100dvh",
             background: "hsl(240, 20%, 97%)",
             display: "flex",
             flexDirection: "column",
@@ -625,7 +625,7 @@ function GoalFormPage() {
                 mx: "auto",
                 width: "100%",
                 bgcolor: "#ffffff",
-                minHeight: "100vh",
+                minHeight: "100dvh",
                 boxShadow: "0 0 40px rgb(0 0 0 / .04)",
             }}>
                 {content}
