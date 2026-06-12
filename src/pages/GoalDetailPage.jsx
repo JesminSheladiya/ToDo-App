@@ -1,21 +1,82 @@
-import { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
     Box, Chip, IconButton, LinearProgress, Typography
 } from "@mui/material";
-import { PiArrowLeftBold, PiCalendarBlank, PiClock, PiNotePencil, PiListChecks, PiTrashBold } from "react-icons/pi";
+import { PiArrowLeftBold, PiCalendarBlank, PiClock, PiNotePencil, PiListChecks, PiTrashBold, PiDotsSixVerticalBold } from "react-icons/pi";
 import { IoSparkles } from "react-icons/io5";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
-import { BsFillPauseFill } from "react-icons/bs";
-import { MdPlayArrow } from "react-icons/md";
 import dayjs from "dayjs";
 import { getStepProgress } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
 import Stack from "../components/Stack";
 import { useGoalActions } from "../hooks/useGoalActions";
+import { updateGoal } from "../store/goalsSlice";
+
+function SortableDetailStep({ step, category, onToggle, index }) {
+    const {
+        attributes, listeners, setNodeRef, setActivatorNodeRef,
+        transform, transition, isDragging
+    } = useSortable({ id: step.stepId });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition: isDragging ? transition : "none",
+        opacity: isDragging ? 0.4 : 1,
+        position: "relative",
+        zIndex: isDragging ? 10 : "auto",
+    };
+
+    return (
+        <div ref={setNodeRef} style={style}>
+            <Box className="detail-subtask-root"
+                sx={{
+                    display: "flex", alignItems: "center", gap: 0.75,
+                    px: 1, py: 0.75, borderRadius: "8px",
+                    bgcolor: step.done ? "hsl(142, 71%, 97%)" : "transparent",
+                    border: step.done ? "1px solid hsl(142, 71%, 90%)" : "1px solid transparent",
+                    transition: "all 200ms ease",
+                    "&:hover": {
+                        bgcolor: step.done ? "hsl(142, 71%, 95%)" : "hsl(240, 20%, 98%)",
+                        "& .detail-subtask-text": { textDecoration: "none" },
+                    },
+                }}>
+                <Box ref={setActivatorNodeRef} {...attributes} {...listeners}
+                    sx={{
+                        display: "flex", cursor: "grab", color: "hsl(240, 8%, 0%)",
+                        "&:active": { cursor: "grabbing" },
+                    }}
+                >
+                    <PiDotsSixVerticalBold size={16} />
+                </Box>
+                <Box onClick={() => onToggle(step.stepId)}
+                    sx={{ display: "flex", cursor: "pointer", lineHeight: 0, flexShrink: 0 }}>
+                    {step.done ? (
+                        <FaCircleCheck size={16} color={category.text} />
+                    ) : (
+                        <FaRegCircle size={16} color="hsl(240, 10%, 60%)" />
+                    )}
+                </Box>
+                <Typography className="detail-subtask-text" sx={{
+                    flex: 1, fontSize: 14, fontWeight: 500,
+                    color: step.done ? "hsl(240, 8%, 45%)" : "hsl(240, 15%, 10%)",
+                    textDecoration: step.done ? "line-through" : "none",
+                    transition: "all 200ms ease",
+                    wordBreak: "break-word",
+                }}>
+                    {step.text}
+                </Typography>
+            </Box>
+        </div>
+    );
+}
 
 function GoalDetailPage() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const { id } = useParams();
@@ -33,8 +94,46 @@ function GoalDetailPage() {
         [categories, goal?.category]
     );
 
-    const progress = goal ? getStepProgress(goal) : 0;
-    const hasSteps = (goal?.steps?.length) > 0;
+    const [steps, setSteps] = useState(() => goal?.steps ? [...goal.steps] : []);
+
+    useEffect(() => {
+        if (goal?.steps) setSteps([...goal.steps]);
+    }, [goal?.steps]);
+
+    const progress = goal ? getStepProgress({ ...goal, steps }) : 0;
+    const hasSteps = steps.length > 0;
+
+    const pointerSensor = useSensor(PointerSensor, {
+        activationConstraint: { distance: 5 },
+    });
+    const sensors = useSensors(pointerSensor);
+
+    const handleDragEnd = useCallback((event) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = steps.findIndex((s) => s.stepId === active.id);
+        const newIndex = steps.findIndex((s) => s.stepId === over.id);
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        const newSteps = [...steps];
+        newSteps.splice(newIndex, 0, newSteps.splice(oldIndex, 1)[0]);
+        setSteps(newSteps);
+
+        if (goal) {
+            dispatch(updateGoal({ ...goal, steps: newSteps }));
+        }
+    }, [steps, goal, dispatch]);
+
+    const handleToggleStep = useCallback((stepId) => {
+        const newSteps = steps.map((s) =>
+            s.stepId === stepId ? { ...s, done: !s.done } : s
+        );
+        setSteps(newSteps);
+        if (goal) {
+            dispatch(updateGoal({ ...goal, steps: newSteps }));
+        }
+    }, [steps, goal, dispatch]);
 
     if (!goal) {
         return (
@@ -206,7 +305,7 @@ function GoalDetailPage() {
                                     display: "flex", alignItems: "center", gap: 0.5,
                                 }}>
                                     <PiListChecks size={15} />
-                                    {goal.steps.filter((s) => s.done).length}/{goal.steps.length}
+                                    {steps.filter((s) => s.done).length}/{steps.length}
                                 </Typography>
                             </Box>
                             <Box sx={{ mb: 1.5 }}>
@@ -218,31 +317,28 @@ function GoalDetailPage() {
                                     }
                                 }} />
                             </Box>
-                            <Stack spacing={0.5}>
-                                {goal.steps.map((step) => (
-                                    <Box key={step.stepId} sx={{
-                                        display: "flex", alignItems: "center", gap: 1,
-                                        px: 1.25, py: 0.75, borderRadius: "8px",
-                                        bgcolor: step.done ? "hsl(142, 71%, 97%)" : "transparent",
-                                        border: step.done ? "1px solid hsl(142, 71%, 90%)" : "1px solid transparent",
-                                        transition: "all 200ms ease",
-                                    }}>
-                                        {step.done ? (
-                                            <FaCircleCheck size={16} color={category.text} />
-                                        ) : (
-                                            <FaRegCircle size={16} color="hsl(240, 10%, 60%)" />
-                                        )}
-                                        <Typography sx={{
-                                            flex: 1, fontSize: 14, fontWeight: 500,
-                                            color: step.done ? "hsl(240, 8%, 45%)" : "hsl(240, 15%, 10%)",
-                                            textDecoration: step.done ? "line-through" : "none",
-                                            wordBreak: "break-word",
-                                        }}>
-                                            {step.text}
-                                        </Typography>
-                                    </Box>
-                                ))}
-                            </Stack>
+                            <DndContext
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <SortableContext
+                                    items={steps.map((s) => s.stepId)}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    <Stack spacing={0.5}>
+                                        {steps.map((step, idx) => (
+                                            <SortableDetailStep
+                                                key={step.stepId}
+                                                step={step}
+                                                category={category}
+                                                onToggle={handleToggleStep}
+                                                index={idx}
+                                            />
+                                        ))}
+                                    </Stack>
+                                </SortableContext>
+                            </DndContext>
                         </Box>
                     )}
 
