@@ -173,6 +173,8 @@ function GoalFormPage() {
             ...draft,
             title: draft.title.trim(),
             description: draft.description.trim(),
+            targetDate: draft.targetDate || null,
+            targetTime: draft.targetTime || null,
             steps: cleanStepsForSave(draft.steps)
         };
         if (!goalToSave.title) return;

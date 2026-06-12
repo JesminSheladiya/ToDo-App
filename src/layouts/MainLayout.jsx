@@ -344,6 +344,8 @@ function MainLayout() {
         setMobileOpen(false);
     }, [location.pathname]);
 
+    const isDetail = location.pathname.startsWith("/goals/") && !location.pathname.endsWith("/new") && !location.pathname.endsWith("/edit");
+
     const stats = useMemo(() => {
         const total = goals.length;
         const completed = goals.filter((goal) => goal.completed || goal.status === "completed").length;
@@ -411,159 +413,166 @@ function MainLayout() {
                 display: "flex",
                 flexDirection: "column",
             }}>
-                <Box className="main-layout__header"
-                    sx={{
-                        px: { xs: 2, sm: 3.5 },
-                        pt: { xs: 2, sm: 3 },
-                        pb: 2,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1.5,
-                    }}
-                >
-                    {isMobile && (
-                        <IconButton className="main-layout__menu-btn"
-                            onClick={() => setMobileOpen(true)}
-                            size="small"
-                            sx={{
-                                color: "#fff",
-                                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-                                boxShadow: "0 1px 3px rgb(0 0 0 / .06)",
-                            }}
-                        >
-                            <PiListBold sx={{ fontSize: 22 }} />
-                        </IconButton>
-                    )}
-                    <Box className="main-layout__title" sx={{ flex: 1 }}>
-                        <Typography className="main-layout__page-title"
-                            component="h1"
-                            sx={{
-                                fontFamily: "'Sora', sans-serif",
-                                fontSize: { xs: 22, sm: 26 },
-                                fontWeight: 800,
-                                color: "hsl(240, 15%, 10%)",
-                                lineHeight: 1.15,
-                                letterSpacing: "-0.03em",
-                            }}
-                        >
-                            {location.pathname === "/list" ? "All Goals" : "Dashboard"}
-                        </Typography>
-                        <Typography className="main-layout__subtitle" sx={{
-                            mt: 0.25,
-                            fontSize: { xs: 13, sm: 14 },
-                            color: "hsl(240, 8%, 50%)",
-                            fontWeight: 500,
-                        }}>
-                            {location.pathname === "/list"
-                                ? "View all goals in one place"
-                                : "Track your goals by category"
-                            }
-                        </Typography>
+                {!isDetail && (
+                    <Box className="main-layout__header"
+                        sx={{
+                            px: { xs: 2, sm: 3.5 },
+                            pt: { xs: 2, sm: 3 },
+                            pb: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                        }}
+                    >
+                        {isMobile && (
+                            <IconButton className="main-layout__menu-btn"
+                                onClick={() => setMobileOpen(true)}
+                                size="small"
+                                sx={{
+                                    color: "#fff",
+                                    background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                                    boxShadow: "0 1px 3px rgb(0 0 0 / .06)",
+                                }}
+                            >
+                                <PiListBold sx={{ fontSize: 22 }} />
+                            </IconButton>
+                        )}
+                        <Box className="main-layout__title" sx={{ flex: 1 }}>
+                            <Typography className="main-layout__page-title"
+                                component="h1"
+                                sx={{
+                                    fontFamily: "'Sora', sans-serif",
+                                    fontSize: { xs: 22, sm: 26 },
+                                    fontWeight: 800,
+                                    color: "hsl(240, 15%, 10%)",
+                                    lineHeight: 1.15,
+                                    letterSpacing: "-0.03em",
+                                }}
+                            >
+                                {location.pathname === "/list" ? "All Goals" : "Dashboard"}
+                            </Typography>
+                            <Typography className="main-layout__subtitle" sx={{
+                                mt: 0.25,
+                                fontSize: { xs: 13, sm: 14 },
+                                color: "hsl(240, 8%, 50%)",
+                                fontWeight: 500,
+                            }}>
+                                {location.pathname === "/list"
+                                    ? "View all goals in one place"
+                                    : "Track your goals by category"
+                                }
+                            </Typography>
+                        </Box>
+                        {isMobile && (
+                            <Button className="main-layout__new-btn"
+                                variant="contained"
+                                onClick={() => handleOpenCreate()}
+                                startIcon={<PiPlusBold />}
+                                size="small"
+                                sx={{
+                                    background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                                    color: "#fff",
+                                    px: 2,
+                                    boxShadow: "0 2px 8px rgb(124, 58, 237 / .25)",
+                                    "&:hover": {
+                                        background: "linear-gradient(135deg, #6d28d9, #9333ea)",
+                                        boxShadow: "0 4px 12px rgb(124, 58, 237 / .35)",
+                                    },
+                                }}
+                            >
+                                New
+                            </Button>
+                        )}
                     </Box>
-                    {isMobile && (
-                        <Button className="main-layout__new-btn"
-                            variant="contained"
-                            onClick={() => handleOpenCreate()}
-                            startIcon={<PiPlusBold />}
-                            size="small"
-                            sx={{
-                                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-                                color: "#fff",
-                                px: 2,
-                                boxShadow: "0 2px 8px rgb(124, 58, 237 / .25)",
-                                "&:hover": {
-                                    background: "linear-gradient(135deg, #6d28d9, #9333ea)",
-                                    boxShadow: "0 4px 12px rgb(124, 58, 237 / .35)",
-                                },
-                            }}
-                        >
-                            New
-                        </Button>
-                    )}
-                </Box>
+                )}
 
                 <Box className="main-layout__page" sx={{
                     px: { xs: 2, sm: 3.5 },
                     pb: 4,
                     flex: 1,
                     overflowY: "auto",
+                    pt: isDetail ? { xs: 2, sm: 3 } : undefined,
                 }}>
-                    <Stack className="main-layout__stack" spacing={2.5}>
-                        <ProgressSummary stats={stats} goals={goals} categories={categories} />
+                    {isDetail ? (
+                        <Outlet />
+                    ) : (
+                        <Stack className="main-layout__stack" spacing={2.5}>
+                            <ProgressSummary stats={stats} goals={goals} categories={categories} />
 
-                        {loading ? (
-                            <Box className="main-layout__loading" sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                py: 10,
-                            }}>
-                                <CircularProgress className="main-layout__spinner"
-                                    size={36}
-                                    sx={{ color: "#7c3aed" }}
-                                />
-                            </Box>
-                        ) : goals.length === 0 ? (
-                            <Box className="main-layout__empty"
-                                sx={{
-                                    textAlign: "center",
+                            {loading ? (
+                                <Box className="main-layout__loading" sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
                                     py: 10,
-                                    bgcolor: "#ffffff",
-                                    borderRadius: "16px",
-                                    border: "1px dashed hsl(240, 10%, 88%)",
-                                    animation: "fadeInUp 300ms ease-out forwards",
-                                }}
-                            >
-                                <Typography className="main-layout__empty-emoji" sx={{
-                                    fontSize: 48,
-                                    mb: 1.5,
-                                    opacity: 0.8,
                                 }}>
-                                    🎯
-                                </Typography>
-                                <Typography className="main-layout__empty-title" sx={{
-                                    fontSize: 18,
-                                    fontWeight: 800,
-                                    fontFamily: "'Sora', sans-serif",
-                                    color: "hsl(240, 15%, 10%)",
-                                    mb: 0.5,
-                                }}>
-                                    No goals yet
-                                </Typography>
-                                <Typography className="main-layout__empty-description" sx={{
-                                    fontSize: 14,
-                                    color: "hsl(240, 8%, 50%)",
-                                    mb: 3,
-                                    fontWeight: 500,
-                                }}>
-                                    Create your first goal to start tracking your progress
-                                </Typography>
-                                <Button className="main-layout__empty-action"
-                                    variant="contained"
-                                    onClick={() => handleOpenCreate()}
-                                    startIcon={<PiPlusBold />}
+                                    <CircularProgress className="main-layout__spinner"
+                                        size={36}
+                                        sx={{ color: "#7c3aed" }}
+                                    />
+                                </Box>
+                            ) : goals.length === 0 ? (
+                                <Box className="main-layout__empty"
                                     sx={{
-                                        background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-                                        color: "#fff",
-                                        px: 3,
-                                        py: 1.25,
-                                        fontSize: 14,
-                                        boxShadow: "0 2px 8px rgb(124, 58, 237 / .25)",
-                                        "&:hover": {
-                                            background: "linear-gradient(135deg, #6d28d9, #9333ea)",
-                                            boxShadow: "0 4px 16px rgb(124, 58, 237 / .35)",
-                                            transform: "translateY(-1px)",
-                                        },
+                                        textAlign: "center",
+                                        py: 10,
+                                        bgcolor: "#ffffff",
+                                        borderRadius: "16px",
+                                        border: "1px dashed hsl(240, 10%, 88%)",
+                                        animation: "fadeInUp 300ms ease-out forwards",
                                     }}
                                 >
-                                    Create Goal
-                                </Button>
-                            </Box>
-                        ) : (
-                            <Box className="main-layout__outlet" sx={{ animation: "fadeInUp 300ms ease-out forwards" }}>
-                                <Outlet />
-                            </Box>
-                        )}
-                    </Stack>
+                                    <Typography className="main-layout__empty-emoji" sx={{
+                                        fontSize: 48,
+                                        mb: 1.5,
+                                        opacity: 0.8,
+                                    }}>
+                                        🎯
+                                    </Typography>
+                                    <Typography className="main-layout__empty-title" sx={{
+                                        fontSize: 18,
+                                        fontWeight: 800,
+                                        fontFamily: "'Sora', sans-serif",
+                                        color: "hsl(240, 15%, 10%)",
+                                        mb: 0.5,
+                                    }}>
+                                        No goals yet
+                                    </Typography>
+                                    <Typography className="main-layout__empty-description" sx={{
+                                        fontSize: 14,
+                                        color: "hsl(240, 8%, 50%)",
+                                        mb: 3,
+                                        fontWeight: 500,
+                                    }}>
+                                        Create your first goal to start tracking your progress
+                                    </Typography>
+                                    <Button className="main-layout__empty-action"
+                                        variant="contained"
+                                        onClick={() => handleOpenCreate()}
+                                        startIcon={<PiPlusBold />}
+                                        sx={{
+                                            background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                                            color: "#fff",
+                                            px: 3,
+                                            py: 1.25,
+                                            fontSize: 14,
+                                            boxShadow: "0 2px 8px rgb(124, 58, 237 / .25)",
+                                            "&:hover": {
+                                                background: "linear-gradient(135deg, #6d28d9, #9333ea)",
+                                                boxShadow: "0 4px 16px rgb(124, 58, 237 / .35)",
+                                                transform: "translateY(-1px)",
+                                            },
+                                        }}
+                                    >
+                                        Create Goal
+                                    </Button>
+                                </Box>
+                            ) : (
+                                <Box className="main-layout__outlet" sx={{ animation: "fadeInUp 300ms ease-out forwards" }}>
+                                    <Outlet />
+                                </Box>
+                            )}
+                        </Stack>
+                    )}
                 </Box>
             </Box>
         </Box>

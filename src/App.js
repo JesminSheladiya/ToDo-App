@@ -7,6 +7,7 @@ import MainLayout from "./layouts/MainLayout";
 import CategoriesPage from "./pages/CategoriesPage";
 import ListPage from "./pages/ListPage";
 import GoalFormPage from "./pages/GoalFormPage";
+import GoalDetailPage from "./pages/GoalDetailPage";
 import { fetchCategories } from "./store/configSlice";
 
 function AppRoutes() {
@@ -24,6 +25,7 @@ function AppRoutes() {
                 <Route element={<MainLayout />}>
                     <Route index element={<CategoriesPage />} />
                     <Route path="list" element={<ListPage />} />
+                    <Route path="goals/:id" element={<GoalDetailPage />} />
                 </Route>
             </Routes>
 

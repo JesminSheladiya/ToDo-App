@@ -17,6 +17,10 @@ export function useGoalActions() {
         navigate(`/goals/new${params}`, { state: { background: location } });
     }, [navigate, location]);
 
+    const handleOpenDetail = useCallback((goal) => {
+        navigate(`/goals/${goal.id}`);
+    }, [navigate]);
+
     const handleOpenEdit = useCallback((goal) => {
         navigate(`/goals/${goal.id}/edit`, { state: { background: location } });
     }, [navigate, location]);
@@ -114,6 +118,7 @@ export function useGoalActions() {
 
     return {
         handleOpenCreate,
+        handleOpenDetail,
         handleOpenEdit,
         handleDelete,
         handleToggleGoal,

@@ -7,7 +7,7 @@ import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@
 import SortableGoalRow from "./SortableGoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 
-function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps }) {
+function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps }) {
     const [expanded, setExpanded] = useState(true);
     const stats = useMemo(() => {
         const total = goals.length;
@@ -234,6 +234,7 @@ function CategorySection({ category, goals, onCreate, onEdit, onDelete, onToggle
                                         key={goal.id}
                                         goal={goal}
                                         category={category}
+                                        onViewDetails={onViewDetails}
                                         onEdit={onEdit}
                                         onDelete={onDelete}
                                         onToggleGoal={onToggleGoal}

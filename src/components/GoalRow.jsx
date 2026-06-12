@@ -2,14 +2,14 @@ import { useCallback, useRef, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { PiDotsThreeVerticalBold } from "react-icons/pi";
+import { PiDotsThreeVerticalBold, PiEyeBold } from "react-icons/pi";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { TbPencil } from "react-icons/tb";
 import { FiTrash } from "react-icons/fi";
 import {
-    Box, Button, Checkbox, ClickAwayListener, Collapse, IconButton, LinearProgress, Popper, Tooltip, Typography
+    Box, Checkbox, ClickAwayListener, Collapse, IconButton, LinearProgress, Popper, Tooltip, Typography
 } from "@mui/material";
 import { getStepProgress } from "../utils/goals";
 import RoundedGoalIcon from "./RoundedGoalIcon";
@@ -88,7 +88,7 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
     );
 }
 
-function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast }) {
+function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast }) {
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -136,9 +136,9 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 0.75,
-                        px: 1.25,
-                        py: 1.25,
+                        gap: 0.5,
+                        px: { xs: 1, sm: 1.25 },
+                        py: { xs: 1, sm: 1.25 },
                         minHeight: 52,
                         transition: "background-color 150ms ease",
                         "&:hover": {
@@ -196,7 +196,16 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                         sx={{ color: category.text, fontSize: 16, flexShrink: 0 }}
                     />
 
-                    <Box className="goal-row__info" sx={{ flex: 1, minWidth: 0 }}>
+                    <Box className="goal-row__info"
+                        onClick={() => onViewDetails?.(goal)}
+                        sx={{
+                            flex: 1, minWidth: 0, cursor: "pointer",
+                            px: 0.75, py: 0.25,
+                            borderRadius: "6px",
+                            transition: "background-color 150ms ease",
+                            "&:hover": { bgcolor: "hsl(240, 20%, 96%)" },
+                        }}
+                    >
                         <Typography
                             className="goal-row__title"
                             sx={{
@@ -369,19 +378,39 @@ function GoalRow({ goal, category, onEdit, onDelete, onToggleGoal, onToggleStep,
                                 sx={{ zIndex: 1400 }}
                             >
                                 <ClickAwayListener className="goal-row__click-away" onClickAway={() => setMobileMenuOpen(false)}>
+                                    <Box
+                                        className="goal-row__mobile-dropdown"
+                                        sx={{
+                                            mt: 0.5,
+                                            bgcolor: "#fff",
+                                            borderRadius: "10px",
+                                            border: "1px solid hsl(240, 10%, 90%)",
+                                            boxShadow: "0 4px 16px rgb(0 0 0 / 10%)",
+                                            minWidth: 150,
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        {/* View Details */}
                                         <Box
-                                            className="goal-row__mobile-dropdown"
+                                            className="goal-row__menu-item goal-row__menu-detail"
+                                            onClick={() => {
+                                                onViewDetails?.(goal);
+                                                setMobileMenuOpen(false);
+                                            }}
                                             sx={{
-                                                mt: 0.5,
-                                                bgcolor: "#fff",
-                                                borderRadius: "10px",
-                                                border: "1px solid hsl(240, 10%, 90%)",
-                                                boxShadow: "0 4px 16px rgb(0 0 0 / 10%)",
-                                                minWidth: 140,
-                                                overflow: "hidden",
+                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                color: "hsl(240, 8%, 20%)", cursor: "pointer",
+                                                display: "flex", alignItems: "center", gap: 1.5,
+                                                borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                transition: "0.3s all ease",
+                                                "&:hover": { bgcolor: "hsl(240, 20%, 97%)", color: "#7c3aed" },
                                             }}
                                         >
-                                            {/* Complete */}
+                                            <PiEyeBold size={16} color="#7c3aed" />
+                                            View Details
+                                        </Box>
+
+                                        {/* Complete */}
                                         <Box
                                             className="goal-row__menu-item goal-row__menu-complete"
                                             onClick={() => {

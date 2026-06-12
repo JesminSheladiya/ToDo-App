@@ -49,6 +49,7 @@ export const emptyDraft = {
     description: "",
     category: "short_term",
     targetDate: "",
+    targetTime: "",
     emoji: "target",
     steps: [],
     status: "active",

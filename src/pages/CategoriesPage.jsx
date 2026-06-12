@@ -12,6 +12,7 @@ function CategoriesPage() {
     const activeCategory = useSelector((state) => state.ui.activeCategory);
     const {
         handleOpenCreate,
+        handleOpenDetail,
         handleOpenEdit,
         handleDelete,
         handleToggleGoal,
@@ -50,6 +51,7 @@ function CategoriesPage() {
                         .sort((a, b) => (a.taskOrder ?? 0) - (b.taskOrder ?? 0))
                     }
                     onCreate={handleOpenCreate}
+                    onViewDetails={handleOpenDetail}
                     onEdit={handleOpenEdit}
                     onDelete={handleDelete}
                     onToggleGoal={handleToggleGoal}
