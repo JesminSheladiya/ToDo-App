@@ -42,6 +42,7 @@ public class TaskService {
         task.setCategory(updatedTask.getCategory());
         task.setEmoji(updatedTask.getEmoji());
         task.setTargetDate(updatedTask.getTargetDate());
+        task.setTargetTime(updatedTask.getTargetTime());
         task.setTaskOrder(updatedTask.getTaskOrder());
         task.setCompleted(updatedTask.isCompleted());
         task.setStatus(updatedTask.getStatus());

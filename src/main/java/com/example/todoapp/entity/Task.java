@@ -1,10 +1,13 @@
 package com.example.todoapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Task {
 
     @Id
@@ -33,6 +37,9 @@ public class Task {
     private String emoji = "target";
 
     private LocalDate targetDate;
+
+    @JsonFormat(pattern = "hh:mm a")
+    private LocalTime targetTime;
 
     @Builder.Default
     private String status = "active";

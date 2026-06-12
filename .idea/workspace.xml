@@ -4,8 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="task status fix">
+    <list default="true" id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/CategoryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/CategoryController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,61 +46,61 @@
 }</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.000000000000323" />
-      <entry key="MS500" value="1.0047530101686393" />
-      <entry key="S2" value="1.4640770183354075" />
-      <entry key="S5" value="2.7105719667434083" />
-      <entry key="S10" value="4.9456770155888865" />
-      <entry key="S30" value="10.21946766588052" />
-      <entry key="S60" value="13.646553521415834" />
-      <entry key="M2" value="17.567201244087954" />
-      <entry key="M5" value="25.246861881084314" />
-      <entry key="M10" value="33.255412531434814" />
-      <entry key="M15" value="37.86370476574321" />
-      <entry key="M30" value="44.18541362974421" />
-      <entry key="H1" value="48.21933688371604" />
-      <entry key="H2" value="50.50718902169845" />
-      <entry key="H4" value="51.72672975059951" />
-      <entry key="D1" value="52.78394623933878" />
-      <entry key="W1" value="52.96903960445335" />
+      <entry key="MS100" value="1.0000235300941682" />
+      <entry key="MS500" value="1.1662680138558432" />
+      <entry key="S2" value="2.6098548308841183" />
+      <entry key="S5" value="4.242584871245547" />
+      <entry key="S10" value="5.32921737671211" />
+      <entry key="S30" value="6.357564847906628" />
+      <entry key="S60" value="6.666439455472487" />
+      <entry key="M2" value="6.829992768791447" />
+      <entry key="M5" value="6.931203758881856" />
+      <entry key="M10" value="6.965677258268466" />
+      <entry key="M15" value="6.989852303230268" />
+      <entry key="M30" value="7.8041408964728305" />
+      <entry key="H1" value="13.545745832795358" />
+      <entry key="H2" value="25.614279818167546" />
+      <entry key="H4" value="38.40329775416896" />
+      <entry key="D1" value="55.571301167878" />
+      <entry key="W1" value="59.34338664293307" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.2989849624032337E-92" />
-      <entry key="MS500" value="4.194892391844921E-19" />
-      <entry key="S2" value="2.544955578079114E-5" />
-      <entry key="S5" value="0.014530216404422116" />
-      <entry key="S10" value="0.12054134729212507" />
-      <entry key="S30" value="0.4943330135504882" />
-      <entry key="S60" value="0.734478144201757" />
-      <entry key="M2" value="1.1704582787447448" />
-      <entry key="M5" value="2.378781845579682" />
-      <entry key="M10" value="3.361455744346768" />
-      <entry key="M15" value="3.816582767921742" />
-      <entry key="M30" value="4.357088935771485" />
-      <entry key="H1" value="4.664549895360351" />
-      <entry key="H2" value="4.8286144430222855" />
-      <entry key="H4" value="4.9133710154104" />
-      <entry key="D1" value="4.985429977183647" />
-      <entry key="W1" value="4.997915314831229" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="1.01072722817E-313" />
+      <entry key="S30" value="4.661427386845754E-105" />
+      <entry key="S60" value="7.132282408404588E-53" />
+      <entry key="M2" value="1.1534021716980881E-26" />
+      <entry key="M5" value="9.414657953962395E-11" />
+      <entry key="M10" value="2.1147175196637948E-5" />
+      <entry key="M15" value="0.0013006426628914079" />
+      <entry key="M30" value="0.08043370609135665" />
+      <entry key="H1" value="0.6337683843379724" />
+      <entry key="H2" value="1.7798481145817568" />
+      <entry key="H4" value="2.9830447361302017" />
+      <entry key="D1" value="4.5875694844135495" />
+      <entry key="W1" value="4.938884819724757" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9726549474125976" />
-      <entry key="MS500" value="0.999188149666083" />
-      <entry key="S2" value="1.4617915240995139" />
-      <entry key="S5" value="2.7205408894870198" />
-      <entry key="S10" value="5.0553526527748796" />
-      <entry key="S30" value="10.700978204615593" />
-      <entry key="S60" value="14.370107244029414" />
-      <entry key="M2" value="18.723941125045414" />
-      <entry key="M5" value="27.609449362873995" />
-      <entry key="M10" value="36.604135420010856" />
-      <entry key="M15" value="41.67030608382117" />
-      <entry key="M30" value="48.53659750325491" />
-      <entry key="H1" value="52.88066707499612" />
-      <entry key="H2" value="55.33412123469003" />
-      <entry key="H4" value="56.639240803625405" />
-      <entry key="D1" value="57.76923020512067" />
-      <entry key="W1" value="57.966933993885725" />
+      <entry key="MS100" value="0.9659592150546739" />
+      <entry key="MS500" value="1.1583636276362315" />
+      <entry key="S2" value="2.605225380917025" />
+      <entry key="S5" value="4.239120923109819" />
+      <entry key="S10" value="5.3268619586501345" />
+      <entry key="S30" value="6.3565692800680225" />
+      <entry key="S60" value="6.6659090562160905" />
+      <entry key="M2" value="6.829718851901207" />
+      <entry key="M5" value="6.931092023603604" />
+      <entry key="M10" value="6.965642089655376" />
+      <entry key="M15" value="6.991111971615252" />
+      <entry key="M30" value="7.884446764992334" />
+      <entry key="H1" value="14.179067334558214" />
+      <entry key="H2" value="27.39350314084051" />
+      <entry key="H4" value="41.38581802514504" />
+      <entry key="D1" value="60.15873590019224" />
+      <entry key="W1" value="64.28225072825197" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -154,7 +166,11 @@
       <workItem from="1780460875064" duration="598000" />
       <workItem from="1780634195471" duration="15481000" />
       <workItem from="1780720197244" duration="11715000" />
-      <workItem from="1780893013427" duration="8657000" />
+      <workItem from="1780893013427" duration="10435000" />
+      <workItem from="1780978942979" duration="4148000" />
+      <workItem from="1781065370850" duration="4895000" />
+      <workItem from="1781151733126" duration="1216000" />
+      <workItem from="1781238812700" duration="3909000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -204,7 +220,15 @@
       <option name="project" value="LOCAL" />
       <updated>1780910891660</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="&quot;Paused&quot; Status add">
+      <option name="closed" value="true" />
+      <created>1780921274427</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1780921274427</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -243,6 +267,7 @@
     <MESSAGE value="Task reorder Add" />
     <MESSAGE value="Refactor task steps to embeddables, add server-side completion sync, batch goal reordering, and category config API" />
     <MESSAGE value="task status fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="task status fix" />
+    <MESSAGE value="&quot;Paused&quot; Status add" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;Paused&quot; Status add" />
   </component>
 </project>
