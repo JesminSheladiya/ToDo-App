@@ -30,7 +30,10 @@ const goalsSlice = createSlice({
     name: "goals",
     initialState: {
         items: [],
-        loading: true
+        loading: true,
+        saving: false,
+        updating: [],
+        deleting: []
     },
     reducers: {
         reorderGoals(state, action) {
@@ -54,6 +57,11 @@ const goalsSlice = createSlice({
             if (index !== -1) {
                 state.items[index] = { ...state.items[index], steps: newSteps };
             }
+        },
+        clearProcessing(state) {
+            state.saving = false;
+            state.updating = [];
+            state.deleting = [];
         }
     },
     extraReducers: (builder) => {
@@ -68,20 +76,50 @@ const goalsSlice = createSlice({
             .addCase(fetchGoals.rejected, (state) => {
                 state.loading = false;
             })
+            .addCase(createGoal.pending, (state) => {
+                state.saving = true;
+            })
             .addCase(createGoal.fulfilled, (state, action) => {
                 state.items.unshift(action.payload);
+                state.saving = false;
+            })
+            .addCase(createGoal.rejected, (state) => {
+                state.saving = false;
+            })
+            .addCase(updateGoal.pending, (state, action) => {
+                state.saving = true;
+                const id = action.meta.arg.id;
+                if (!state.updating.includes(id)) {
+                    state.updating.push(id);
+                }
             })
             .addCase(updateGoal.fulfilled, (state, action) => {
                 const index = state.items.findIndex((g) => g.id === action.payload.id);
                 if (index !== -1) {
                     state.items[index] = action.payload;
                 }
+                state.saving = false;
+                state.updating = state.updating.filter((id) => id !== action.payload.id);
+            })
+            .addCase(updateGoal.rejected, (state, action) => {
+                state.saving = false;
+                state.updating = state.updating.filter((id) => id !== action.meta.arg.id);
+            })
+            .addCase(deleteGoal.pending, (state, action) => {
+                const id = action.meta.arg;
+                if (!state.deleting.includes(id)) {
+                    state.deleting.push(id);
+                }
             })
             .addCase(deleteGoal.fulfilled, (state, action) => {
                 state.items = state.items.filter((g) => g.id !== action.payload);
+                state.deleting = state.deleting.filter((id) => id !== action.payload);
+            })
+            .addCase(deleteGoal.rejected, (state, action) => {
+                state.deleting = state.deleting.filter((id) => id !== action.meta.arg);
             });
     }
 });
 
-export const { reorderGoals, reorderSteps } = goalsSlice.actions;
+export const { reorderGoals, reorderSteps, clearProcessing } = goalsSlice.actions;
 export default goalsSlice.reducer;

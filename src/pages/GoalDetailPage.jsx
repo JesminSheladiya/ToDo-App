@@ -5,7 +5,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-    Box, Chip, IconButton, LinearProgress, Typography
+    Box, Chip, CircularProgress, IconButton, LinearProgress, Typography
 } from "@mui/material";
 import { PiArrowLeftBold, PiCalendarBlank, PiClock, PiNotePencil, PiListChecks, PiTrashBold, PiDotsSixVerticalBold } from "react-icons/pi";
 import { IoSparkles } from "react-icons/io5";
@@ -16,8 +16,9 @@ import RoundedGoalIcon from "../components/RoundedGoalIcon";
 import Stack from "../components/Stack";
 import { useGoalActions } from "../hooks/useGoalActions";
 import { updateGoal } from "../store/goalsSlice";
+import { MdOutlineReportGmailerrorred } from "react-icons/md";
 
-function SortableDetailStep({ step, category, onToggle, index }) {
+function SortableDetailStep({ step, category, onToggle, index, loading, disabled }) {
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -53,9 +54,11 @@ function SortableDetailStep({ step, category, onToggle, index }) {
                 >
                     <PiDotsSixVerticalBold size={16} />
                 </Box>
-                <Box onClick={() => onToggle(step.stepId)}
-                    sx={{ display: "flex", cursor: "pointer", lineHeight: 0, flexShrink: 0 }}>
-                    {step.done ? (
+                <Box onClick={() => !disabled && onToggle(step.stepId)}
+                    sx={{ display: "flex", cursor: disabled ? "default" : "pointer", lineHeight: 0, flexShrink: 0 }}>
+                    {loading ? (
+                        <CircularProgress size={14} sx={{ color: "hsl(240, 10%, 60%)" }} />
+                    ) : step.done ? (
                         <FaCircleCheck size={16} color={category.text} />
                     ) : (
                         <FaRegCircle size={16} color="hsl(240, 10%, 60%)" />
@@ -83,6 +86,8 @@ function GoalDetailPage() {
     const { handleDelete } = useGoalActions();
     const goals = useSelector((state) => state.goals.items);
     const categories = useSelector((state) => state.config.categories);
+    const updating = useSelector((state) => state.goals.updating);
+    const deleting = useSelector((state) => state.goals.deleting);
 
     const goal = useMemo(
         () => goals.find((g) => String(g.id) === id),
@@ -94,7 +99,12 @@ function GoalDetailPage() {
         [categories, goal?.category]
     );
 
+    const goalId = goal?.id;
+    const isUpdating = goalId ? updating.includes(goalId) : false;
+    const isDeleting = goalId ? deleting.includes(goalId) : false;
+
     const [steps, setSteps] = useState(() => goal?.steps ? [...goal.steps] : []);
+    const [togglingStepId, setTogglingStepId] = useState(null);
 
     useEffect(() => {
         if (goal?.steps) setSteps([...goal.steps]);
@@ -130,16 +140,19 @@ function GoalDetailPage() {
             s.stepId === stepId ? { ...s, done: !s.done } : s
         );
         setSteps(newSteps);
+        setTogglingStepId(stepId);
         if (goal) {
-            dispatch(updateGoal({ ...goal, steps: newSteps }));
+            dispatch(updateGoal({ ...goal, steps: newSteps }))
+                .finally(() => setTogglingStepId(null));
         }
     }, [steps, goal, dispatch]);
 
     if (!goal) {
         return (
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 200, p: 3 }}>
-                <Typography sx={{ fontSize: 15, fontWeight: 500, color: "hsl(240, 8%, 50%)" }}>
-                    Goal not found
+                <Typography sx={{ fontSize: 20, fontWeight: 500, color: "#dc2626", display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <MdOutlineReportGmailerrorred size={22} color="#dc2626" />
+                    Goal not found..!
                 </Typography>
             </Box>
         );
@@ -181,12 +194,13 @@ function GoalDetailPage() {
                     }}>
                         <PiNotePencil size={18} />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(goal)} size="small" disableRipple sx={{
+                    <IconButton onClick={() => handleDelete(goal)} size="small" disableRipple disabled={isDeleting} sx={{
                         width: 32, height: 32, borderRadius: "8px",
-                        bgcolor: "hsl(240, 20%, 96%)", color: "#dc2626",
-                        "&:hover": { bgcolor: "hsl(0, 84%, 96%)" },
+                        bgcolor: isDeleting ? "hsl(240, 10%, 92%)" : "hsl(240, 20%, 96%)",
+                        color: isDeleting ? "hsl(240, 6%, 70%)" : "#dc2626",
+                        "&:hover": { bgcolor: isDeleting ? "hsl(240, 10%, 92%)" : "hsl(0, 84%, 96%)" },
                     }}>
-                        <PiTrashBold size={16} />
+                        {isDeleting ? <CircularProgress size={14} sx={{ color: "hsl(240, 6%, 70%)" }} /> : <PiTrashBold size={16} />}
                     </IconButton>
                 </Box>
             </Box>
@@ -353,6 +367,8 @@ function GoalDetailPage() {
                                                 category={category}
                                                 onToggle={handleToggleStep}
                                                 index={idx}
+                                                loading={togglingStepId === step.stepId}
+                                                disabled={!!togglingStepId}
                                             />
                                         ))}
                                     </Stack>

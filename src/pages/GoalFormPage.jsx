@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
-    Box, Button, Dialog, IconButton,
+    Box, Button, CircularProgress, Dialog, IconButton,
     TextField, Tooltip, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -38,6 +38,7 @@ function GoalFormPage() {
     const goals = useSelector((state) => state.goals.items);
     const categories = useSelector((state) => state.config.categories);
     const loading = useSelector((state) => state.goals.loading);
+    const saving = useSelector((state) => state.goals.saving);
     const isEditing = !!id;
     const background = location.state?.background;
     const isOverlay = !!background;
@@ -251,7 +252,7 @@ function GoalFormPage() {
                     className="goal-form-page__save-btn"
                     variant="contained"
                     onClick={handleSave}
-                    disabled={!draft.title.trim()}
+                    disabled={!draft.title.trim() || saving}
                     size="small"
                     disableElevation
                     sx={{
@@ -273,7 +274,14 @@ function GoalFormPage() {
                         }
                     }}
                 >
-                    {isEditing ? "Update Changes" : "Create Goal"}
+                    {saving ? (
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <CircularProgress size={14} sx={{ color: "hsl(240, 6%, 70%)" }} />
+                            Saving...
+                        </Box>
+                    ) : (
+                        isEditing ? "Update Changes" : "Create Goal"
+                    )}
                 </Button>
             </Box>
 
