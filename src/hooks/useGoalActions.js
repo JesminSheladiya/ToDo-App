@@ -27,6 +27,7 @@ export function useGoalActions() {
         try {
             await dispatch(deleteGoal(goal.id)).unwrap();
             setDeleteDialog(null);
+            toast.success("Goal deleted!");
         } catch {
             setDeleteDialog({ title: goal.title, loading: false, error: "Failed to delete goal" });
         }

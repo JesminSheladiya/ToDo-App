@@ -281,8 +281,8 @@ export default function CustomDateTimePicker({
     });
 
     return (
-        <Box ref={anchorRef}>
-            <Box
+        <Box ref={anchorRef} className="custom-date-time-picker">
+            <Box className="custom-date-time-picker__trigger"
                 onClick={handleToggle}
                 sx={{
                     display: "flex",
@@ -304,9 +304,9 @@ export default function CustomDateTimePicker({
                 }}
             >
                 <IoCalendarNumber size={16} style={{ color: "hsl(240, 8%, 55%)", flexShrink: 0 }} />
-                <span ref={displayRef} style={{ flex: 1 }}>{displayText}</span>
+                <span ref={displayRef} className="custom-date-time-picker__display" style={{ flex: 1 }}>{displayText}</span>
                 {hasValue && (
-                    <Box
+                    <Box className="custom-date-time-picker__clear"
                         onClick={handleClear}
                         sx={{
                             fontSize: 14,
@@ -320,13 +320,13 @@ export default function CustomDateTimePicker({
                 )}
             </Box>
 
-            <Popper
+            <Popper className="custom-date-time-picker__popper"
                 open={open}
                 anchorEl={anchorRef.current}
                 placement="bottom-start"
                 sx={{ zIndex: 1400 }}
             >
-                <Paper
+                <Paper className="custom-date-time-picker__paper"
                     elevation={0}
                     sx={{
                         mt: 0.5,
@@ -336,25 +336,25 @@ export default function CustomDateTimePicker({
                         width: "fit-content",
                     }}
                 >
-                    <ClickAwayListener onClickAway={() => setOpen(false)}>
-                        <Box>
-                            <Box sx={{
+                    <ClickAwayListener className="custom-date-time-picker__clickaway" onClickAway={() => setOpen(false)}>
+                        <Box className="custom-date-time-picker__popover">
+                            <Box className="custom-date-time-picker__tabs" sx={{
                                 display: "flex",
                                 borderBottom: "1px solid hsl(240, 10%, 92%)",
                             }}>
-                                <Box onClick={() => setActiveTab("date")} sx={tabLineButtonSx(activeTab === "date")}>
+                                <Box className="custom-date-time-picker__tab" onClick={() => setActiveTab("date")} sx={tabLineButtonSx(activeTab === "date")}>
                                     <IoCalendarNumber size={18} style={{ marginTop: "-2px" }} />
                                     Date
                                 </Box>
-                                <Box onClick={() => setActiveTab("time")} sx={tabLineButtonSx(activeTab === "time")}>
+                                <Box className="custom-date-time-picker__tab" onClick={() => setActiveTab("time")} sx={tabLineButtonSx(activeTab === "time")}>
                                     <FaClock size={18} style={{ marginTop: "-1px" }} />
                                     Time
                                 </Box>
                             </Box>
 
-                            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                            <Box className="custom-date-time-picker__content" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 {activeTab === "date" && (
-                                    <Box sx={{
+                                    <Box className="custom-date-time-picker__date" sx={{
                                         ".MuiDateCalendar-root": {
                                             width: "auto",
                                             height: "100%",
@@ -440,7 +440,7 @@ export default function CustomDateTimePicker({
                                             display: "none",
                                         },
                                     }}>
-                                        <DateCalendar
+                                        <DateCalendar className="custom-date-time-picker__calendar"
                                             value={calendarValue}
                                             onChange={handleDateChange}
                                             minDate={dayjs()}
@@ -450,7 +450,7 @@ export default function CustomDateTimePicker({
                                 )}
 
                                 {activeTab === "time" && (
-                                    <Box ref={timePickerBoxRef} sx={{
+                                    <Box ref={timePickerBoxRef} className="custom-date-time-picker__time" sx={{
                                         ...TIME_TAB_SX,
                                         ".MuiPickersClock-hand": {
                                             backgroundColor: accentColor,
@@ -489,7 +489,7 @@ export default function CustomDateTimePicker({
                                             opacity: 1,
                                         },
                                     }}>
-                                        <StaticTimePicker
+                                        <StaticTimePicker className="custom-date-time-picker__clock"
                                             value={clockValue}
                                             onChange={handleTimeChange}
                                             views={["hours", "minutes"]}
@@ -510,7 +510,7 @@ export default function CustomDateTimePicker({
                                 )}
                             </Box>
 
-                            <Box sx={{
+                            <Box className="custom-date-time-picker__actions" sx={{
                                 display: "flex",
                                 justifyContent: "flex-end",
                                 gap: 1,
@@ -519,7 +519,7 @@ export default function CustomDateTimePicker({
                                 borderTop: "1px solid hsl(240, 10%, 92%)",
                                 bgcolor: "hsl(240, 20%, 99%)",
                             }}>
-                                <Button
+                                <Button className="custom-date-time-picker__cancel-btn"
                                     onClick={handleCancel}
                                     sx={{
                                         fontSize: 13,
@@ -538,7 +538,7 @@ export default function CustomDateTimePicker({
                                 >
                                     Cancel
                                 </Button>
-                                <Button
+                                <Button className="custom-date-time-picker__ok-btn"
                                     onClick={handleOK}
                                     sx={{
                                         fontSize: 13,

@@ -56,7 +56,7 @@ function ListPage() {
                 open={!!deleteDialog}
                 onClose={closeDeleteDialog}
                 onConfirm={confirmDelete}
-                message={<>Are you sure you want to delete &ldquo;<strong>{deleteDialog?.title || ""}</strong>&rdquo;?</>}
+                message={<>Are you sure you want to delete &ldquo;<strong className="list-page__strong">{deleteDialog?.title || ""}</strong>&rdquo;?</>}
                 loading={deleteDialog?.loading}
                 error={deleteDialog?.error}
             />

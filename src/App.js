@@ -21,17 +21,17 @@ function AppRoutes() {
 
     return (
         <div className="app">
-            <Routes location={background || location}>
-                <Route element={<MainLayout />}>
-                    <Route index element={<CategoriesPage />} />
-                    <Route path="list" element={<ListPage />} />
-                    <Route path="goals/:id" element={<GoalDetailPage />} />
+            <Routes location={background || location} className="app__routes">
+                <Route element={<MainLayout />} className="app__route">
+                    <Route index element={<CategoriesPage />} className="app__route" />
+                    <Route path="list" element={<ListPage />} className="app__route" />
+                    <Route path="goals/:id" element={<GoalDetailPage />} className="app__route" />
                 </Route>
             </Routes>
 
-            <Routes>
-                <Route path="goals/new" element={<GoalFormPage />} />
-                <Route path="goals/:id/edit" element={<GoalFormPage />} />
+            <Routes className="app__routes">
+                <Route path="goals/new" element={<GoalFormPage />} className="app__route" />
+                <Route path="goals/:id/edit" element={<GoalFormPage />} className="app__route" />
             </Routes>
         </div>
     );
@@ -39,8 +39,8 @@ function AppRoutes() {
 
 function App() {
     return (
-        <BrowserRouter>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <BrowserRouter className="app__browser-router">
+            <LocalizationProvider dateAdapter={AdapterDayjs} className="app__localization-provider">
                 <AppRoutes />
             </LocalizationProvider>
         </BrowserRouter>

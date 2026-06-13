@@ -10,7 +10,7 @@ export default function ConfirmDeleteDialog({
     error = null,
 }) {
     return (
-        <Dialog
+        <Dialog className="confirm-delete-dialog__dialog"
             open={open}
             onClose={loading ? undefined : onClose}
             slotProps={{
@@ -23,20 +23,20 @@ export default function ConfirmDeleteDialog({
                 }
             }}
         >
-            <Box sx={{ px: 2.5, pt: 2.5, pb: 1.5 }}>
+            <Box className="confirm-delete-dialog__content" sx={{ px: 2.5, pt: 2.5, pb: 1.5 }}>
                 {message && (
-                    <Box sx={{ fontSize: 15, fontFamily: "Sora", color: "hsl(240, 8%, 45%)", lineHeight: 1.5, wordWrap: "break-word" }}>
+                    <Box className="confirm-delete-dialog__message" sx={{ fontSize: 15, fontFamily: "Sora", color: "hsl(240, 8%, 45%)", lineHeight: 1.5, wordWrap: "break-word" }}>
                         {message}
                     </Box>
                 )}
                 {error && (
-                    <Box sx={{ fontSize: 15, fontFamily: "Sora", color: "#dc2626", mt: 1, fontWeight: 500, wordWrap: "break-word" }}>
+                    <Box className="confirm-delete-dialog__error" sx={{ fontSize: 15, fontFamily: "Sora", color: "#dc2626", mt: 1, fontWeight: 500, wordWrap: "break-word" }}>
                         {error}
                     </Box>
                 )}
             </Box>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, px: 2.5, pb: 2.5 }}>
-                <Button
+            <Box className="confirm-delete-dialog__actions" sx={{ display: "flex", justifyContent: "flex-end", gap: 1, px: 2.5, pb: 2.5 }}>
+                <Button className="confirm-delete-dialog__cancel-btn"
                     onClick={onClose}
                     disabled={loading}
                     size="small"
@@ -47,7 +47,7 @@ export default function ConfirmDeleteDialog({
                 >
                     Cancel
                 </Button>
-                <Button
+                <Button className="confirm-delete-dialog__delete-btn"
                     onClick={onConfirm}
                     disabled={loading}
                     variant="contained"
@@ -59,7 +59,7 @@ export default function ConfirmDeleteDialog({
                         "&.Mui-disabled": { bgcolor: "#fca5a5", color: "#fff" },
                     }}
                 >
-                    {loading ? <CircularProgress size={14} sx={{ color: "#fff" }} /> : confirmLabel}
+                    {loading ? <CircularProgress className="confirm-delete-dialog__spinner" size={14} sx={{ color: "#fff" }} /> : confirmLabel}
                 </Button>
             </Box>
         </Dialog>

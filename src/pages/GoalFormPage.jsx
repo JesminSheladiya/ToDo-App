@@ -313,8 +313,8 @@ function GoalFormPage() {
                     }}
                 >
                     {saving ? (
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                            <CircularProgress size={14} sx={{ color: "hsl(240, 6%, 70%)" }} />
+                        <Box className="goal-form-page__saving-box" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <CircularProgress className="goal-form-page__saving-spinner" size={14} sx={{ color: "hsl(240, 6%, 70%)" }} />
                             Saving...
                         </Box>
                     ) : (
@@ -470,7 +470,7 @@ function GoalFormPage() {
                             {ICON_OPTIONS.map((option) => {
                                 const selected = getIconKey(draft.emoji, category?.iconKey) === option.key;
                                 return (
-                                    <Tooltip key={option.key} title={option.label} arrow placement="top">
+                                    <Tooltip key={option.key} title={option.label} arrow placement="top" className="goal-form-page__icon-tooltip">
                                         <IconButton
                                             className="goal-form-page__icon-btn"
                                             onClick={() => updateDraft({ emoji: option.key })}
@@ -626,13 +626,13 @@ function GoalFormPage() {
                     <Box className="goal-form-page__spacer" sx={{ height: 2 }} />
                 </Stack>
             </Box>
-            <ConfirmDeleteDialog
+            <ConfirmDeleteDialog className="goal-form-page__delete-step-dialog"
                 open={!!stepDeleteDialog}
                 onClose={() => setStepDeleteDialog(null)}
                 onConfirm={confirmRemoveStep}
-                message={<>Are you sure you want to remove &ldquo;<strong>{stepDeleteDialog?.title || ""}</strong>&rdquo;?</>}
+                message={<>Are you sure you want to remove &ldquo;<strong className="goal-form-page__strong">{stepDeleteDialog?.title || ""}</strong>&rdquo;?</>}
             />
-            <Dialog
+            <Dialog className="goal-form-page__exit-dialog"
                 open={exitDialogOpen}
                 onClose={handleCancelExit}
                 slotProps={{
@@ -646,7 +646,7 @@ function GoalFormPage() {
                     }
                 }}
             >
-                <IconButton
+                <IconButton className="goal-form-page__exit-close-btn"
                     onClick={handleCancelExit}
                     size="small"
                     disableRipple
@@ -662,13 +662,13 @@ function GoalFormPage() {
                 >
                     <PiXBold sx={{ fontSize: 16 }} />
                 </IconButton>
-                <Box sx={{ px: 2.5, pt: 2.5, pb: 1.5 }}>
-                    <Box sx={{ fontSize: 15, fontFamily: "Sora", color: "hsl(240, 8%, 45%)", lineHeight: 1.5, wordWrap: "break-word" }}>
+                <Box className="goal-form-page__exit-content" sx={{ px: 2.5, pt: 2.5, pb: 1.5 }}>
+                    <Box className="goal-form-page__exit-message" sx={{ fontSize: 15, fontFamily: "Sora", color: "hsl(240, 8%, 45%)", lineHeight: 1.5, wordWrap: "break-word" }}>
                         You have unsaved changes. What would you like to do?
                     </Box>
                 </Box>
-                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, px: 2.5, pb: 2.5 }}>
-                    <Button
+                <Box className="goal-form-page__exit-actions" sx={{ display: "flex", justifyContent: "flex-end", gap: 1, px: 2.5, pb: 2.5 }}>
+                    <Button className="goal-form-page__exit-discard-btn"
                         onClick={handleConfirmExit}
                         size="small"
                         sx={{
@@ -680,7 +680,7 @@ function GoalFormPage() {
                     >
                         Discard Changes
                     </Button>
-                    <Button
+                    <Button className="goal-form-page__exit-save-btn"
                         onClick={handleSaveAndExit}
                         variant="contained"
                         size="small"
@@ -851,7 +851,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
             <Box className="goal-form-page__step-actions" sx={{ display: "flex", alignItems: "center", gap: 0.25, flexShrink: 0 }}>
                 {isEditing ? (
                     <>
-                        <Tooltip title="Save" arrow placement="top">
+                        <Tooltip title="Save" arrow placement="top" className="goal-form-page__step-save-tooltip">
                             <IconButton
                                 className="goal-form-page__step-save-btn"
                                 onClick={handleSaveEditStep}
@@ -868,7 +868,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                 <PiCheckBold sx={{ fontSize: 16 }} />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Cancel" arrow placement="top">
+                        <Tooltip title="Cancel" arrow placement="top" className="goal-form-page__step-cancel-tooltip">
                             <IconButton
                                 className="goal-form-page__step-cancel-btn"
                                 onClick={handleCancelEditStep}
@@ -888,7 +888,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                     </>
                 ) : (
                     <>
-                        <Tooltip title="Edit" arrow placement="top">
+                        <Tooltip title="Edit" arrow placement="top" className="goal-form-page__step-edit-tooltip">
                             <IconButton
                                 className="goal-form-page__step-edit-btn"
                                 onClick={() => handleStartEditStep(step)}
@@ -907,7 +907,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                                 <TbPencil size={15} />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete" arrow placement="top">
+                        <Tooltip title="Delete" arrow placement="top" className="goal-form-page__step-delete-tooltip">
                             <IconButton
                                 className="goal-form-page__step-delete-btn"
                                 onClick={() => handleRemoveStep(stepId)}

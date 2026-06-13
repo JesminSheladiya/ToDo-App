@@ -376,7 +376,7 @@ function MainLayout() {
             background: "hsl(240, 20%, 97%)",
             display: "flex",
         }}>
-            <ToastContainer
+            <ToastContainer className="main-layout__toast"
                 position="bottom-right"
                 autoClose={1500}
                 hideProgressBar={false}
