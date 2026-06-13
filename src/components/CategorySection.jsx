@@ -1,0 +1,284 @@
+import { useCallback, useMemo, useState } from "react";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { FaAngleDown } from "react-icons/fa6";
+import { HiOutlinePlusSm } from "react-icons/hi";
+import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@mui/material";
+import SortableGoalRow from "./SortableGoalRow";
+import RoundedGoalIcon from "./RoundedGoalIcon";
+
+function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps }) {
+    const [expanded, setExpanded] = useState(true);
+    const stats = useMemo(() => {
+        const total = goals.length;
+        const completed = goals.filter((g) => g.completed || g.status === "completed").length;
+        const totalSteps = goals.reduce((s, g) => s + (g.steps?.length || 0), 0);
+        const doneSteps = goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0);
+        const stepProgress = total > 0
+            ? Math.round(
+                goals.reduce((sum, g) => {
+                    const steps = g.steps || [];
+                    if (steps.length === 0) return sum + (g.completed ? 1 : 0);
+                    const done = steps.filter((s) => s.done).length;
+                    return sum + done / steps.length;
+                }, 0) / total * 100
+            )
+            : 0;
+        return {
+            total,
+            completed,
+            totalSteps,
+            doneSteps,
+            stepProgress
+        };
+    }, [goals]);
+
+    const pointerSensor = useSensor(PointerSensor, {
+        activationConstraint: { distance: 5 },
+    });
+    const sensors = useSensors(pointerSensor);
+
+    const handleDragEnd = useCallback((event) => {
+        const { active, over } = event;
+        if (!over || !onReorderGoals || active.id === over.id) return;
+
+        const goalIds = goals.map((g) => String(g.id));
+        const oldIndex = goalIds.indexOf(active.id);
+        const newIndex = goalIds.indexOf(over.id);
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        const newIds = [...goalIds];
+        newIds.splice(newIndex, 0, newIds.splice(oldIndex, 1)[0]);
+        onReorderGoals(category.key, newIds);
+    }, [goals, onReorderGoals, category.key]);
+
+    return (
+        <Box className="category-section"
+            sx={{
+                bgcolor: "#ffffff",
+                borderRadius: "16px",
+                border: "1px solid hsl(240, 10%, 90%)",
+                overflow: "hidden",
+                boxShadow: "0 1px 2px rgb(0 0 0 / .05)",
+                transition: "box-shadow 150ms ease, border-color 150ms ease",
+                "&:hover": {
+                    boxShadow: "0 1px 3px rgb(0 0 0 / .08), 0 1px 2px rgb(0 0 0 / .04)",
+                },
+            }}
+        >
+            <Box className="category-section__bar" sx={{
+                height: 3,
+                background: category.gradient,
+            }} />
+
+            <Box className="category-section__header"
+                onClick={() => setExpanded(!expanded)}
+                sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: 1.5,
+                    px: { xs: 2, sm: 2.5 },
+                    py: 1.5,
+                    cursor: "pointer",
+                    userSelect: "none",
+                    transition: "background-color 150ms ease",
+                    "&:hover": {
+                        bgcolor: "hsl(240, 20%, 98%)",
+                    },
+                }}
+            >
+                <Box className="category-section__icon"
+                    sx={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "12px",
+                        backgroundColor: category.soft,
+                        display: "grid",
+                        placeItems: "center",
+                        flexShrink: 0,
+                    }}
+                >
+                    <RoundedGoalIcon className="category-section__icon-element" iconKey={category.iconKey} sx={{ color: category.text, fontSize: 22 }} />
+                </Box>
+
+                <Box className="category-section__info" sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography className="category-section__label" sx={{
+                        fontSize: 16,
+                        fontWeight: 700,
+                        fontFamily: "'Sora', sans-serif",
+                        color: "hsl(240, 15%, 10%)",
+                        letterSpacing: "-0.01em",
+                        lineHeight: 1.3,
+                    }}>
+                        {category.label}
+                    </Typography>
+                    <Typography className="category-section__sublabel" sx={{
+                        fontSize: 13,
+                        color: "hsl(240, 8%, 50%)",
+                        fontWeight: 500,
+                        lineHeight: 1.3,
+                    }}>
+                        {category.sublabel}
+                    </Typography>
+                </Box>
+
+                <Box className="category-section__stats-mobile"
+                    sx={{
+                        display: { xs: "flex", sm: "none" },
+                        alignItems: "center",
+                        gap: 0.5,
+                        px: 1.25,
+                        py: 0.5,
+                        borderRadius: "8px",
+                        bgcolor: category.soft,
+                        border: `1px solid ${category.border}`,
+                    }}
+                >
+                    <Box className="category-section__dot" sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: category.gradient,
+                        flexShrink: 0,
+                    }} />
+                    <Typography className="category-section__count" sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
+                        {stats.completed}/{stats.total}
+                    </Typography>
+                </Box>
+
+                <Box className="category-section__actions" sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, width: { xs: "100%", sm: "auto" } }} >
+                    {stats.total > 0 && (
+                        <Box className="category-section__progress" sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 100 }}>
+                            <Box className="category-section__progress-bar" sx={{ flex: 1 }}>
+                                <LinearProgress className="category-section__progress-track"
+                                    variant="determinate"
+                                    value={stats.stepProgress}
+                                    sx={{
+                                        height: 6,
+                                        borderRadius: 99,
+                                        bgcolor: "hsl(240, 10%, 94%)",
+                                        "& .MuiLinearProgress-bar": {
+                                            borderRadius: 99,
+                                            bgcolor: category.progress,
+                                            transition: "transform 500ms cubic-bezier(0.4, 0, 0.2, 1)",
+                                        }
+                                    }}
+                                />
+                            </Box>
+                            <Typography className="category-section__percentage" sx={{
+                                fontSize: 12,
+                                fontWeight: 600,
+                                color: "hsl(240, 8%, 50%)",
+                                minWidth: 28,
+                                textAlign: "right",
+                            }}>
+                                {stats.stepProgress}%
+                            </Typography>
+                        </Box>
+                    )}
+
+                    <Box className="category-section__stats"
+                        sx={{
+                            display: { xs: "none", sm: "flex" },
+                            alignItems: "center",
+                            gap: 0.5,
+                            px: 1.25,
+                            py: 0.5,
+                            borderRadius: "8px",
+                            bgcolor: category.soft,
+                            border: `1px solid ${category.border}`,
+                        }}
+                    >
+                        <Box className="category-section__dot" sx={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: "50%",
+                            background: category.gradient,
+                            flexShrink: 0,
+                        }} />
+                        <Typography className="category-section__count" sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
+                            {stats.completed}/{stats.total}
+                        </Typography>
+                    </Box>
+
+                    {goals.length > 0 && (
+                        <IconButton className="category-section__expand"
+                            size="small"
+                            sx={{
+                                color: "hsl(240, 8%, 50%)",
+                                transition: "transform 200ms ease",
+                                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+                            }}
+                        >
+                            <FaAngleDown sx={{ fontSize: 20 }} />
+                        </IconButton>
+                    )}
+                </Box>
+            </Box>
+
+            <Collapse className="category-section__goals" in={expanded} timeout={200}>
+                {goals.length > 0 && (
+                    <Box className="category-section__goals-list" sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <SortableContext
+                                items={goals.map((g) => String(g.id))}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {goals.map((goal, index) => (
+                                    <SortableGoalRow
+                                        key={goal.id}
+                                        goal={goal}
+                                        category={category}
+                                        onViewDetails={onViewDetails}
+                                        onEdit={onEdit}
+                                        onDelete={onDelete}
+                                        onToggleGoal={onToggleGoal}
+                                        onToggleStep={onToggleStep}
+                                        onPauseToggle={onPauseToggle}
+                                        onReorderSteps={onReorderSteps}
+                                        isLast={index === goals.length - 1}
+                                    />
+                                ))}
+                            </SortableContext>
+                        </DndContext>
+                    </Box>
+                )}
+            </Collapse>
+
+            <Box className="category-section__footer" sx={{
+                px: { xs: 2, sm: 2.5 },
+                py: 1,
+                borderTop: "1px solid hsl(240, 10%, 90%)",
+                bgcolor: "hsl(240, 20%, 99%)",
+            }}>
+                <Button className="category-section__add-goal"
+                    variant="text"
+                    size="small"
+                    onClick={() => onCreate(category.key)}
+                    startIcon={<HiOutlinePlusSm />}
+                    sx={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: category.text,
+                        borderRadius: "8px",
+                        px: 1.5,
+                        py: 0.5,
+                        textTransform: "none",
+                        "&:hover": {
+                            bgcolor: category.soft,
+                        },
+                    }}
+                >
+                    Add goal
+                </Button>
+            </Box>
+        </Box>
+    );
+}
+
+export default CategorySection;
