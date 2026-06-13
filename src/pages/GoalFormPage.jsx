@@ -682,14 +682,15 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
             />
 
             <Box className="goal-form-page__step-index" sx={{
-                width: 24,
-                height: 24,
+                minWidth: 20,
+                height: 20,
+                padding: "0 3px",
                 borderRadius: "6px",
                 background: category?.gradient || "#7c3aed",
                 color: "white",
                 display: "grid",
                 placeItems: "center",
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: 800,
                 fontFamily: "'Sora', sans-serif",
                 flexShrink: 0,
