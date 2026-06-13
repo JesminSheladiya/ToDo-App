@@ -28,6 +28,22 @@ function nextTempId() {
     return `step_${++tempStepId}`;
 }
 
+function deepEqual(a, b) {
+    if (a === b) return true;
+    if (!a || !b || typeof a !== typeof b) return false;
+    if (Array.isArray(a) && Array.isArray(b)) {
+        if (a.length !== b.length) return false;
+        return a.every((item, i) => deepEqual(item, b[i]));
+    }
+    if (typeof a === "object" && typeof b === "object") {
+        const keysA = Object.keys(a);
+        const keysB = Object.keys(b);
+        if (keysA.length !== keysB.length) return false;
+        return keysA.every((key) => deepEqual(a[key], b[key]));
+    }
+    return false;
+}
+
 function GoalFormPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -64,12 +80,21 @@ function GoalFormPage() {
     const [newStepText, setNewStepText] = useState("");
     const [editingStep, setEditingStep] = useState(null);
     const [editingStepText, setEditingStepText] = useState("");
+    const [exitDialogOpen, setExitDialogOpen] = useState(false);
+    const initialDraftRef = useRef(null);
 
     useEffect(() => {
         if (isEditing && existingGoal) {
-            setDraft(JSON.parse(JSON.stringify(existingGoal)));
+            const snapshot = JSON.parse(JSON.stringify(existingGoal));
+            setDraft(snapshot);
+            initialDraftRef.current = snapshot;
         }
     }, [isEditing, existingGoal]);
+
+    const hasChanges = useMemo(() => {
+        if (!isEditing || !initialDraftRef.current) return false;
+        return !deepEqual(draft, initialDraftRef.current);
+    }, [draft, isEditing]);
 
     const category = categories.find((c) => c.key === draft.category) || categories[0];
 
@@ -153,8 +178,21 @@ function GoalFormPage() {
     }, [draft.steps]);
 
     const handleClose = useCallback(() => {
+        if (isEditing && hasChanges && initialDraftRef.current) {
+            setExitDialogOpen(true);
+        } else {
+            navigate(-1);
+        }
+    }, [navigate, isEditing, hasChanges]);
+
+    const handleConfirmExit = useCallback(() => {
+        setExitDialogOpen(false);
         navigate(-1);
     }, [navigate]);
+
+    const handleCancelExit = useCallback(() => {
+        setExitDialogOpen(false);
+    }, []);
 
     function cleanStepsForSave(steps) {
         return steps.map((s) => {
@@ -188,6 +226,11 @@ function GoalFormPage() {
             toast.error("Failed to save goal");
         }
     }, [draft, dispatch, isEditing, id, navigate]);
+
+    const handleSaveAndExit = useCallback(async () => {
+        setExitDialogOpen(false);
+        await handleSave();
+    }, [handleSave]);
 
     const content = (
         <>
@@ -247,7 +290,7 @@ function GoalFormPage() {
                     className="goal-form-page__save-btn"
                     variant="contained"
                     onClick={handleSave}
-                    disabled={!draft.title.trim() || saving}
+                    disabled={!draft.title.trim() || saving || (isEditing && !hasChanges)}
                     size="small"
                     disableElevation
                     sx={{
@@ -589,6 +632,72 @@ function GoalFormPage() {
                 onConfirm={confirmRemoveStep}
                 message={<>Are you sure you want to remove &ldquo;<strong>{stepDeleteDialog?.title || ""}</strong>&rdquo;?</>}
             />
+            <Dialog
+                open={exitDialogOpen}
+                onClose={handleCancelExit}
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: "8px",
+                            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                            maxWidth: 320,
+                            position: "relative",
+                        }
+                    }
+                }}
+            >
+                <IconButton
+                    onClick={handleCancelExit}
+                    size="small"
+                    disableRipple
+                    sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        width: 28,
+                        height: 28,
+                        color: "hsl(240, 8%, 55%)",
+                        "&:hover": { bgcolor: "hsl(240, 20%, 93%)" },
+                    }}
+                >
+                    <PiXBold sx={{ fontSize: 16 }} />
+                </IconButton>
+                <Box sx={{ px: 2.5, pt: 2.5, pb: 1.5 }}>
+                    <Box sx={{ fontSize: 15, fontFamily: "Sora", color: "hsl(240, 8%, 45%)", lineHeight: 1.5, wordWrap: "break-word" }}>
+                        You have unsaved changes. What would you like to do?
+                    </Box>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, px: 2.5, pb: 2.5 }}>
+                    <Button
+                        onClick={handleConfirmExit}
+                        size="small"
+                        sx={{
+                            fontSize: 12, fontWeight: 600, lineHeight: 1.5, textTransform: "none",
+                            color: "#ef4444", minWidth: 60, borderRadius: "8px",
+                            py: 0.75,
+                            "&:hover": { bgcolor: "hsl(0, 84%, 96%)" },
+                        }}
+                    >
+                        Discard Changes
+                    </Button>
+                    <Button
+                        onClick={handleSaveAndExit}
+                        variant="contained"
+                        size="small"
+                        disableElevation
+                        sx={{
+                            fontSize: 12, fontWeight: 700, lineHeight: 1.5, textTransform: "none",
+                            background: category ? category.gradient : "#7c3aed",
+                            color: "#fff",
+                            borderRadius: "8px",
+                            py: 0.75,
+                            "&:hover": { boxShadow: "0 2px 8px rgb(0 0 0 / .12)" },
+                        }}
+                    >
+                        Save & Exit
+                    </Button>
+                </Box>
+            </Dialog>
         </>
     );
 
