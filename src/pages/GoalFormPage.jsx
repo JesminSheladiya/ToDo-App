@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -17,6 +17,7 @@ import { FiTrash } from "react-icons/fi";
 import { createGoal, fetchGoals, updateGoal } from "../store/goalsSlice";
 import { getIconKey } from "../utils/goals";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
+import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
 import CustomDateTimePicker from "../components/CustomDateTimePicker";
 import Stack from "../components/Stack";
 import DragHandle from "../components/DragHandle";
@@ -86,34 +87,28 @@ function GoalFormPage() {
         setNewStepText("");
     }, [newStepText]);
 
+    const [stepDeleteDialog, setStepDeleteDialog] = useState(null);
+    const stepDeleteRef = useRef(null);
+
     const handleRemoveStep = useCallback((id) => {
         const step = draft.steps.find((s) => s.stepId === id || s._tempId === id);
-        toast(
-            ({ closeToast }) => (
-                <div className="goal-form-page__toast" style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
-                    <span className="goal-form-page__toast-icon" style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
-                    <span className="goal-form-page__toast-message" style={{ flex: 1, fontWeight: 600 }}>Remove "{step?.text}"?</span>
-                    <button className="goal-form-page__toast-delete-btn" onClick={() => {
-                        closeToast();
-                        setDraft((prev) => ({
-                            ...prev,
-                            steps: prev.steps.filter((s) => s.stepId !== id && s._tempId !== id)
-                        }));
-                        if (editingStep && (editingStep.stepId === id || editingStep._tempId === id)) {
-                            setEditingStep(null);
-                            setEditingStepText("");
-                        }
-                        toast.success("Subtask removed");
-                    }} style={{
-                        background: "#ef4444", color: "#fff", border: "none",
-                        borderRadius: 6, padding: "6px 12px", fontWeight: 700, fontSize: 12,
-                        cursor: "pointer", flexShrink: 0,
-                    }}>Delete</button>
-                </div>
-            ),
-            { autoClose: 5000, closeButton: true, draggable: true, pauseOnHover: false, pauseOnFocusLoss: false }
+        stepDeleteRef.current = { id, title: step?.text || "this subtask" };
+        setStepDeleteDialog({ title: step?.text || "this subtask" });
+    }, [draft]);
+
+    const confirmRemoveStep = useCallback(() => {
+        const info = stepDeleteRef.current;
+        if (!info) return;
+        setDraft((prev) => ({
+            ...prev,
+            steps: prev.steps.filter((s) => s.stepId !== info.id && s._tempId !== info.id)
+        }));
+        setEditingStep((prev) =>
+            prev && (prev.stepId === info.id || prev._tempId === info.id) ? null : prev
         );
-    }, [draft, editingStep]);
+        setEditingStepText("");
+        setStepDeleteDialog(null);
+    }, []);
 
     const handleStartEditStep = useCallback((step) => {
         setEditingStep(step);
@@ -588,6 +583,12 @@ function GoalFormPage() {
                     <Box className="goal-form-page__spacer" sx={{ height: 2 }} />
                 </Stack>
             </Box>
+            <ConfirmDeleteDialog
+                open={!!stepDeleteDialog}
+                onClose={() => setStepDeleteDialog(null)}
+                onConfirm={confirmRemoveStep}
+                message={<>Are you sure you want to remove &ldquo;<strong>{stepDeleteDialog?.title || ""}</strong>&rdquo;?</>}
+            />
         </>
     );
 

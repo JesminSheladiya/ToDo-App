@@ -7,6 +7,7 @@ import { CSS } from "@dnd-kit/utilities";
 import {
     Box, Chip, CircularProgress, IconButton, LinearProgress, Typography
 } from "@mui/material";
+import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
 import { PiArrowLeftBold, PiCalendarBlank, PiClock, PiNotePencil, PiListChecks, PiTrashBold, PiDotsSixVerticalBold } from "react-icons/pi";
 import { IoSparkles } from "react-icons/io5";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
@@ -83,11 +84,15 @@ function GoalDetailPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const { id } = useParams();
-    const { handleDelete } = useGoalActions();
+    const {
+        handleDelete,
+        deleteDialog,
+        confirmDelete,
+        closeDeleteDialog,
+    } = useGoalActions();
     const goals = useSelector((state) => state.goals.items);
     const categories = useSelector((state) => state.config.categories);
     const updating = useSelector((state) => state.goals.updating);
-    const deleting = useSelector((state) => state.goals.deleting);
 
     const goal = useMemo(
         () => goals.find((g) => String(g.id) === id),
@@ -101,7 +106,7 @@ function GoalDetailPage() {
 
     const goalId = goal?.id;
     const isUpdating = goalId ? updating.includes(goalId) : false;
-    const isDeleting = goalId ? deleting.includes(goalId) : false;
+
 
     const [steps, setSteps] = useState(() => goal?.steps ? [...goal.steps] : []);
     const [togglingStepId, setTogglingStepId] = useState(null);
@@ -159,6 +164,7 @@ function GoalDetailPage() {
     }
 
     return (
+        <>
         <Box sx={{
             bgcolor: "#fff", borderRadius: "16px",
             border: "1px solid hsl(240, 10%, 90%)",
@@ -194,13 +200,13 @@ function GoalDetailPage() {
                     }}>
                         <PiNotePencil size={18} />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(goal)} size="small" disableRipple disabled={isDeleting} sx={{
+                    <IconButton onClick={() => handleDelete(goal)} size="small" disableRipple sx={{
                         width: 32, height: 32, borderRadius: "8px",
-                        bgcolor: isDeleting ? "hsl(240, 10%, 92%)" : "hsl(240, 20%, 96%)",
-                        color: isDeleting ? "hsl(240, 6%, 70%)" : "#dc2626",
-                        "&:hover": { bgcolor: isDeleting ? "hsl(240, 10%, 92%)" : "hsl(0, 84%, 96%)" },
+                        bgcolor: "hsl(240, 20%, 96%)",
+                        color: "#dc2626",
+                        "&:hover": { bgcolor: "hsl(0, 84%, 96%)" },
                     }}>
-                        {isDeleting ? <CircularProgress size={14} sx={{ color: "hsl(240, 6%, 70%)" }} /> : <PiTrashBold size={16} />}
+                        <PiTrashBold size={16} />
                     </IconButton>
                 </Box>
             </Box>
@@ -391,6 +397,15 @@ function GoalDetailPage() {
                 </Stack>
             </Box>
         </Box>
+            <ConfirmDeleteDialog
+                open={!!deleteDialog}
+                onClose={closeDeleteDialog}
+                onConfirm={confirmDelete}
+                message={<>Are you sure you want to delete &ldquo;<strong>{deleteDialog?.title || ""}</strong>&rdquo;?</>}
+                loading={deleteDialog?.loading}
+                error={deleteDialog?.error}
+            />
+        </>
     );
 }
 

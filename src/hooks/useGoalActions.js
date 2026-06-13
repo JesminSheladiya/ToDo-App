@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,6 +10,32 @@ export function useGoalActions() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const [deleteDialog, setDeleteDialog] = useState(null);
+    const deleteGoalRef = useRef(null);
+
+    const handleDelete = useCallback((goal) => {
+        stepSnapshots.delete(goal.id);
+        deleteGoalRef.current = goal;
+        setDeleteDialog({ title: goal.title, loading: false, error: null });
+    }, []);
+
+    const confirmDelete = useCallback(async () => {
+        const goal = deleteGoalRef.current;
+        if (!goal) return;
+        setDeleteDialog({ title: goal.title, loading: true, error: null });
+        try {
+            await dispatch(deleteGoal(goal.id)).unwrap();
+            setDeleteDialog(null);
+        } catch {
+            setDeleteDialog({ title: goal.title, loading: false, error: "Failed to delete goal" });
+        }
+    }, [dispatch]);
+
+    const closeDeleteDialog = useCallback(() => {
+        if (deleteDialog?.loading) return;
+        setDeleteDialog(null);
+    }, [deleteDialog?.loading]);
 
     const handleOpenCreate = useCallback((category) => {
         const cat = (typeof category === "string") ? category : "";
@@ -24,33 +50,6 @@ export function useGoalActions() {
     const handleOpenEdit = useCallback((goal) => {
         navigate(`/goals/${goal.id}/edit`, { state: { background: location } });
     }, [navigate, location]);
-
-    const handleDelete = useCallback((goal) => {
-        stepSnapshots.delete(goal.id);
-        toast(
-            ({ closeToast }) => (
-                <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 260 }}>
-                    <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
-                    <span style={{ flex: 1, fontWeight: 600 }}>{`Delete "${goal.title}"?`}</span>
-                    <button onClick={() => { closeToast();
-                        toast.promise(
-                            dispatch(deleteGoal(goal.id)).unwrap(),
-                            {
-                                pending: "Deleting goal...",
-                                success: `"${goal.title}" deleted!`,
-                                error: "Failed to delete goal"
-                            }
-                        );
-                    }} style={{
-                        background: "#ef4444", color: "#fff", border: "none",
-                        borderRadius: 6, padding: "4px 12px", fontWeight: 700, fontSize: 12,
-                        cursor: "pointer", flexShrink: 0,
-                    }}>Delete</button>
-                </div>
-            ),
-            { autoClose: 5000, closeButton: true, draggable: true, pauseOnHover: false, pauseOnFocusLoss: false }
-        );
-    }, [dispatch]);
 
     const handleToggleGoal = useCallback((goal) => {
         if (goal.status === "paused") return;
@@ -121,6 +120,9 @@ export function useGoalActions() {
         handleOpenDetail,
         handleOpenEdit,
         handleDelete,
+        confirmDelete,
+        closeDeleteDialog,
+        deleteDialog,
         handleToggleGoal,
         handleToggleStep,
         handlePauseToggle

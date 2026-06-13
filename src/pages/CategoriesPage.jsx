@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CategorySection from "../components/CategorySection";
+import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
 import Stack from "../components/Stack";
 import { useGoalActions } from "../hooks/useGoalActions";
 import { updateGoal, reorderGoals, reorderSteps, batchReorder } from "../store/goalsSlice";
@@ -17,7 +18,10 @@ function CategoriesPage() {
         handleDelete,
         handleToggleGoal,
         handleToggleStep,
-        handlePauseToggle
+        handlePauseToggle,
+        deleteDialog,
+        confirmDelete,
+        closeDeleteDialog,
     } = useGoalActions();
 
     const handleReorderGoals = useCallback((categoryKey, orderedIds) => {
@@ -61,6 +65,14 @@ function CategoriesPage() {
                     onReorderSteps={handleReorderSteps}
                 />
             ))}
+            <ConfirmDeleteDialog
+                open={!!deleteDialog}
+                onClose={closeDeleteDialog}
+                onConfirm={confirmDelete}
+                message={<>Are you sure you want to delete &ldquo;<strong>{deleteDialog?.title || ""}</strong>&rdquo;?</>}
+                loading={deleteDialog?.loading}
+                error={deleteDialog?.error}
+            />
         </Stack>
     );
 }
