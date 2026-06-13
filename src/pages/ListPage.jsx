@@ -13,6 +13,7 @@ function ListPage() {
     const categoryFilter = useSelector((state) => state.ui.categoryFilter);
     const statusFilter = useSelector((state) => state.ui.statusFilter);
     const {
+        handleOpenDetail,
         handleOpenEdit,
         handleDelete,
         handleToggleGoal,
@@ -45,6 +46,7 @@ function ListPage() {
                 onQueryChange={(value) => dispatch(setQuery(value))}
                 onCategoryFilterChange={(value) => dispatch(setCategoryFilter(value))}
                 onStatusFilterChange={(value) => dispatch(setStatusFilter(value))}
+                onViewDetails={handleOpenDetail}
                 onEdit={handleOpenEdit}
                 onDelete={handleDelete}
                 onToggleGoal={handleToggleGoal}

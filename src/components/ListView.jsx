@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Box, ClickAwayListener, IconButton, InputAdornment, Popper, TextField, Tooltip, Typography } from "@mui/material";
-import { PiMagnifyingGlassBold, PiDotsThreeVerticalBold } from "react-icons/pi";
+import { PiEyeBold, PiMagnifyingGlassBold, PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
 import { IoChevronDownOutline } from "react-icons/io5";
@@ -83,7 +83,7 @@ function SelectDropdown({ value, options, onChange, sx }) {
     );
 }
 
-function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
+function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
     const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
 
@@ -320,6 +320,25 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                         </Box>
                                     )}
 
+                                    <Tooltip className="list-view__detail-tooltip" title="View Details" arrow>
+                                        <IconButton
+                                            onClick={() => onViewDetails?.(goal)}
+                                            size="small"
+                                            className="list-view__detail-btn"
+                                            sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: "#7c3aed",
+                                                "&:hover": {
+                                                    bgcolor: "hsl(262, 83%, 96%)",
+                                                },
+                                            }}
+                                        >
+                                            <PiEyeBold size={18} />
+                                        </IconButton>
+                                    </Tooltip>
+
                                     <Tooltip className="list-view__pause-tooltip" title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow>
                                         <IconButton
                                             onClick={() => onPauseToggle(goal)}
@@ -405,6 +424,21 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                                     minWidth: 140,
                                                     overflow: "hidden",
                                                 }}>
+                                                    <Box
+                                                        onClick={() => { onViewDetails?.(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        className="list-view__dropdown-item"
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)", cursor: "pointer",
+                                                            display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": { bgcolor: "hsl(240, 100%, 98%)", color: "#7c3aed" },
+                                                        }}
+                                                    >
+                                                        <PiEyeBold size={16} color="#7c3aed" />
+                                                        View Details
+                                                    </Box>
                                                     <Box
                                                         onClick={() => { if (goal.status !== "paused") { onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
                                                         className="list-view__dropdown-item"
