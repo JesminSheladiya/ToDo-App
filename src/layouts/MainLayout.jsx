@@ -11,8 +11,10 @@ import { useTheme } from "@mui/material/styles";
 import { PiListBold, PiPlusBold } from "react-icons/pi";
 import { FaListUl } from "react-icons/fa6";
 import { RiDashboardFill } from "react-icons/ri";
+import { FiLogOut } from "react-icons/fi";
 import { fetchGoals } from "../store/goalsSlice";
 import { setActiveCategory, clearActiveCategory } from "../store/uiSlice";
+import { logout } from "../store/authSlice";
 import ProgressSummary from "../components/ProgressSummary";
 import Stack from "../components/Stack";
 import { useGoalActions } from "../hooks/useGoalActions";
@@ -20,11 +22,12 @@ import RoundedGoalIcon from "../components/RoundedGoalIcon";
 
 const SIDEBAR_WIDTH = 260;
 
-function Sidebar({ categories, onClose, onCreate }) {
+function Sidebar({ categories, onClose }) {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
     const activeCategory = useSelector((state) => state.ui.activeCategory);
+    const user = useSelector((state) => state.auth.user);
 
     const isDashboard = location.pathname === "/";
     const isList = location.pathname === "/list";
@@ -50,6 +53,12 @@ function Sidebar({ categories, onClose, onCreate }) {
         onClose?.();
     };
 
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate("/login");
+        onClose?.();
+    };
+
     return (
         <Box className="sidebar"
             sx={{
@@ -66,7 +75,7 @@ function Sidebar({ categories, onClose, onCreate }) {
             }}
         >
             <Box className="sidebar__logo" sx={{ px: 2.5, py: 2.5, pb: 1.5 }}>
-                    <Stack className="sidebar__brand" direction="row" spacing={1.25} alignItems="center">
+                <Stack className="sidebar__brand" direction="row" spacing={1.25} alignItems="center">
                     <Box className="sidebar__brand-icon"
                         sx={{
                             width: 36,
@@ -83,9 +92,9 @@ function Sidebar({ categories, onClose, onCreate }) {
                             boxShadow: "0 2px 8px rgb(124, 58, 237 / .3)",
                         }}
                     >
-                        GT
+                        {user?.name?.charAt(0)?.toUpperCase() || "U"}
                     </Box>
-                    <Box className="sidebar__brand-text">
+                    <Box className="sidebar__brand-text" sx={{ minWidth: 0 }}>
                         <Typography className="sidebar__brand-title"
                             sx={{
                                 fontFamily: "'Sora', sans-serif",
@@ -94,9 +103,12 @@ function Sidebar({ categories, onClose, onCreate }) {
                                 color: "hsl(240, 15%, 10%)",
                                 letterSpacing: "-0.03em",
                                 lineHeight: 1.1,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
                             }}
                         >
-                            Goal ToDo
+                            {user?.name || "User"}
                         </Typography>
                         <Typography className="sidebar__brand-subtitle"
                             sx={{
@@ -104,9 +116,12 @@ function Sidebar({ categories, onClose, onCreate }) {
                                 color: "hsl(240, 8%, 50%)",
                                 fontWeight: 500,
                                 lineHeight: 1.2,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
                             }}
                         >
-                            Track your journey
+                            {user?.email || ""}
                         </Typography>
                     </Box>
                 </Stack>
@@ -293,34 +308,35 @@ function Sidebar({ categories, onClose, onCreate }) {
                 })}
             </List>
 
-            <Box className="sidebar__footer" sx={{ px: 2, pb: 2, pt: 1 }}>
-                <Button className="sidebar__create-btn"
-                    variant="contained"
-                    fullWidth
-                    onClick={onCreate}
-                    startIcon={<PiPlusBold />}
+            <Box className="sidebar__divider" sx={{ mx: 2, height: "1px", bgcolor: "hsl(240, 10%, 90%)" }} />
+
+            <List className="sidebar__footer" sx={{ px: 1.5, pb: 1.5, pt: 0.75 }}>
+                <ListItemButton className="sidebar__nav-item"
+                    onClick={handleLogout}
                     sx={{
-                        background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-                        color: "#fff",
-                        py: 1.2,
-                        fontSize: 13.5,
-                        fontWeight: 700,
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 8px rgb(124, 58, 237 / .25)",
-                        transition: "all 150ms ease",
+                        borderRadius: "10px",
+                        px: 1.5,
+                        py: 1,
                         "&:hover": {
-                            background: "linear-gradient(135deg, #6d28d9, #9333ea)",
-                            boxShadow: "0 4px 16px rgb(124, 58, 237 / .35)",
-                            transform: "translateY(-1px)",
-                        },
-                        "&:active": {
-                            transform: "translateY(0)",
+                            bgcolor: "hsl(0, 84%, 97%)",
                         },
                     }}
                 >
-                    New Goal
-                </Button>
-            </Box>
+                    <ListItemIcon className="sidebar__nav-icon" sx={{ minWidth: 34, color: "hsl(240, 8%, 50%)" }}>
+                        <FiLogOut sx={{ fontSize: 20 }} />
+                    </ListItemIcon>
+                    <ListItemText className="sidebar__nav-text"
+                        primary="Sign Out"
+                        slotProps={{
+                            primary: {
+                                fontSize: 13.5,
+                                fontWeight: 700,
+                                color: "hsl(240, 15%, 10%)",
+                            }
+                        }}
+                    />
+                </ListItemButton>
+            </List>
         </Box>
     );
 }
@@ -365,7 +381,6 @@ function MainLayout() {
     const sidebar = (
         <Sidebar
             categories={categories}
-            onCreate={() => { handleOpenCreate(); setMobileOpen(false); }}
             onClose={() => setMobileOpen(false)}
         />
     );
@@ -463,7 +478,7 @@ function MainLayout() {
                                 }
                             </Typography>
                         </Box>
-                        {isMobile && (
+                        {isMobile ? (
                             <Button className="main-layout__new-btn"
                                 variant="contained"
                                 onClick={() => handleOpenCreate()}
@@ -481,6 +496,28 @@ function MainLayout() {
                                 }}
                             >
                                 New
+                            </Button>
+                        ) : (
+                            <Button className="main-layout__new-btn"
+                                variant="contained"
+                                onClick={() => handleOpenCreate()}
+                                startIcon={<PiPlusBold />}
+                                sx={{
+                                    background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                                    color: "#fff",
+                                    px: 2.5,
+                                    py: 1,
+                                    fontSize: 13.5,
+                                    fontWeight: 700,
+                                    borderRadius: "10px",
+                                    boxShadow: "0 2px 8px rgb(124, 58, 237 / .25)",
+                                    "&:hover": {
+                                        background: "linear-gradient(135deg, #6d28d9, #9333ea)",
+                                        boxShadow: "0 4px 12px rgb(124, 58, 237 / .35)",
+                                    },
+                                }}
+                            >
+                                New Goal
                             </Button>
                         )}
                     </Box>
