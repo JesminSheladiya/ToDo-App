@@ -25,6 +25,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long userId;
+
     @NotBlank
     private String title;
 

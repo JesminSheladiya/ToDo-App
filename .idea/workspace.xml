@@ -4,58 +4,72 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="api change, time add.">
+    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/repository/TaskRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/repository/TaskRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/CategoryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/CategoryController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/repository/TaskRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/repository/TaskRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="34" />
+  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="main" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;JesminSheladiya&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "JesminSheladiya"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/JesminSheladiya/ToDo-App.git&quot;,
-    &quot;accountId&quot;: &quot;4507b3c1-9671-41e0-9bd8-9d4f23911399&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/JesminSheladiya/ToDo-App.git",
+    "accountId": "4507b3c1-9671-41e0-9bd8-9d4f23911399"
   }
-}</component>
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0002454981885738" />
-      <entry key="S2" value="1.1251734069639168" />
-      <entry key="S5" value="1.4355167164492095" />
-      <entry key="S10" value="1.6599369033848688" />
-      <entry key="S30" value="1.870631022969891" />
-      <entry key="S60" value="1.9330761078121608" />
-      <entry key="M2" value="1.9659586470507735" />
-      <entry key="M5" value="1.9862423681529267" />
-      <entry key="M10" value="1.996151515874531" />
-      <entry key="M15" value="2.0495617551637926" />
-      <entry key="M30" value="3.002819816213104" />
-      <entry key="H1" value="7.590798141491042" />
-      <entry key="H2" value="19.35125957167606" />
-      <entry key="H4" value="35.7835310157689" />
-      <entry key="D1" value="63.75647546125703" />
-      <entry key="W1" value="70.75214062459389" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0" />
+      <entry key="S30" value="1.0" />
+      <entry key="S60" value="1.0" />
+      <entry key="M2" value="1.0" />
+      <entry key="M5" value="1.0" />
+      <entry key="M10" value="1.0" />
+      <entry key="M15" value="1.0" />
+      <entry key="M30" value="1.0" />
+      <entry key="H1" value="1.0" />
+      <entry key="H2" value="1.0" />
+      <entry key="H4" value="1.0" />
+      <entry key="D1" value="1.0" />
+      <entry key="W1" value="1.0" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -63,76 +77,64 @@
       <entry key="S2" value="0.0" />
       <entry key="S5" value="0.0" />
       <entry key="S10" value="0.0" />
-      <entry key="S30" value="4.708754728291816E-180" />
-      <entry key="S60" value="2.2668464543378762E-90" />
-      <entry key="M2" value="2.0562577458421606E-45" />
-      <entry key="M5" value="2.980185249133253E-18" />
-      <entry key="M10" value="3.762458519217478E-9" />
-      <entry key="M15" value="4.114378421238882E-6" />
-      <entry key="M30" value="0.004523881277203196" />
-      <entry key="H1" value="0.1503028203901285" />
-      <entry key="H2" value="0.8667647135263454" />
-      <entry key="H4" value="2.0817036626360035" />
-      <entry key="D1" value="4.320584585549887" />
-      <entry key="W1" value="4.896760661546742" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9794202975869268" />
-      <entry key="MS500" value="0.9960918714369235" />
-      <entry key="S2" value="1.1237011594264044" />
-      <entry key="S5" value="1.4344975785395628" />
-      <entry key="S10" value="1.6592717059433735" />
-      <entry key="S30" value="1.8703605754113672" />
-      <entry key="S60" value="1.932933664100934" />
-      <entry key="M2" value="1.9658855241734245" />
-      <entry key="M5" value="1.9862126499298116" />
-      <entry key="M10" value="1.9961365420137462" />
-      <entry key="M15" value="2.0495554178179827" />
-      <entry key="M30" value="3.007328447666567" />
-      <entry key="H1" value="7.740986031953621" />
-      <entry key="H2" value="20.217712152893302" />
-      <entry key="H4" value="37.86486331924145" />
-      <entry key="D1" value="68.07693196723908" />
-      <entry key="W1" value="75.6488805534614" />
+      <entry key="MS100" value="0.5509525579383053" />
+      <entry key="MS500" value="0.8876113372694978" />
+      <entry key="S2" value="0.9706344697695466" />
+      <entry key="S5" value="0.988148655514205" />
+      <entry key="S10" value="0.9940566661484671" />
+      <entry key="S30" value="0.9980149509035494" />
+      <entry key="S60" value="0.9990069824098075" />
+      <entry key="M2" value="0.999503367883174" />
+      <entry key="M5" value="0.9998013175482126" />
+      <entry key="M10" value="0.9999006538392764" />
+      <entry key="M15" value="0.999933768129507" />
+      <entry key="M30" value="0.9999668835164027" />
+      <entry key="H1" value="0.9999834416211114" />
+      <entry key="H2" value="0.999991720776283" />
+      <entry key="H4" value="0.9999958603795732" />
+      <entry key="D1" value="0.9999993100620722" />
+      <entry key="W1" value="0.9999999014374097" />
     </decayedShown>
   </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 0,
-  &quot;fromUser&quot;: false
-}</component>
-  <component name="ProjectId" id="3E7Ji4gfWtFMrhspCmOLCjmqtqN" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3FCfO5cAF2pkYtMH6yNBFLmcqTz" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "backend",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "ml.llm.AcpAgentsConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager">
-    <configuration name="TodoBackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="todo-backend" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.todoapp.TodoBackendApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-  </component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -141,135 +143,22 @@
       </set>
     </attachedChunks>
   </component>
-  <component name="StructureViewState">
-    <option name="selectedTab" value="Logical" />
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2395ce7e-2018-4740-9723-39ed8ae1e2d9" name="Changes" comment="" />
-      <created>1779523797955</created>
+      <changelist id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="" />
+      <created>1781583949926</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1779523797955</updated>
-      <workItem from="1779523798967" duration="1527000" />
-      <workItem from="1779682777718" duration="4585000" />
-      <workItem from="1779768869513" duration="3668000" />
-      <workItem from="1780120367539" duration="631000" />
-      <workItem from="1780295225137" duration="2787000" />
-      <workItem from="1780460875064" duration="598000" />
-      <workItem from="1780634195471" duration="15481000" />
-      <workItem from="1780720197244" duration="11715000" />
-      <workItem from="1780893013427" duration="10435000" />
-      <workItem from="1780978942979" duration="4148000" />
-      <workItem from="1781065370850" duration="4895000" />
-      <workItem from="1781151733126" duration="1216000" />
-      <workItem from="1781238812700" duration="7264000" />
+      <updated>1781583949926</updated>
+      <workItem from="1781583960920" duration="1307000" />
     </task>
-    <task id="LOCAL-00001" summary="initial commit">
-      <option name="closed" value="true" />
-      <created>1779523907935</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1779523907935</updated>
-    </task>
-    <task id="LOCAL-00002" summary="initial commit">
-      <option name="closed" value="true" />
-      <created>1779524617576</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1779524617576</updated>
-    </task>
-    <task id="LOCAL-00003" summary="To DO Task CRUD.">
-      <option name="closed" value="true" />
-      <created>1779770749446</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1779770749446</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Task reorder Add">
-      <option name="closed" value="true" />
-      <created>1780726206242</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1780726206242</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Refactor task steps to embeddables, add server-side completion sync, batch goal reordering, and category config API">
-      <option name="closed" value="true" />
-      <created>1780898311916</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1780898311916</updated>
-    </task>
-    <task id="LOCAL-00006" summary="task status fix">
-      <option name="closed" value="true" />
-      <created>1780910891660</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1780910891660</updated>
-    </task>
-    <task id="LOCAL-00007" summary="&quot;Paused&quot; Status add">
-      <option name="closed" value="true" />
-      <created>1780921274427</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1780921274427</updated>
-    </task>
-    <task id="LOCAL-00008" summary="api change, time add.">
-      <option name="closed" value="true" />
-      <created>1781259133409</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1781259133409</updated>
-    </task>
-    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="User">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="*" />
-                </option>
-              </RecentGroup>
-            </list>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Merge pull request #1 from JesminSheladiya/backend&#10;&#10;Add files via upload" />
-    <MESSAGE value="initial commit" />
-    <MESSAGE value="To DO Task CRUD." />
-    <MESSAGE value="Task reorder Add" />
-    <MESSAGE value="Refactor task steps to embeddables, add server-side completion sync, batch goal reordering, and category config API" />
-    <MESSAGE value="task status fix" />
-    <MESSAGE value="&quot;Paused&quot; Status add" />
-    <MESSAGE value="api change, time add." />
-    <option name="LAST_COMMIT_MESSAGE" value="api change, time add." />
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
