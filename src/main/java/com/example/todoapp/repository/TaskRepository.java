@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    List<Task> findAllByOrderByTaskOrderAsc();
+    List<Task> findByUserIdOrderByTaskOrderAsc(Long userId);
 
     @Modifying
-    @Query(value = "UPDATE tasks SET task_order = :position WHERE id = :id", nativeQuery = true)
-    void updateTaskOrder(Long id, int position);
+    @Query(value = "UPDATE tasks SET task_order = :position WHERE id = :id AND user_id = :userId", nativeQuery = true)
+    void updateTaskOrder(Long id, int position, Long userId);
 }

@@ -22,12 +22,13 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<Task> getAllTasks() {
-        return taskRepository.findAllByOrderByTaskOrderAsc();
+    public List<Task> getAllTasks(Long userId) {
+        return taskRepository.findByUserIdOrderByTaskOrderAsc(userId);
     }
 
     @Transactional
-    public Task createTask(Task task) {
+    public Task createTask(Task task, Long userId) {
+        task.setUserId(userId);
         normalizeTask(task);
         syncCompletion(task);
         task.setCreatedAt(LocalDateTime.now());
@@ -35,9 +36,14 @@ public class TaskService {
     }
 
     @Transactional
-    public Task updateTask(Long id, Task updatedTask) {
+    public Task updateTask(Long id, Task updatedTask, Long userId) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found: " + id));
+
+        if (task.getUserId() != null && !task.getUserId().equals(userId)) {
+            throw new EntityNotFoundException("Task not found: " + id);
+        }
+        task.setUserId(userId);
 
         task.setTitle(updatedTask.getTitle());
         task.setDescription(updatedTask.getDescription());
@@ -57,15 +63,22 @@ public class TaskService {
     }
 
     @Transactional
-    public void deleteTask(Long id) {
+    public void deleteTask(Long id, Long userId) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found: " + id));
+
+        if (task.getUserId() != null && !task.getUserId().equals(userId)) {
+            throw new EntityNotFoundException("Task not found: " + id);
+        }
+
         taskRepository.deleteById(id);
     }
 
     @Transactional
-    public void reorderGoals(List<ReorderDto.GoalOrder> goalOrders) {
+    public void reorderGoals(List<ReorderDto.GoalOrder> goalOrders, Long userId) {
         if (goalOrders == null) return;
         for (ReorderDto.GoalOrder order : goalOrders) {
-            taskRepository.updateTaskOrder(order.getId(), order.getPosition());
+            taskRepository.updateTaskOrder(order.getId(), order.getPosition(), userId);
         }
     }
 
