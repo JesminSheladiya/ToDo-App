@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ToastContainer, Zoom } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import {
-    Box, Button, CircularProgress, Drawer, IconButton,
+    Box, Button, CircularProgress, Dialog, Drawer, IconButton,
     List, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -28,6 +27,7 @@ function Sidebar({ categories, onClose }) {
     const dispatch = useDispatch();
     const activeCategory = useSelector((state) => state.ui.activeCategory);
     const user = useSelector((state) => state.auth.user);
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
     const isDashboard = location.pathname === "/";
     const isList = location.pathname === "/list";
@@ -54,13 +54,23 @@ function Sidebar({ categories, onClose }) {
     };
 
     const handleLogout = () => {
+        setLogoutDialogOpen(true);
+    };
+
+    const handleConfirmLogout = () => {
         dispatch(logout());
+        toast.success("Signed out successfully");
         navigate("/login");
+        setLogoutDialogOpen(false);
         onClose?.();
     };
 
+    const handleCancelLogout = () => {
+        setLogoutDialogOpen(false);
+    };
+
     return (
-        <Box className="sidebar"
+        <><Box className="sidebar"
             sx={{
                 width: SIDEBAR_WIDTH,
                 height: "100dvh",
@@ -92,7 +102,7 @@ function Sidebar({ categories, onClose }) {
                             boxShadow: "0 2px 8px rgb(124, 58, 237 / .3)",
                         }}
                     >
-                        {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                        {user?.name?.split(" ")[0]?.charAt(0)?.toUpperCase() + user?.name?.split(" ")[1]?.charAt(0)?.toUpperCase()}
                     </Box>
                     <Box className="sidebar__brand-text" sx={{ minWidth: 0 }}>
                         <Typography className="sidebar__brand-title"
@@ -322,7 +332,7 @@ function Sidebar({ categories, onClose }) {
                         },
                     }}
                 >
-                    <ListItemIcon className="sidebar__nav-icon" sx={{ minWidth: 34, color: "hsl(240, 8%, 50%)" }}>
+                    <ListItemIcon className="sidebar__nav-icon" sx={{ minWidth: 34, color: "#ef4444" }}>
                         <FiLogOut sx={{ fontSize: 20 }} />
                     </ListItemIcon>
                     <ListItemText className="sidebar__nav-text"
@@ -338,7 +348,51 @@ function Sidebar({ categories, onClose }) {
                 </ListItemButton>
             </List>
         </Box>
-    );
+
+            <Dialog className="sidebar__logout-dialog"
+                open={logoutDialogOpen}
+                onClose={handleCancelLogout}
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: "8px",
+                            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                            maxWidth: 300,
+                        }
+                    }
+                }}
+            >
+                <Box className="sidebar__logout-content" sx={{ px: 2.5, pt: 2.5, pb: 1.5 }}>
+                    <Box className="sidebar__logout-message" sx={{ fontSize: 15, fontFamily: "Sora", color: "hsl(240, 8%, 45%)", lineHeight: 1.5, wordWrap: "break-word" }}>
+                        Are you sure you want to sign out?
+                    </Box>
+                </Box>
+                <Box className="sidebar__logout-actions" sx={{ display: "flex", justifyContent: "flex-end", gap: 1, px: 2.5, pb: 2.5 }}>
+                    <Button className="sidebar__logout-cancel-btn"
+                        onClick={handleCancelLogout}
+                        size="small"
+                        sx={{
+                            fontSize: 13, fontWeight: 600, textTransform: "none",
+                            color: "hsl(240, 8%, 50%)", minWidth: 60, borderRadius: "8px", boxShadow: "1px 1px 2px 1px #00000020"
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button className="sidebar__logout-confirm-btn"
+                        onClick={handleConfirmLogout}
+                        variant="contained"
+                        size="small"
+                        sx={{
+                            fontSize: 13, fontWeight: 600, textTransform: "none",
+                            bgcolor: "#ef4444", color: "#fff", minWidth: 60, borderRadius: "8px",
+                            "&:hover": { bgcolor: "#dc2626" },
+                        }}
+                    >
+                        Sign Out
+                    </Button>
+                </Box>
+            </Dialog>
+        </>);
 }
 
 function MainLayout() {
@@ -391,20 +445,6 @@ function MainLayout() {
             background: "hsl(240, 20%, 97%)",
             display: "flex",
         }}>
-            <ToastContainer className="main-layout__toast"
-                position="bottom-right"
-                autoClose={1500}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-                transition={Zoom}
-            />
-
             {isMobile ? (
                 <Drawer className="main-layout__drawer"
                     open={mobileOpen}

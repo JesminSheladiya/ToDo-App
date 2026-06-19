@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { toast, ToastContainer, Zoom } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { register } from "../store/authSlice";
 import {
     Box, Button, IconButton, InputAdornment, TextField, Typography, Link, CircularProgress,
@@ -36,6 +35,7 @@ const inputSx = {
 function RegisterPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const token = useSelector((state) => state.auth.token);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -43,6 +43,12 @@ function RegisterPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (token) {
+            navigate("/", { replace: true });
+        }
+    }, [token, navigate]);
 
     const disabled = !name.trim() || !email.trim() || !password || !confirmPassword;
 
@@ -58,7 +64,6 @@ function RegisterPage() {
         }));
         if (register.fulfilled.match(result)) {
             toast.success("Account created successfully");
-            setTimeout(() => navigate("/"), 1200);
         } else {
             toast.error(result.payload || "Registration failed");
             setLoading(false);
@@ -74,7 +79,6 @@ function RegisterPage() {
             background: "hsl(240, 20%, 97%)",
             px: 2,
         }}>
-            <ToastContainer position="bottom-right" autoClose={1500} hideProgressBar={false} newestOnTop closeOnClick={false} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" transition={Zoom} />
             <Box sx={{
                 width: "100%",
                 maxWidth: 420,

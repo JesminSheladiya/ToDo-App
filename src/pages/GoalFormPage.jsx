@@ -177,18 +177,26 @@ function GoalFormPage() {
         setDraft((prev) => ({ ...prev, steps: newSteps }));
     }, [draft.steps]);
 
+    const goBack = useCallback(() => {
+        if (isOverlay && background) {
+            navigate(background.pathname, { replace: true });
+        } else {
+            navigate("/");
+        }
+    }, [navigate, isOverlay, background]);
+
     const handleClose = useCallback(() => {
         if (isEditing && hasChanges && initialDraftRef.current) {
             setExitDialogOpen(true);
         } else {
-            navigate(-1);
+            goBack();
         }
-    }, [navigate, isEditing, hasChanges]);
+    }, [goBack, isEditing, hasChanges]);
 
     const handleConfirmExit = useCallback(() => {
         setExitDialogOpen(false);
-        navigate(-1);
-    }, [navigate]);
+        goBack();
+    }, [goBack]);
 
     const handleCancelExit = useCallback(() => {
         setExitDialogOpen(false);
@@ -221,11 +229,11 @@ function GoalFormPage() {
                 await dispatch(createGoal(goalToSave)).unwrap();
                 toast.success("Goal created!");
             }
-            navigate(-1);
+            goBack();
         } catch {
             toast.error("Failed to save goal");
         }
-    }, [draft, dispatch, isEditing, id, navigate]);
+    }, [draft, dispatch, isEditing, id, goBack]);
 
     const handleSaveAndExit = useCallback(async () => {
         setExitDialogOpen(false);

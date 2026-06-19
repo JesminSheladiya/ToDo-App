@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { ToastContainer, Zoom } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import MainLayout from "./layouts/MainLayout";
 import CategoriesPage from "./pages/CategoriesPage";
 import ListPage from "./pages/ListPage";
@@ -29,27 +31,30 @@ function AppRoutes() {
 
     return (
         <div className="app">
-            <Routes location={background || location} className="app__routes">
-                <Route element={<GuestRoute />}>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                </Route>
+            <Routes location={background || location}>
+                <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+                <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+
+                <Route path="/goals/new" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} />
+                <Route path="/goals/:id/edit" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} />
 
                 <Route element={<ProtectedRoute />}>
-                    <Route element={<MainLayout />} className="app__route">
-                        <Route index element={<CategoriesPage />} className="app__route" />
-                        <Route path="list" element={<ListPage />} className="app__route" />
-                        <Route path="goals/:id" element={<GoalDetailPage />} className="app__route" />
+                    <Route element={<MainLayout />}>
+                        <Route index element={<CategoriesPage />} />
+                        <Route path="list" element={<ListPage />} />
+                        <Route path="goals/:id" element={<GoalDetailPage />} />
                     </Route>
                 </Route>
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
 
-            <Routes className="app__routes">
-                <Route path="/goals/new" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} className="app__route" />
-                <Route path="/goals/:id/edit" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} className="app__route" />
-            </Routes>
+            {background && (
+                <Routes>
+                    <Route path="/goals/new" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} />
+                    <Route path="/goals/:id/edit" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} />
+                </Routes>
+            )}
         </div>
     );
 }
@@ -59,6 +64,7 @@ function App() {
         <BrowserRouter className="app__browser-router">
             <LocalizationProvider dateAdapter={AdapterDayjs} className="app__localization-provider">
                 <AppRoutes />
+                <ToastContainer position="bottom-right" autoClose={1500} hideProgressBar={false} newestOnTop closeOnClick={false} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" transition={Zoom} />
             </LocalizationProvider>
         </BrowserRouter>
     );

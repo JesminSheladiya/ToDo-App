@@ -1,13 +1,11 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { toast, ToastContainer, Zoom } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { login } from "../store/authSlice";
 import {
     Box, Button, IconButton, InputAdornment, TextField, Typography, Link, CircularProgress,
 } from "@mui/material";
-import { PiEnvelope, PiEye, PiEyeSlash, PiLock } from "react-icons/pi";
 import { IoMail } from "react-icons/io5";
 import { MdPassword } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
@@ -44,10 +42,17 @@ const inputSx = {
 function LoginPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const token = useSelector((state) => state.auth.token);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (token) {
+            navigate("/", { replace: true });
+        }
+    }, [token, navigate]);
 
     const disabled = !email.trim() || !password;
 
@@ -58,7 +63,6 @@ function LoginPage() {
         const result = await dispatch(login({ email: email.trim(), password }));
         if (login.fulfilled.match(result)) {
             toast.success("Signed in successfully");
-            setTimeout(() => navigate("/"), 1200);
         } else {
             toast.error(result.payload || "Invalid email or password");
             setLoading(false);
@@ -74,7 +78,6 @@ function LoginPage() {
             background: "hsl(240, 20%, 97%)",
             px: 2,
         }}>
-            <ToastContainer position="bottom-right" autoClose={1500} hideProgressBar={false} newestOnTop closeOnClick={false} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" transition={Zoom} />
             <Box sx={{
                 width: "100%",
                 maxWidth: 420,
