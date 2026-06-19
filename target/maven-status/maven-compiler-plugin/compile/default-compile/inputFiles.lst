@@ -18,5 +18,6 @@
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/exception/ValidationException.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/repository/TaskRepository.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/repository/UserRepository.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/service/EmailService.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/service/TaskService.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/service/UserService.java

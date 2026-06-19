@@ -22,13 +22,16 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailService emailService;
 
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       JwtUtil jwtUtil) {
+                       JwtUtil jwtUtil,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.emailService = emailService;
     }
 
     @Override
@@ -80,6 +83,8 @@ public class UserService implements UserDetailsService {
                 .build();
 
         userRepository.save(user);
+
+        emailService.sendWelcomeEmail(user.getEmail(), user.getName());
 
         String token = jwtUtil.generateToken(user.getEmail());
 
