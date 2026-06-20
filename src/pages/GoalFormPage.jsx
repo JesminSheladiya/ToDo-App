@@ -92,8 +92,10 @@ function GoalFormPage() {
     }, [isEditing, existingGoal]);
 
     const hasChanges = useMemo(() => {
-        if (!isEditing || !initialDraftRef.current) return false;
-        return !deepEqual(draft, initialDraftRef.current);
+        if (isEditing) {
+            return initialDraftRef.current ? !deepEqual(draft, initialDraftRef.current) : false;
+        }
+        return draft.title.trim() !== "" || draft.description.trim() !== "" || draft.steps.length > 0;
     }, [draft, isEditing]);
 
     const category = categories.find((c) => c.key === draft.category) || categories[0];
@@ -186,12 +188,12 @@ function GoalFormPage() {
     }, [navigate, isOverlay, background]);
 
     const handleClose = useCallback(() => {
-        if (isEditing && hasChanges && initialDraftRef.current) {
+        if (hasChanges) {
             setExitDialogOpen(true);
         } else {
             goBack();
         }
-    }, [goBack, isEditing, hasChanges]);
+    }, [goBack, hasChanges]);
 
     const handleConfirmExit = useCallback(() => {
         setExitDialogOpen(false);

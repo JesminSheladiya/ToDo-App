@@ -11,6 +11,8 @@ import { PiListBold, PiPlusBold } from "react-icons/pi";
 import { FaListUl } from "react-icons/fa6";
 import { RiDashboardFill } from "react-icons/ri";
 import { FiLogOut } from "react-icons/fi";
+import { IoChevronDown } from "react-icons/io5";
+import { LiaUserSolid } from "react-icons/lia";
 import { fetchGoals } from "../store/goalsSlice";
 import { setActiveCategory, clearActiveCategory } from "../store/uiSlice";
 import { logout } from "../store/authSlice";
@@ -28,6 +30,7 @@ function Sidebar({ categories, onClose }) {
     const activeCategory = useSelector((state) => state.ui.activeCategory);
     const user = useSelector((state) => state.auth.user);
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+    const [brandMenuOpen, setBrandMenuOpen] = useState(false);
 
     const isDashboard = location.pathname === "/";
     const isList = location.pathname === "/list";
@@ -90,8 +93,14 @@ function Sidebar({ categories, onClose }) {
                 overflow: "hidden",
             }}
         >
-            <Box className="sidebar__logo" sx={{ px: 2.5, py: 2.5, pb: 1.5 }}>
-                <Stack className="sidebar__brand" direction="row" spacing={1.25} alignItems="center">
+            <Box className="sidebar__logo" sx={{ px: 2.5, py: 2.5, pb: 1.5, position: "relative" }}>
+                <Stack className="sidebar__brand"
+                    direction="row"
+                    spacing={1.25}
+                    alignItems="center"
+                    onClick={() => setBrandMenuOpen((p) => !p)}
+                    sx={{ cursor: "pointer", borderRadius: "10px", px: 0.5, py: 0.5, mx: -0.5, "&:hover": { bgcolor: "hsl(240, 20%, 97%)" }, transition: "background 150ms" }}
+                >
                     <Box className="sidebar__brand-icon"
                         sx={{
                             width: 36,
@@ -110,7 +119,7 @@ function Sidebar({ categories, onClose }) {
                     >
                         {user?.name?.split(" ")[0]?.charAt(0)?.toUpperCase() + user?.name?.split(" ")[1]?.charAt(0)?.toUpperCase()}
                     </Box>
-                    <Box className="sidebar__brand-text" sx={{ minWidth: 0 }}>
+                    <Box className="sidebar__brand-text" sx={{ minWidth: 0, flex: 1 }}>
                         <Typography className="sidebar__brand-title"
                             sx={{
                                 fontFamily: "'Sora', sans-serif",
@@ -140,7 +149,77 @@ function Sidebar({ categories, onClose }) {
                             {user?.email || ""}
                         </Typography>
                     </Box>
+                    <IoChevronDown
+                        size={16}
+                        sx={{
+                            color: "hsl(240, 8%, 50%)",
+                            flexShrink: 0,
+                            transition: "transform 200ms ease",
+                            transform: brandMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+                        }}
+                    />
                 </Stack>
+
+                {brandMenuOpen && (
+                    <>
+                        <Box
+                            sx={{ position: "fixed", inset: 0, zIndex: 1300 }}
+                            onClick={() => setBrandMenuOpen(false)}
+                        />
+                        <Box sx={{
+                            position: "absolute",
+                            top: "100%",
+                            left: 12,
+                            right: 12,
+                            zIndex: 1301,
+                            bgcolor: "#fff",
+                            borderRadius: "14px",
+                            border: "1px solid hsl(240, 10%, 90%)",
+                            boxShadow: "0 12px 32px rgb(0 0 0 / .12)",
+                            py: 0.75,
+                            mt: 0.75,
+                            overflow: "hidden",
+                        }}>
+                            <Box
+                                onClick={() => { setBrandMenuOpen(false); navigate("/profile"); onClose?.(); }}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1.25,
+                                    px: 2,
+                                    py: 1.25,
+                                    cursor: "pointer",
+                                    "&:hover": { bgcolor: "hsl(262, 83%, 96%)" },
+                                    transition: "background 120ms",
+                                }}
+                            >
+                                <LiaUserSolid size={17} style={{ color: "#7c3aed" }} />
+                                <Typography sx={{ fontSize: 13.5, fontWeight: 600, color: "hsl(240, 15%, 10%)" }}>
+                                    Profile
+                                </Typography>
+                            </Box>
+                            <Box sx={{ mx: 1.5, height: "1px", bgcolor: "hsl(240, 10%, 92%)" }} />
+                            <Box
+                                onClick={() => { setBrandMenuOpen(false); handleLogout(); }}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1.25,
+                                    px: 2,
+                                    py: 1.25,
+                                    cursor: "pointer",
+                                    "&:hover": { bgcolor: "hsl(0, 84%, 97%)" },
+                                    transition: "background 120ms",
+                                }}
+                            >
+                                <FiLogOut size={17} style={{ color: "#ef4444" }} />
+                                <Typography sx={{ fontSize: 13.5, fontWeight: 600, color: "hsl(240, 15%, 10%)" }}>
+                                    Sign Out
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </>
+                )}
             </Box>
 
             <Box className="sidebar__divider" sx={{ mx: 2, height: "1px", bgcolor: "hsl(240, 10%, 90%)" }} />
@@ -421,6 +500,7 @@ function MainLayout() {
     }, [location.pathname]);
 
     const isDetail = location.pathname.startsWith("/goals/") && !location.pathname.endsWith("/new") && !location.pathname.endsWith("/edit");
+    const isProfile = location.pathname === "/profile";
 
     const stats = useMemo(() => {
         const total = goals.length;
@@ -474,7 +554,7 @@ function MainLayout() {
                 display: "flex",
                 flexDirection: "column",
             }}>
-                {!isDetail && (
+                {!isDetail && !isProfile && (
                     <Box className="main-layout__header"
                         sx={{
                             px: { xs: 2, sm: 3.5 },
@@ -569,14 +649,36 @@ function MainLayout() {
                     </Box>
                 )}
 
+                {isProfile && (
+                    <Box sx={{
+                        px: { xs: 2, sm: 3.5 },
+                        pt: { xs: 2, sm: 3 },
+                        pb: 0,
+                    }}>
+                        {isMobile && (
+                            <IconButton
+                                onClick={() => setMobileOpen(true)}
+                                size="small"
+                                sx={{
+                                    color: "#fff",
+                                    background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                                    boxShadow: "0 1px 3px rgb(0 0 0 / .06)",
+                                }}
+                            >
+                                <PiListBold sx={{ fontSize: 22 }} />
+                            </IconButton>
+                        )}
+                    </Box>
+                )}
+
                 <Box className="main-layout__page" sx={{
                     px: { xs: 2, sm: 3.5 },
                     pb: 4,
                     flex: 1,
                     overflowY: "auto",
-                    pt: isDetail ? { xs: 2, sm: 3 } : undefined,
+                    pt: (isDetail || isProfile) ? { xs: 2, sm: 3 } : undefined,
                 }}>
-                    {isDetail ? (
+                    {isDetail || isProfile ? (
                         <Outlet />
                     ) : (
                         <Stack className="main-layout__stack" spacing={2.5}>
