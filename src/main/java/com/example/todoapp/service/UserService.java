@@ -3,7 +3,10 @@ package com.example.todoapp.service;
 import com.example.todoapp.config.JwtUtil;
 import com.example.todoapp.dto.AuthRequest;
 import com.example.todoapp.dto.AuthResponse;
+import com.example.todoapp.dto.ForgotPasswordRequest;
 import com.example.todoapp.dto.RegisterRequest;
+import com.example.todoapp.dto.ResetPasswordRequest;
+import com.example.todoapp.dto.VerifyOtpRequest;
 import com.example.todoapp.entity.User;
 import com.example.todoapp.exception.ValidationException;
 import com.example.todoapp.repository.UserRepository;
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -23,6 +29,22 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final EmailService emailService;
+
+    private final Map<String, OtpData> otpStore = new ConcurrentHashMap<>();
+
+    private static class OtpData {
+        final String otp;
+        final long expiryTime;
+
+        OtpData(String otp, long expiryTime) {
+            this.otp = otp;
+            this.expiryTime = expiryTime;
+        }
+
+        boolean isExpired() {
+            return System.currentTimeMillis() > expiryTime;
+        }
+    }
 
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
@@ -128,5 +150,78 @@ public class UserService implements UserDetailsService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
+    }
+
+    public void forgotPassword(ForgotPasswordRequest request) {
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            fail("email", "Email is required");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (user == null) {
+            fail("email", "Email is not registered");
+        }
+
+        String otp = String.format("%06d", new Random().nextInt(999999));
+        long expiryTime = System.currentTimeMillis() + (10 * 60 * 1000);
+        otpStore.put(request.getEmail().toLowerCase(), new OtpData(otp, expiryTime));
+
+        try {
+            emailService.sendOtpEmail(request.getEmail(), otp);
+        } catch (Exception e) {
+            fail("email", "Failed to send OTP. Please try again later");
+        }
+    }
+
+    public void verifyOtp(VerifyOtpRequest request) {
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            fail("email", "Email is required");
+        }
+        if (request.getOtp() == null || request.getOtp().isBlank()) {
+            fail("otp", "OTP is required");
+        }
+
+        OtpData otpData = otpStore.get(request.getEmail().toLowerCase());
+        if (otpData == null) {
+            fail("otp", "No OTP found. Please request a new one");
+        }
+        if (otpData.isExpired()) {
+            otpStore.remove(request.getEmail().toLowerCase());
+            fail("otp", "OTP has expired. Please request a new one");
+        }
+        if (!otpData.otp.equals(request.getOtp())) {
+            fail("otp", "Invalid OTP");
+        }
+
+        otpStore.remove(request.getEmail().toLowerCase());
+    }
+
+    public void resetPassword(ResetPasswordRequest request) {
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            fail("email", "Email is required");
+        }
+        if (request.getOtp() == null || request.getOtp().isBlank()) {
+            fail("otp", "OTP is required");
+        }
+        if (request.getNewPassword() == null || request.getNewPassword().isBlank()) {
+            fail("newPassword", "New password is required");
+        } else if (request.getNewPassword().length() < 6) {
+            fail("newPassword", "Password must be at least 6 characters");
+        } else if (!request.getNewPassword().matches(".*[a-zA-Z].*") || !request.getNewPassword().matches(".*\\d.*") || !request.getNewPassword().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+            fail("newPassword", "Must contain 1 letter, 1 number, and 1 symbol");
+        }
+        if (request.getConfirmPassword() == null || request.getConfirmPassword().isBlank()) {
+            fail("confirmPassword", "Confirm password is required");
+        } else if (!request.getConfirmPassword().equals(request.getNewPassword())) {
+            fail("confirmPassword", "Passwords do not match");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (user == null) {
+            fail("email", "Email is not registered");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 }

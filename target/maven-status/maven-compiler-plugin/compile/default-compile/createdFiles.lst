@@ -1,13 +1,17 @@
 com/example/todoapp/dto/ReorderDto.class
 com/example/todoapp/entity/TaskStep$TaskStepBuilder.class
+com/example/todoapp/dto/VerifyOtpRequest.class
 com/example/todoapp/exception/ValidationException$FieldError.class
 com/example/todoapp/dto/CategoryDto.class
+com/example/todoapp/dto/ResetPasswordRequest.class
 com/example/todoapp/entity/User.class
 com/example/todoapp/config/JwtUtil.class
 com/example/todoapp/dto/RegisterRequest.class
+com/example/todoapp/dto/ForgotPasswordRequest.class
 com/example/todoapp/controller/TaskController.class
 com/example/todoapp/entity/TaskStep.class
 com/example/todoapp/TodoBackendApplication.class
+com/example/todoapp/service/UserService$OtpData.class
 com/example/todoapp/controller/AuthController.class
 com/example/todoapp/exception/ValidationException.class
 com/example/todoapp/dto/ReorderDto$StepOrder.class
