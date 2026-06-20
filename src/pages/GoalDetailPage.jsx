@@ -193,7 +193,7 @@ function GoalDetailPage() {
                 </Stack>
 
                 <Box className="goal-detail-page__header-actions" sx={{ display: "flex", gap: 0.5 }}>
-                    <IconButton className="goal-detail-page__edit-btn" onClick={() => navigate(`/goals/${id}/edit`, { state: { background: location } })} size="small" disableRipple sx={{
+                    <IconButton className="goal-detail-page__edit-btn" onClick={() => { const target = `/goals/${id}/edit`; if (location.pathname !== target) navigate(target, { state: { background: location }, replace: true }); }} size="small" disableRipple sx={{
                         width: 32, height: 32, borderRadius: "8px",
                         bgcolor: "hsl(240, 20%, 96%)", color: "#7c3aed",
                         "&:hover": { bgcolor: "hsl(262, 83%, 96%)" },

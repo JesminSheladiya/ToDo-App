@@ -2,10 +2,11 @@ import axios from "axios";
 
 const api = axios.create({
     // baseURL: "http://localhost:8080/api",
-    baseURL: "http://192.168.1.6:8080/api",
+    baseURL: "http://192.168.1.5:8080/api",
 });
 
 let storeRef = null;
+let isRedirecting = false;
 
 export function setStore(store) {
     storeRef = store;
@@ -22,10 +23,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401 && storeRef) {
+        if (error.response?.status === 401 && storeRef && !isRedirecting) {
+            isRedirecting = true;
             storeRef.dispatch({ type: "auth/logout" });
             if (window.location.pathname !== "/login" && window.location.pathname !== "/register") {
-                window.location.href = "/login";
+                window.location.replace("/login");
             }
         }
         return Promise.reject(error);

@@ -181,7 +181,7 @@ function GoalFormPage() {
         if (isOverlay && background) {
             navigate(background.pathname, { replace: true });
         } else {
-            navigate("/");
+            navigate("/", { replace: true });
         }
     }, [navigate, isOverlay, background]);
 

@@ -35,13 +35,19 @@ function Sidebar({ categories, onClose }) {
 
     const handleDashboardClick = () => {
         dispatch(clearActiveCategory());
-        navigate("/");
+        if (location.pathname === "/") {
+            dispatch(setActiveCategory("all"));
+        } else {
+            navigate("/");
+        }
         onClose?.();
     };
 
     const handleListClick = () => {
         dispatch(clearActiveCategory());
-        navigate("/list");
+        if (location.pathname !== "/list") {
+            navigate("/list");
+        }
         onClose?.();
     };
 

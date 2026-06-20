@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { login } from "../store/authSlice";
 import {
@@ -41,18 +41,10 @@ const inputSx = {
 
 function LoginPage() {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const token = useSelector((state) => state.auth.token);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (token) {
-            navigate("/", { replace: true });
-        }
-    }, [token, navigate]);
 
     const disabled = !email.trim() || !password;
 

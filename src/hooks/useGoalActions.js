@@ -41,15 +41,21 @@ export function useGoalActions() {
     const handleOpenCreate = useCallback((category) => {
         const cat = (typeof category === "string") ? category : "";
         const params = cat ? `?category=${cat}` : "";
-        navigate(`/goals/new${params}`, { state: { background: location } });
+        const target = `/goals/new${params}`;
+        if (location.pathname === target) return;
+        navigate(target, { state: { background: location }, replace: true });
     }, [navigate, location]);
 
     const handleOpenDetail = useCallback((goal) => {
-        navigate(`/goals/${goal.id}`);
-    }, [navigate]);
+        const target = `/goals/${goal.id}`;
+        if (location.pathname === target) return;
+        navigate(target);
+    }, [navigate, location]);
 
     const handleOpenEdit = useCallback((goal) => {
-        navigate(`/goals/${goal.id}/edit`, { state: { background: location } });
+        const target = `/goals/${goal.id}/edit`;
+        if (location.pathname === target) return;
+        navigate(target, { state: { background: location }, replace: true });
     }, [navigate, location]);
 
     const handleToggleGoal = useCallback((goal) => {
