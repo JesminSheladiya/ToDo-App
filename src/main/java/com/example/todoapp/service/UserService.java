@@ -6,6 +6,7 @@ import com.example.todoapp.dto.AuthResponse;
 import com.example.todoapp.dto.ForgotPasswordRequest;
 import com.example.todoapp.dto.RegisterRequest;
 import com.example.todoapp.dto.ResetPasswordRequest;
+import com.example.todoapp.dto.UpdateProfileRequest;
 import com.example.todoapp.dto.VerifyOtpRequest;
 import com.example.todoapp.entity.User;
 import com.example.todoapp.exception.ValidationException;
@@ -223,5 +224,44 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    public AuthResponse updateProfile(String email, UpdateProfileRequest request) {
+        if (request.getName() == null || request.getName().isBlank()) {
+            fail("name", "Name is required");
+        } else if (request.getName().trim().split("\\s+").length < 2) {
+            fail("name", "First and last name required");
+        }
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            fail("email", "User not found");
+        }
+
+        boolean hasPasswordChange = request.getNewPassword() != null && !request.getNewPassword().isBlank();
+
+        if (hasPasswordChange) {
+            if (request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
+                fail("currentPassword", "Current password is required");
+            }
+            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+                fail("currentPassword", "Current password is incorrect");
+            }
+            if (request.getNewPassword().length() < 6) {
+                fail("newPassword", "Password must be at least 6 characters");
+            } else if (!request.getNewPassword().matches(".*[a-zA-Z].*") || !request.getNewPassword().matches(".*\\d.*") || !request.getNewPassword().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                fail("newPassword", "Must contain 1 letter, 1 number, and 1 symbol");
+            }
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        }
+
+        user.setName(request.getName().trim());
+        userRepository.save(user);
+
+        return AuthResponse.builder()
+                .token(null)
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
     }
 }

@@ -5,6 +5,7 @@ import com.example.todoapp.dto.AuthResponse;
 import com.example.todoapp.dto.ForgotPasswordRequest;
 import com.example.todoapp.dto.RegisterRequest;
 import com.example.todoapp.dto.ResetPasswordRequest;
+import com.example.todoapp.dto.UpdateProfileRequest;
 import com.example.todoapp.dto.VerifyOtpRequest;
 import com.example.todoapp.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -61,5 +62,12 @@ public class AuthController {
     public Map<String, String> resetPassword(@RequestBody ResetPasswordRequest request) {
         userService.resetPassword(request);
         return Map.of("message", "Password changed successfully");
+    }
+
+    @PutMapping("/update-profile")
+    public AuthResponse updateProfile(@RequestBody UpdateProfileRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        return userService.updateProfile(email, request);
     }
 }
