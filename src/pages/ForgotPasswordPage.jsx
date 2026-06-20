@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { login } from "../store/authSlice";
+import { forgotPassword } from "../store/authSlice";
 import {
-    Box, Button, IconButton, InputAdornment, TextField, Typography, Link, CircularProgress,
+    Box, Button, InputAdornment, TextField, Typography, Link, CircularProgress,
 } from "@mui/material";
 import { IoMail } from "react-icons/io5";
-import { MdPassword } from "react-icons/md";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { TbArrowLeft } from "react-icons/tb";
 
 const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -28,6 +27,9 @@ const inputSx = {
             borderColor: "#7c3aed",
             borderWidth: 1.5,
         },
+        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#d32f2f",
+        },
     },
     "& .MuiInputLabel-root": {
         fontWeight: 600,
@@ -37,29 +39,50 @@ const inputSx = {
             color: "#7c3aed",
         },
     },
+    "& .MuiFormHelperText-root": {
+        ml: 0,
+        mt: 0.5,
+        fontSize: 12,
+        fontWeight: 500,
+    },
 };
 
-function LoginPage() {
+function ForgotPasswordPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const [emailError, setEmailError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const disabled = !email.trim() || !password;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const disabled = !email.trim() || loading;
+
+    const validateEmail = () => {
+        if (!email.trim()) {
+            setEmailError("Email is required");
+            return false;
+        }
+        if (!emailRegex.test(email.trim())) {
+            setEmailError("Please enter a valid email address");
+            return false;
+        }
+        setEmailError("");
+        return true;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validateEmail()) return;
         setLoading(true);
 
-        const result = await dispatch(login({ email: email.trim(), password }));
-        if (login.fulfilled.match(result)) {
-            toast.success("Signed in successfully");
+        const result = await dispatch(forgotPassword({ email: email.trim() }));
+        if (forgotPassword.fulfilled.match(result)) {
+            toast.success("OTP sent to your email");
+            navigate("/verify-otp", { state: { email: email.trim() }, replace: true });
         } else {
-            toast.error(result.payload || "Invalid email or password");
-            setLoading(false);
+            toast.error(result.payload || "Email is not registered");
         }
+        setLoading(false);
     };
 
     return (
@@ -88,14 +111,15 @@ function LoginPage() {
                         color: "hsl(240, 15%, 10%)",
                         mb: 0.5,
                     }}>
-                        Welcome!
+                        Forgot Password?
                     </Typography>
                     <Typography sx={{
                         fontSize: 14,
                         color: "hsl(240, 8%, 50%)",
                         fontWeight: 500,
+                        lineHeight: 1.5,
                     }}>
-                        Sign in to continue to Goal ToDo
+                        Enter your email and we'll send you a one-time password to reset your account.
                     </Typography>
                 </Box>
 
@@ -108,29 +132,13 @@ function LoginPage() {
                         placeholder="john@example.com"
                         type="text"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        variant="outlined"
-                        size="small"
-                        sx={{ mb: 2, ...inputSx }}
-                        slotProps={{
-                            input: {
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
-                                    </InputAdornment>
-                                ),
-                            },
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (emailError) setEmailError("");
                         }}
-                    />
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
-                        Password
-                    </Typography>
-                    <TextField
-                        fullWidth
-                        placeholder="Enter your password"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onBlur={validateEmail}
+                        error={!!emailError}
+                        helperText={emailError}
                         variant="outlined"
                         size="small"
                         sx={{ mb: 3, ...inputSx }}
@@ -138,14 +146,7 @@ function LoginPage() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
-                                            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                                        </IconButton>
+                                        <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                             },
@@ -177,35 +178,27 @@ function LoginPage() {
                             },
                         }}
                     >
-                        {loading ? "Signing in..." : "Sign In"}
+                        {loading ? "Sending OTP..." : "Send OTP"}
                     </Button>
                 </Box>
 
-                <Box sx={{ mt: 1.5, textAlign: "center", fontSize: 14, fontWeight: 600 }}>
-                    <Link component="button" type="button" onClick={() => navigate("/forgot-password", { replace: true })} sx={{
+                <Typography sx={{ mt: 2.5, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
+                    <Link component="button" type="button" onClick={() => navigate("/login", { replace: true })} sx={{
                         color: "#7c3aed",
                         fontWeight: 700,
                         textDecoration: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 0.5,
                         "&:hover": { textDecoration: "underline" },
                     }}>
-                        Forgot Password?
-                    </Link>
-                </Box>
-
-                <Typography sx={{ mt: 2, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
-                    Don't have an account?{" "}
-                    <Link component="button" type="button" onClick={() => navigate("/register", { replace: true })} sx={{
-                        color: "#7c3aed",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        "&:hover": { textDecoration: "underline" },
-                    }}>
-                        Register
+                        <TbArrowLeft size={16} />
+                        Back to Sign In
                     </Link>
                 </Typography>
             </Box>
-        </Box >
+        </Box>
     );
 }
 
-export default LoginPage;
+export default ForgotPasswordPage;

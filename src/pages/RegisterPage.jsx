@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { register } from "../store/authSlice";
 import {
@@ -34,6 +34,7 @@ const inputSx = {
 
 function RegisterPage() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -234,7 +235,7 @@ function RegisterPage() {
 
                 <Typography sx={{ textAlign: "center", mt: 3, fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
                     Already have an account?{" "}
-                    <Link component={RouterLink} to="/login" sx={{
+                    <Link component="button" type="button" onClick={() => navigate("/login", { replace: true })} sx={{
                         color: "#7c3aed",
                         fontWeight: 700,
                         textDecoration: "none",

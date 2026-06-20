@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { login } from "../store/authSlice";
+import { resetPassword } from "../store/authSlice";
 import {
-    Box, Button, IconButton, InputAdornment, TextField, Typography, Link, CircularProgress,
+    Box, Button, IconButton, InputAdornment, TextField, Typography, CircularProgress,
 } from "@mui/material";
-import { IoMail } from "react-icons/io5";
-import { MdPassword } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { MdPassword } from "react-icons/md";
 
 const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -28,38 +27,90 @@ const inputSx = {
             borderColor: "#7c3aed",
             borderWidth: 1.5,
         },
+        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#d32f2f",
+        },
     },
     "& .MuiInputLabel-root": {
         fontWeight: 600,
         fontSize: 13,
         color: "hsl(240, 8%, 45%)",
-        "&.Mui-focused": {
-            color: "#7c3aed",
-        },
+        "&.Mui-focused": { color: "#7c3aed" },
+    },
+    "& .MuiFormHelperText-root": {
+        ml: 0,
+        mt: 0.5,
+        fontSize: 12,
+        fontWeight: 500,
     },
 };
 
-function LoginPage() {
+function ResetPasswordPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const location = useLocation();
+    const email = location.state?.email || "";
+    const otp = location.state?.otp || "";
+
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const disabled = !email.trim() || !password;
+    useEffect(() => {
+        if (!email || !otp) {
+            navigate("/forgot-password", { replace: true });
+        }
+    }, [email, otp, navigate]);
+
+    const validate = () => {
+        const errs = {};
+        if (!newPassword) {
+            errs.newPassword = "New password is required";
+        } else if (newPassword.length < 6) {
+            errs.newPassword = "Password must be at least 6 characters";
+        } else if (!/[a-zA-Z]/.test(newPassword) || !/\d/.test(newPassword) || !/[!@#$%^&*(),.?":{}|<>]/.test(newPassword)) {
+            errs.newPassword = "Must contain 1 letter, 1 number, and 1 symbol";
+        }
+        if (!confirmPassword) {
+            errs.confirmPassword = "Confirm password is required";
+        } else if (confirmPassword !== newPassword) {
+            errs.confirmPassword = "Passwords do not match";
+        }
+        setErrors(errs);
+        return Object.keys(errs).length === 0;
+    };
+
+    const clearError = (field) => {
+        if (errors[field]) {
+            setErrors((prev) => {
+                const next = { ...prev };
+                delete next[field];
+                return next;
+            });
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return;
         setLoading(true);
 
-        const result = await dispatch(login({ email: email.trim(), password }));
-        if (login.fulfilled.match(result)) {
-            toast.success("Signed in successfully");
+        const result = await dispatch(resetPassword({
+            email,
+            otp,
+            newPassword,
+            confirmPassword,
+        }));
+        if (resetPassword.fulfilled.match(result)) {
+            toast.success("Password changed successfully! Please sign in");
+            navigate("/login", { replace: true });
         } else {
-            toast.error(result.payload || "Invalid email or password");
-            setLoading(false);
+            toast.error(result.payload || "Failed to change password");
         }
+        setLoading(false);
     };
 
     return (
@@ -88,27 +139,30 @@ function LoginPage() {
                         color: "hsl(240, 15%, 10%)",
                         mb: 0.5,
                     }}>
-                        Welcome!
+                        Change Password
                     </Typography>
                     <Typography sx={{
                         fontSize: 14,
                         color: "hsl(240, 8%, 50%)",
                         fontWeight: 500,
+                        lineHeight: 1.5,
                     }}>
-                        Sign in to continue to Goal ToDo
+                        Enter your current and new password
                     </Typography>
                 </Box>
 
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                     <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
-                        Email
+                        New Password
                     </Typography>
                     <TextField
                         fullWidth
-                        placeholder="john@example.com"
-                        type="text"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter new password"
+                        type={showNew ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => { setNewPassword(e.target.value); clearError("newPassword"); }}
+                        error={!!errors.newPassword}
+                        helperText={errors.newPassword}
                         variant="outlined"
                         size="small"
                         sx={{ mb: 2, ...inputSx }}
@@ -116,21 +170,31 @@ function LoginPage() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowNew((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                            {showNew ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                        </IconButton>
                                     </InputAdornment>
                                 ),
                             },
                         }}
                     />
+
                     <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
-                        Password
+                        Confirm Password
                     </Typography>
                     <TextField
                         fullWidth
-                        placeholder="Enter your password"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Re-enter new password"
+                        type={showConfirm ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => { setConfirmPassword(e.target.value); clearError("confirmPassword"); }}
+                        error={!!errors.confirmPassword}
+                        helperText={errors.confirmPassword}
                         variant="outlined"
                         size="small"
                         sx={{ mb: 3, ...inputSx }}
@@ -143,19 +207,20 @@ function LoginPage() {
                                 ),
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
-                                            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                        <IconButton onClick={() => setShowConfirm((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                            {showConfirm ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                                         </IconButton>
                                     </InputAdornment>
                                 ),
                             },
                         }}
                     />
+
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        disabled={disabled || loading}
+                        disabled={loading}
                         startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
                         sx={{
                             background: "linear-gradient(135deg, #7c3aed, #a855f7)",
@@ -177,35 +242,12 @@ function LoginPage() {
                             },
                         }}
                     >
-                        {loading ? "Signing in..." : "Sign In"}
+                        {loading ? "Changing Password..." : "Change Password"}
                     </Button>
                 </Box>
-
-                <Box sx={{ mt: 1.5, textAlign: "center", fontSize: 14, fontWeight: 600 }}>
-                    <Link component="button" type="button" onClick={() => navigate("/forgot-password", { replace: true })} sx={{
-                        color: "#7c3aed",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        "&:hover": { textDecoration: "underline" },
-                    }}>
-                        Forgot Password?
-                    </Link>
-                </Box>
-
-                <Typography sx={{ mt: 2, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
-                    Don't have an account?{" "}
-                    <Link component="button" type="button" onClick={() => navigate("/register", { replace: true })} sx={{
-                        color: "#7c3aed",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        "&:hover": { textDecoration: "underline" },
-                    }}>
-                        Register
-                    </Link>
-                </Typography>
             </Box>
-        </Box >
+        </Box>
     );
 }
 
-export default LoginPage;
+export default ResetPasswordPage;

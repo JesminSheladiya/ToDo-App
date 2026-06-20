@@ -12,6 +12,9 @@ import GoalFormPage from "./pages/GoalFormPage";
 import GoalDetailPage from "./pages/GoalDetailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import OtpVerificationPage from "./pages/OtpVerificationPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ProtectedRoute, { GuestRoute } from "./components/ProtectedRoute";
 import { fetchCategories } from "./store/configSlice";
 import { fetchCurrentUser } from "./store/authSlice";
@@ -34,6 +37,9 @@ function AppRoutes() {
             <Routes location={background || location}>
                 <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
                 <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+                <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
+                <Route path="/verify-otp" element={<GuestRoute><OtpVerificationPage /></GuestRoute>} />
+                <Route path="/reset-password" element={<GuestRoute><ResetPasswordPage /></GuestRoute>} />
 
                 <Route path="/goals/new" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} />
                 <Route path="/goals/:id/edit" element={<ProtectedRoute><GoalFormPage /></ProtectedRoute>} />
