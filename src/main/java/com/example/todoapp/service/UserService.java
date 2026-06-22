@@ -16,7 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +117,8 @@ public class UserService implements UserDetailsService {
                 .token(token)
                 .name(user.getName())
                 .email(user.getEmail())
+                .dob(user.getDob())
+                .photo(user.getPhoto())
                 .build();
     }
 
@@ -139,6 +143,8 @@ public class UserService implements UserDetailsService {
                 .token(token)
                 .name(user.getName())
                 .email(user.getEmail())
+                .dob(user.getDob())
+                .photo(user.getPhoto())
                 .build();
     }
 
@@ -150,6 +156,8 @@ public class UserService implements UserDetailsService {
                 .token(null)
                 .name(user.getName())
                 .email(user.getEmail())
+                .dob(user.getDob())
+                .photo(user.getPhoto())
                 .build();
     }
 
@@ -256,12 +264,71 @@ public class UserService implements UserDetailsService {
         }
 
         user.setName(request.getName().trim());
+
+        if (request.getDob() != null && !request.getDob().isBlank()) {
+            user.setDob(request.getDob().trim());
+        } else if (request.getDob() != null && request.getDob().isBlank()) {
+            user.setDob(null);
+        }
+
         userRepository.save(user);
 
         return AuthResponse.builder()
                 .token(null)
                 .name(user.getName())
                 .email(user.getEmail())
+                .dob(user.getDob())
+                .photo(user.getPhoto())
+                .build();
+    }
+
+    public String uploadPhoto(String email, MultipartFile file) throws IOException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (file.isEmpty()) {
+            throw new RuntimeException("File is empty");
+        }
+
+        String originalName = file.getOriginalFilename();
+        if (originalName == null) {
+            throw new RuntimeException("Invalid file name");
+        }
+
+        String extension = originalName.substring(originalName.lastIndexOf(".") + 1).toLowerCase();
+        if (!List.of("jpg", "jpeg", "png", "webp").contains(extension)) {
+            throw new RuntimeException("Only JPG, PNG, and WEBP files are allowed");
+        }
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new RuntimeException("File size must be less than 5MB");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null) contentType = "image/jpeg";
+
+        String base64 = java.util.Base64.getEncoder().encodeToString(file.getBytes());
+        String dataUrl = "data:" + contentType + ";base64," + base64;
+
+        user.setPhoto(dataUrl);
+        userRepository.save(user);
+
+        return dataUrl;
+    }
+
+    public AuthResponse removePhoto(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setPhoto(null);
+        userRepository.save(user);
+
+        return AuthResponse.builder()
+                .token(null)
+                .name(user.getName())
+                .email(user.getEmail())
+                .dob(user.getDob())
+                .photo(null)
                 .build();
     }
 }

@@ -4,10 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="implement forgot password, OTP verification, and password reset flows">
+    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="user profile add">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/UpdateProfileRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/UpdateProfileRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse$AuthResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse$AuthResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User$UserBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService$OtpData.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService$OtpData.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +29,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="35" />
+    <option name="cachedIndexableFilesCount" value="39" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,23 +52,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0396812686743455" />
-      <entry key="MS500" value="1.691197575257644" />
-      <entry key="S2" value="2.7444496249381842" />
-      <entry key="S5" value="3.6355218231713664" />
-      <entry key="S10" value="4.191714166169131" />
-      <entry key="S30" value="4.695258821044387" />
-      <entry key="S60" value="4.84265674274884" />
-      <entry key="M2" value="4.920038748132332" />
-      <entry key="M5" value="4.967699838994987" />
-      <entry key="M10" value="4.98386558128709" />
-      <entry key="M15" value="4.990864991686569" />
-      <entry key="M30" value="5.035562451291146" />
-      <entry key="H1" value="5.199715812450204" />
-      <entry key="H2" value="5.448560936543867" />
-      <entry key="H4" value="5.67007997971321" />
-      <entry key="D1" value="5.935495760378285" />
-      <entry key="W1" value="5.990520647861252" />
+      <entry key="MS100" value="1.2888305467076688" />
+      <entry key="MS500" value="2.220534639013877" />
+      <entry key="S2" value="3.6909599814585143" />
+      <entry key="S5" value="4.776979002183502" />
+      <entry key="S10" value="5.32149242420709" />
+      <entry key="S30" value="5.75686167735841" />
+      <entry key="S60" value="5.87616420879761" />
+      <entry key="M2" value="5.937503898192335" />
+      <entry key="M5" value="5.974861283519974" />
+      <entry key="M10" value="5.9874078869828535" />
+      <entry key="M15" value="5.991740879340611" />
+      <entry key="M30" value="6.022595977236595" />
+      <entry key="H1" value="6.377224748643447" />
+      <entry key="H2" value="7.470579329167633" />
+      <entry key="H4" value="8.94625408688912" />
+      <entry key="D1" value="11.322017085985804" />
+      <entry key="W1" value="11.897880824628418" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -76,23 +90,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.07658298454374478" />
-      <entry key="MS500" value="1.2069602260548584" />
-      <entry key="S2" value="2.5908830440068966" />
-      <entry key="S5" value="3.5705566758198217" />
-      <entry key="S10" value="4.158537149110444" />
-      <entry key="S30" value="4.6840291230295295" />
-      <entry key="S60" value="4.837019263068378" />
-      <entry key="M2" value="4.917214240977534" />
-      <entry key="M5" value="4.9665686373531885" />
-      <entry key="M10" value="4.98329973925806" />
-      <entry key="M15" value="4.990487604845424" />
-      <entry key="M30" value="5.035372430399709" />
-      <entry key="H1" value="5.199618122143135" />
-      <entry key="H2" value="5.448510040712112" />
-      <entry key="H4" value="5.670053617183106" />
-      <entry key="D1" value="5.935491183834701" />
-      <entry key="W1" value="5.990519988654036" />
+      <entry key="MS100" value="0.5564611342659773" />
+      <entry key="MS500" value="1.9862118028458369" />
+      <entry key="S2" value="3.6233702420010907" />
+      <entry key="S5" value="4.748349554277332" />
+      <entry key="S10" value="5.30681506213551" />
+      <entry key="S30" value="5.751875918938168" />
+      <entry key="S60" value="5.873658750086235" />
+      <entry key="M2" value="5.936247950104718" />
+      <entry key="M5" value="5.974358122107873" />
+      <entry key="M10" value="5.987156175012209" />
+      <entry key="M15" value="5.991573031516615" />
+      <entry key="M30" value="6.022511032772804" />
+      <entry key="H1" value="6.377175651740897" />
+      <entry key="H2" value="7.470544596403069" />
+      <entry key="H4" value="8.946229892850775" />
+      <entry key="D1" value="11.322011233488617" />
+      <entry key="W1" value="11.897879925769482" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -161,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781938705580</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="user profile add">
+      <option name="closed" value="true" />
+      <created>1781944593942</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1781944593942</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -170,7 +192,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Mail sending" />
     <MESSAGE value="implement forgot password, OTP verification, and password reset flows" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement forgot password, OTP verification, and password reset flows" />
+    <MESSAGE value="user profile add" />
+    <option name="LAST_COMMIT_MESSAGE" value="user profile add" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

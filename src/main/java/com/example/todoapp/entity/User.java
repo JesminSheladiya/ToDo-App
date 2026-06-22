@@ -32,6 +32,12 @@ public class User {
     @JsonIgnore
     private String password;
 
+    private String dob;
+
+
+    @Column(columnDefinition = "TEXT")
+    private String photo;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 
