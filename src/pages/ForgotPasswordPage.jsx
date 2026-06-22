@@ -86,7 +86,7 @@ function ForgotPasswordPage() {
     };
 
     return (
-        <Box sx={{
+        <Box className="forgot-password-page__container" sx={{
             minHeight: "100dvh",
             display: "flex",
             alignItems: "center",
@@ -94,7 +94,7 @@ function ForgotPasswordPage() {
             background: "hsl(240, 20%, 97%)",
             px: 2,
         }}>
-            <Box sx={{
+            <Box className="forgot-password-page__card" sx={{
                 width: "100%",
                 maxWidth: 420,
                 bgcolor: "#ffffff",
@@ -103,8 +103,8 @@ function ForgotPasswordPage() {
                 border: "1px solid hsl(240, 10%, 90%)",
                 p: { xs: 3, sm: 4.5 },
             }}>
-                <Box sx={{ textAlign: "center", mb: 4 }}>
-                    <Typography sx={{
+                <Box className="forgot-password-page__header" sx={{ textAlign: "center", mb: 4 }}>
+                    <Typography className="forgot-password-page__title" sx={{
                         fontFamily: "'Sora', sans-serif",
                         fontWeight: 800,
                         fontSize: 24,
@@ -113,7 +113,7 @@ function ForgotPasswordPage() {
                     }}>
                         Forgot Password?
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="forgot-password-page__subtitle" sx={{
                         fontSize: 14,
                         color: "hsl(240, 8%, 50%)",
                         fontWeight: 500,
@@ -123,11 +123,12 @@ function ForgotPasswordPage() {
                     </Typography>
                 </Box>
 
-                <Box component="form" onSubmit={handleSubmit} noValidate>
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
+                <Box className="forgot-password-page__form" component="form" onSubmit={handleSubmit} noValidate>
+                    <Typography className="forgot-password-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
                         Email
                     </Typography>
                     <TextField
+                        className="forgot-password-page__email-input"
                         fullWidth
                         placeholder="john@example.com"
                         type="text"
@@ -145,7 +146,7 @@ function ForgotPasswordPage() {
                         slotProps={{
                             input: {
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="forgot-password-page__input-adornment" position="start">
                                         <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
@@ -153,6 +154,7 @@ function ForgotPasswordPage() {
                         }}
                     />
                     <Button
+                        className="forgot-password-page__submit-btn"
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -182,8 +184,8 @@ function ForgotPasswordPage() {
                     </Button>
                 </Box>
 
-                <Typography sx={{ mt: 2.5, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
-                    <Link component="button" type="button" onClick={() => navigate("/login", { replace: true })} sx={{
+                <Typography className="forgot-password-page__back-text" sx={{ mt: 2.5, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
+                    <Link className="forgot-password-page__back-link" component="button" type="button" onClick={() => navigate("/login", { replace: true })} sx={{
                         color: "#7c3aed",
                         fontWeight: 700,
                         textDecoration: "none",

@@ -650,13 +650,14 @@ function MainLayout() {
                 )}
 
                 {isProfile && (
-                    <Box sx={{
+                    <Box className="main-layout__profile-header" sx={{
                         px: { xs: 2, sm: 3.5 },
                         pt: { xs: 2, sm: 3 },
                         pb: 0,
                     }}>
                         {isMobile && (
                             <IconButton
+                                className="main-layout__hamburger-btn"
                                 onClick={() => setMobileOpen(true)}
                                 size="small"
                                 sx={{

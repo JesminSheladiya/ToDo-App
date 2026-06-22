@@ -64,7 +64,7 @@ function RegisterPage() {
     };
 
     return (
-        <Box sx={{
+        <Box className="register-page__container" sx={{
             minHeight: "100dvh",
             display: "flex",
             alignItems: "center",
@@ -72,7 +72,7 @@ function RegisterPage() {
             background: "hsl(240, 20%, 97%)",
             px: 2,
         }}>
-            <Box sx={{
+            <Box className="register-page__card" sx={{
                 width: "100%",
                 maxWidth: 420,
                 bgcolor: "#ffffff",
@@ -81,8 +81,8 @@ function RegisterPage() {
                 border: "1px solid hsl(240, 10%, 90%)",
                 p: { xs: 3, sm: 4.5 },
             }}>
-                <Box sx={{ textAlign: "center", mb: 4 }}>
-                    <Typography sx={{
+                <Box className="register-page__header" sx={{ textAlign: "center", mb: 4 }}>
+                    <Typography className="register-page__title" sx={{
                         fontFamily: "'Sora', sans-serif",
                         fontWeight: 800,
                         fontSize: 24,
@@ -91,7 +91,7 @@ function RegisterPage() {
                     }}>
                         Create account
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="register-page__subtitle" sx={{
                         fontSize: 14,
                         color: "hsl(240, 8%, 50%)",
                         fontWeight: 500,
@@ -100,11 +100,12 @@ function RegisterPage() {
                     </Typography>
                 </Box>
 
-                <Box component="form" onSubmit={handleSubmit} noValidate>
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
+                <Box className="register-page__form" component="form" onSubmit={handleSubmit} noValidate>
+                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
                         Full Name
                     </Typography>
                     <TextField
+                        className="register-page__name-input"
                         fullWidth
                         placeholder="John Doe"
                         type="text"
@@ -116,17 +117,18 @@ function RegisterPage() {
                         slotProps={{
                             input: {
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="register-page__input-adornment" position="start">
                                         <FaUser size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                             },
                         }}
                     />
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
+                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
                         Email
                     </Typography>
                     <TextField
+                        className="register-page__email-input"
                         fullWidth
                         placeholder="john@example.com"
                         type="text"
@@ -138,17 +140,18 @@ function RegisterPage() {
                         slotProps={{
                             input: {
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="register-page__input-adornment" position="start">
                                         <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                             },
                         }}
                     />
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
+                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
                         Password
                     </Typography>
                     <TextField
+                        className="register-page__password-input"
                         fullWidth
                         placeholder="Enter your password"
                         type={showPassword ? "text" : "password"}
@@ -160,13 +163,13 @@ function RegisterPage() {
                         slotProps={{
                             input: {
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="register-page__input-adornment" position="start">
                                         <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                    <InputAdornment className="register-page__input-adornment" position="end">
+                                        <IconButton className="register-page__toggle-btn" onClick={() => setShowPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
                                             {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                                         </IconButton>
                                     </InputAdornment>
@@ -174,10 +177,11 @@ function RegisterPage() {
                             },
                         }}
                     />
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
+                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
                         Confirm Password
                     </Typography>
                     <TextField
+                        className="register-page__confirm-password-input"
                         fullWidth
                         placeholder="Re-enter your password"
                         type={showConfirmPassword ? "text" : "password"}
@@ -189,13 +193,13 @@ function RegisterPage() {
                         slotProps={{
                             input: {
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="register-page__input-adornment" position="start">
                                         <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowConfirmPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                    <InputAdornment className="register-page__input-adornment" position="end">
+                                        <IconButton className="register-page__toggle-btn" onClick={() => setShowConfirmPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
                                             {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                                         </IconButton>
                                     </InputAdornment>
@@ -204,6 +208,7 @@ function RegisterPage() {
                         }}
                     />
                     <Button
+                        className="register-page__submit-btn"
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -233,9 +238,9 @@ function RegisterPage() {
                     </Button>
                 </Box>
 
-                <Typography sx={{ textAlign: "center", mt: 3, fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
+                <Typography className="register-page__login-text" sx={{ textAlign: "center", mt: 3, fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
                     Already have an account?{" "}
-                    <Link component="button" type="button" onClick={() => navigate("/login", { replace: true })} sx={{
+                    <Link className="register-page__login-link" component="button" type="button" onClick={() => navigate("/login", { replace: true })} sx={{
                         color: "#7c3aed",
                         fontWeight: 700,
                         textDecoration: "none",

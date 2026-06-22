@@ -93,16 +93,17 @@ function ProfilePage() {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
+        <Box className="profile-page__container" sx={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
             {/* Top Bar */}
-            <Box sx={{
+            <Box className="profile-page__top-bar" sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 mb: 2.5,
             }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Box className="profile-page__top-bar-left" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                     <IconButton
+                        className="profile-page__back-btn"
                         onClick={() => navigate(-1)}
                         size="small"
                         sx={{
@@ -112,7 +113,7 @@ function ProfilePage() {
                     >
                         <MdArrowBack sx={{ fontSize: 22 }} />
                     </IconButton>
-                    <Typography sx={{
+                    <Typography className="profile-page__title" sx={{
                         fontFamily: "'Sora', sans-serif",
                         fontWeight: 800,
                         fontSize: { xs: 20, sm: 24 },
@@ -123,6 +124,7 @@ function ProfilePage() {
                     </Typography>
                 </Box>
                 <Button
+                    className="profile-page__save-btn"
                     variant="contained"
                     disabled={!hasChanges || loading}
                     onClick={handleUpdate}
@@ -154,7 +156,7 @@ function ProfilePage() {
             </Box>
 
             {/* User Info Card */}
-            <Box sx={{
+            <Box className="profile-page__user-card" sx={{
                 bgcolor: "#fff",
                 borderRadius: "14px",
                 border: "1px solid hsl(240, 10%, 90%)",
@@ -162,9 +164,9 @@ function ProfilePage() {
                 p: { xs: 2.5, sm: 3 },
                 mb: 1.5,
             }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box sx={{ position: "relative", flexShrink: 0 }}>
-                        <Box sx={{
+                <Box className="profile-page__user-row" sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center", gap: 2 }}>
+                    <Box className="profile-page__avatar-wrapper" sx={{ position: "relative", flexShrink: 0 }}>
+                        <Box className="profile-page__avatar" sx={{
                             width: 64,
                             height: 64,
                             borderRadius: "16px",
@@ -179,7 +181,7 @@ function ProfilePage() {
                         }}>
                             {initials}
                         </Box>
-                        <Box sx={{
+                        <Box className="profile-page__online-indicator" sx={{
                             position: "absolute",
                             bottom: -2,
                             right: -2,
@@ -190,22 +192,28 @@ function ProfilePage() {
                             border: "2px solid #fff",
                         }} />
                     </Box>
-                    <Box sx={{ minWidth: 0 }}>
-                        <Typography sx={{
+                    <Box className="profile-page__user-info" sx={{ minWidth: 0, width: "100%" }}>
+                        <Typography className="profile-page__user-name" sx={{
                             fontFamily: "'Sora', sans-serif",
                             fontWeight: 800,
                             fontSize: 18,
                             color: "hsl(240, 15%, 10%)",
                             letterSpacing: "-0.025em",
                             lineHeight: 1.2,
+                            wordWrap: "break-word",
+                            overflowWrap: "break-word",
+                            textAlign: { xs: "center", sm: "left" },
                         }}>
                             {user?.name || "User"}
                         </Typography>
-                        <Typography sx={{
+                        <Typography className="profile-page__user-email" sx={{
                             fontSize: 13,
                             color: "hsl(240, 8%, 50%)",
                             fontWeight: 500,
                             mt: 0.3,
+                            wordWrap: "break-word",
+                            overflowWrap: "break-word",
+                            textAlign: { xs: "center", sm: "left" },
                         }}>
                             {user?.email || ""}
                         </Typography>
@@ -214,7 +222,7 @@ function ProfilePage() {
             </Box>
 
             {/* General Card */}
-            <Box sx={{
+            <Box className="profile-page__general-card" sx={{
                 bgcolor: "#fff",
                 borderRadius: "14px",
                 border: "1px solid hsl(240, 10%, 90%)",
@@ -222,7 +230,7 @@ function ProfilePage() {
                 p: { xs: 2.5, sm: 3 },
                 mb: 1.5,
             }}>
-                <Typography sx={{
+                <Typography className="profile-page__general-heading" sx={{
                     fontFamily: "'Sora', sans-serif",
                     fontWeight: 700,
                     fontSize: 15,
@@ -233,10 +241,11 @@ function ProfilePage() {
                     General
                 </Typography>
 
-                <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                <Typography className="profile-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     Full Name
                 </Typography>
                 <TextField
+                    className="profile-page__name-input"
                     fullWidth
                     placeholder="John Doe"
                     value={name}
@@ -246,10 +255,11 @@ function ProfilePage() {
                     sx={{ mb: 2, ...inputSx }}
                 />
 
-                <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                <Typography className="profile-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     Email
                 </Typography>
                 <TextField
+                    className="profile-page__email-input"
                     fullWidth
                     value={user?.email || ""}
                     variant="outlined"
@@ -259,7 +269,7 @@ function ProfilePage() {
                     slotProps={{
                         input: {
                             startAdornment: (
-                                <InputAdornment position="start">
+                                <InputAdornment className="profile-page__input-adornment" position="start">
                                     <IoMail size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
                                 </InputAdornment>
                             ),
@@ -269,14 +279,14 @@ function ProfilePage() {
             </Box>
 
             {/* Password Card */}
-            <Box sx={{
+            <Box className="profile-page__password-card" sx={{
                 bgcolor: "#fff",
                 borderRadius: "14px",
                 border: "1px solid hsl(240, 10%, 90%)",
                 boxShadow: "0 1px 2px rgb(0 0 0 / .05)",
                 p: { xs: 2.5, sm: 3 },
             }}>
-                <Typography sx={{
+                <Typography className="profile-page__password-heading" sx={{
                     fontFamily: "'Sora', sans-serif",
                     fontWeight: 700,
                     fontSize: 15,
@@ -287,10 +297,11 @@ function ProfilePage() {
                     Password
                 </Typography>
 
-                <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                <Typography className="profile-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     Current Password
                 </Typography>
                 <TextField
+                    className="profile-page__current-password-input"
                     fullWidth
                     placeholder="Enter current password"
                     type={showCurrent ? "text" : "password"}
@@ -302,13 +313,13 @@ function ProfilePage() {
                     slotProps={{
                         input: {
                             startAdornment: (
-                                <InputAdornment position="start">
+                                <InputAdornment className="profile-page__input-adornment" position="start">
                                     <MdPassword size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
                                 </InputAdornment>
                             ),
                             endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowCurrent((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)" }}>
+                                <InputAdornment className="profile-page__input-adornment" position="end">
+                                    <IconButton className="profile-page__toggle-btn" onClick={() => setShowCurrent((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)" }}>
                                         {showCurrent ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                                     </IconButton>
                                 </InputAdornment>
@@ -317,10 +328,11 @@ function ProfilePage() {
                     }}
                 />
 
-                <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                <Typography className="profile-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     New Password
                 </Typography>
                 <TextField
+                    className="profile-page__new-password-input"
                     fullWidth
                     placeholder="Enter new password"
                     type={showNew ? "text" : "password"}
@@ -332,13 +344,13 @@ function ProfilePage() {
                     slotProps={{
                         input: {
                             startAdornment: (
-                                <InputAdornment position="start">
+                                <InputAdornment className="profile-page__input-adornment" position="start">
                                     <MdPassword size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
                                 </InputAdornment>
                             ),
                             endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowNew((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)" }}>
+                                <InputAdornment className="profile-page__input-adornment" position="end">
+                                    <IconButton className="profile-page__toggle-btn" onClick={() => setShowNew((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)" }}>
                                         {showNew ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                                     </IconButton>
                                 </InputAdornment>
@@ -347,10 +359,11 @@ function ProfilePage() {
                     }}
                 />
 
-                <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                <Typography className="profile-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 0.75, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     Confirm Password
                 </Typography>
                 <TextField
+                    className="profile-page__confirm-password-input"
                     fullWidth
                     placeholder="Re-enter new password"
                     type={showConfirm ? "text" : "password"}
@@ -362,13 +375,13 @@ function ProfilePage() {
                     slotProps={{
                         input: {
                             startAdornment: (
-                                <InputAdornment position="start">
+                                <InputAdornment className="profile-page__input-adornment" position="start">
                                     <MdPassword size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
                                 </InputAdornment>
                             ),
                             endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowConfirm((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)" }}>
+                                <InputAdornment className="profile-page__input-adornment" position="end">
+                                    <IconButton className="profile-page__toggle-btn" onClick={() => setShowConfirm((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)" }}>
                                         {showConfirm ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                                     </IconButton>
                                 </InputAdornment>

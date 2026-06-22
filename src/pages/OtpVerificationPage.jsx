@@ -132,7 +132,7 @@ function OtpVerificationPage() {
     };
 
     return (
-        <Box sx={{
+        <Box className="otp-page__container" sx={{
             minHeight: "100dvh",
             display: "flex",
             alignItems: "center",
@@ -140,7 +140,7 @@ function OtpVerificationPage() {
             background: "hsl(240, 20%, 97%)",
             px: 2,
         }}>
-            <Box sx={{
+            <Box className="otp-page__card" sx={{
                 width: "100%",
                 maxWidth: 420,
                 bgcolor: "#ffffff",
@@ -149,8 +149,8 @@ function OtpVerificationPage() {
                 border: "1px solid hsl(240, 10%, 90%)",
                 p: { xs: 3, sm: 4.5 },
             }}>
-                <Box sx={{ textAlign: "center", mb: 4 }}>
-                    <Typography sx={{
+                <Box className="otp-page__header" sx={{ textAlign: "center", mb: 4 }}>
+                    <Typography className="otp-page__title" sx={{
                         fontFamily: "'Sora', sans-serif",
                         fontWeight: 800,
                         fontSize: 24,
@@ -159,7 +159,7 @@ function OtpVerificationPage() {
                     }}>
                         Verify OTP
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="otp-page__subtitle" sx={{
                         fontSize: 14,
                         color: "hsl(240, 8%, 50%)",
                         fontWeight: 500,
@@ -167,7 +167,7 @@ function OtpVerificationPage() {
                     }}>
                         Enter the 6-digit code sent to
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="otp-page__email" sx={{
                         fontSize: 14,
                         color: "hsl(240, 15%, 10%)",
                         fontWeight: 700,
@@ -177,8 +177,9 @@ function OtpVerificationPage() {
                     </Typography>
                 </Box>
 
-                <Box component="form" onSubmit={handleSubmit} noValidate>
+                <Box className="otp-page__form" component="form" onSubmit={handleSubmit} noValidate>
                     <Box
+                        className="otp-page__digits-container"
                         sx={{
                             display: "flex",
                             justifyContent: "center",
@@ -190,6 +191,7 @@ function OtpVerificationPage() {
                         {digits.map((digit, i) => (
                             <TextField
                                 key={i}
+                                className="otp-page__digit-input"
                                 inputRef={(el) => { inputRefs.current[i] = el; }}
                                 type="text"
                                 inputMode="numeric"
@@ -208,6 +210,7 @@ function OtpVerificationPage() {
                     </Box>
 
                     <Button
+                        className="otp-page__submit-btn"
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -237,16 +240,17 @@ function OtpVerificationPage() {
                     </Button>
                 </Box>
 
-                <Box sx={{ mt: 2.5, textAlign: "center", fontSize: 14, fontWeight: 600 }}>
+                <Box className="otp-page__resend-box" sx={{ mt: 2.5, textAlign: "center", fontSize: 14, fontWeight: 600 }}>
                     {resendTimer > 0 ? (
-                        <Typography sx={{ color: "hsl(240, 8%, 50%)", fontSize: 14 }}>
+                        <Typography className="otp-page__resend-timer" sx={{ color: "hsl(240, 8%, 50%)", fontSize: 14 }}>
                             Resend OTP in{" "}
-                            <Box component="span" sx={{ color: "#7c3aed", fontWeight: 700 }}>
+                            <Box className="otp-page__timer-value" component="span" sx={{ color: "#7c3aed", fontWeight: 700 }}>
                                 {resendTimer}s
                             </Box>
                         </Typography>
                     ) : (
                         <Link
+                            className="otp-page__resend-link"
                             component="button"
                             type="button"
                             onClick={handleResend}
@@ -270,8 +274,8 @@ function OtpVerificationPage() {
                     )}
                 </Box>
 
-                <Typography sx={{ mt: 2, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
-                    <Link component="button" type="button" onClick={() => navigate("/forgot-password", { replace: true })} sx={{
+                <Typography className="otp-page__change-email-text" sx={{ mt: 2, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
+                    <Link className="otp-page__change-email-link" component="button" type="button" onClick={() => navigate("/forgot-password", { replace: true })} sx={{
                         color: "#7c3aed",
                         fontWeight: 700,
                         textDecoration: "none",

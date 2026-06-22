@@ -114,7 +114,7 @@ function ResetPasswordPage() {
     };
 
     return (
-        <Box sx={{
+        <Box className="reset-password-page__container" sx={{
             minHeight: "100dvh",
             display: "flex",
             alignItems: "center",
@@ -122,7 +122,7 @@ function ResetPasswordPage() {
             background: "hsl(240, 20%, 97%)",
             px: 2,
         }}>
-            <Box sx={{
+            <Box className="reset-password-page__card" sx={{
                 width: "100%",
                 maxWidth: 420,
                 bgcolor: "#ffffff",
@@ -131,8 +131,8 @@ function ResetPasswordPage() {
                 border: "1px solid hsl(240, 10%, 90%)",
                 p: { xs: 3, sm: 4.5 },
             }}>
-                <Box sx={{ textAlign: "center", mb: 4 }}>
-                    <Typography sx={{
+                <Box className="reset-password-page__header" sx={{ textAlign: "center", mb: 4 }}>
+                    <Typography className="reset-password-page__title" sx={{
                         fontFamily: "'Sora', sans-serif",
                         fontWeight: 800,
                         fontSize: 24,
@@ -141,7 +141,7 @@ function ResetPasswordPage() {
                     }}>
                         Change Password
                     </Typography>
-                    <Typography sx={{
+                    <Typography className="reset-password-page__subtitle" sx={{
                         fontSize: 14,
                         color: "hsl(240, 8%, 50%)",
                         fontWeight: 500,
@@ -151,11 +151,12 @@ function ResetPasswordPage() {
                     </Typography>
                 </Box>
 
-                <Box component="form" onSubmit={handleSubmit} noValidate>
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
+                <Box className="reset-password-page__form" component="form" onSubmit={handleSubmit} noValidate>
+                    <Typography className="reset-password-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
                         New Password
                     </Typography>
                     <TextField
+                        className="reset-password-page__new-password-input"
                         fullWidth
                         placeholder="Enter new password"
                         type={showNew ? "text" : "password"}
@@ -169,13 +170,13 @@ function ResetPasswordPage() {
                         slotProps={{
                             input: {
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="reset-password-page__input-adornment" position="start">
                                         <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowNew((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                    <InputAdornment className="reset-password-page__input-adornment" position="end">
+                                        <IconButton className="reset-password-page__toggle-btn" onClick={() => setShowNew((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
                                             {showNew ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                                         </IconButton>
                                     </InputAdornment>
@@ -184,10 +185,11 @@ function ResetPasswordPage() {
                         }}
                     />
 
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
+                    <Typography className="reset-password-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
                         Confirm Password
                     </Typography>
                     <TextField
+                        className="reset-password-page__confirm-password-input"
                         fullWidth
                         placeholder="Re-enter new password"
                         type={showConfirm ? "text" : "password"}
@@ -201,13 +203,13 @@ function ResetPasswordPage() {
                         slotProps={{
                             input: {
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment className="reset-password-page__input-adornment" position="start">
                                         <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowConfirm((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                    <InputAdornment className="reset-password-page__input-adornment" position="end">
+                                        <IconButton className="reset-password-page__toggle-btn" onClick={() => setShowConfirm((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
                                             {showConfirm ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                                         </IconButton>
                                     </InputAdornment>
@@ -217,6 +219,7 @@ function ResetPasswordPage() {
                     />
 
                     <Button
+                        className="reset-password-page__submit-btn"
                         type="submit"
                         fullWidth
                         variant="contained"
