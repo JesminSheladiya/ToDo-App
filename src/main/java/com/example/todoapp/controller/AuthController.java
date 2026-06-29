@@ -2,12 +2,21 @@ package com.example.todoapp.controller;
 
 import com.example.todoapp.dto.AuthRequest;
 import com.example.todoapp.dto.AuthResponse;
+import com.example.todoapp.dto.ForgotPasswordRequest;
 import com.example.todoapp.dto.RegisterRequest;
+import com.example.todoapp.dto.ResetPasswordRequest;
+import com.example.todoapp.dto.UpdateProfileRequest;
+import com.example.todoapp.dto.VerifyOtpRequest;
 import com.example.todoapp.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -35,5 +44,60 @@ public class AuthController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         return userService.getCurrentUser(email);
+    }
+
+    @PostMapping("/forgot-password")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        userService.forgotPassword(request);
+        return Map.of("message", "OTP sent successfully");
+    }
+
+    @PostMapping("/verify-otp")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> verifyOtp(@RequestBody VerifyOtpRequest request) {
+        userService.verifyOtp(request);
+        return Map.of("message", "OTP verified successfully");
+    }
+
+    @PostMapping("/reset-password")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request);
+        return Map.of("message", "Password changed successfully");
+    }
+
+    @PutMapping("/update-profile")
+    public AuthResponse updateProfile(@RequestBody UpdateProfileRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        return userService.updateProfile(email, request);
+    }
+
+    @PostMapping("/upload-photo")
+    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        try {
+            String photoUrl = userService.uploadPhoto(email, file);
+            return ResponseEntity.ok(Map.of("photo", photoUrl));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/remove-photo")
+    public AuthResponse removePhoto() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        return userService.removePhoto(email);
+    }
+
+    @DeleteMapping("/delete-account")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        userService.deleteAccount(email);
     }
 }

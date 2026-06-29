@@ -14,4 +14,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Modifying
     @Query(value = "UPDATE tasks SET task_order = :position WHERE id = :id AND user_id = :userId", nativeQuery = true)
     void updateTaskOrder(Long id, int position, Long userId);
+
+    void deleteByUserId(Long userId);
 }

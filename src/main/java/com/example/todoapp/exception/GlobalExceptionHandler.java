@@ -23,4 +23,12 @@ public class GlobalExceptionHandler {
                 "errors", errors
         ));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
+        return ResponseEntity.badRequest().body(Map.of(
+                "status", 400,
+                "message", "Something went wrong. Please try again later."
+        ));
+    }
 }

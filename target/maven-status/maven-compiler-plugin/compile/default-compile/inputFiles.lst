@@ -3,14 +3,19 @@
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/config/JwtUtil.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/config/PasswordEncoderConfig.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/config/SecurityConfig.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/config/WebConfig.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/controller/AuthController.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/controller/CategoryController.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/controller/TaskController.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/AuthRequest.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/AuthResponse.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/CategoryDto.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/ForgotPasswordRequest.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/RegisterRequest.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/ReorderDto.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/ResetPasswordRequest.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/UpdateProfileRequest.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/VerifyOtpRequest.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/entity/Task.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/entity/TaskStep.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/entity/User.java
@@ -18,5 +23,6 @@
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/exception/ValidationException.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/repository/TaskRepository.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/repository/UserRepository.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/service/EmailService.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/service/TaskService.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/service/UserService.java

@@ -4,25 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="">
+    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="add: profile Photo Upload, DOB.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/WebConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/repository/TaskRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/repository/TaskRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/SecurityConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/CategoryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/CategoryController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task$TaskBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/Task.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/repository/TaskRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/repository/TaskRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,23 +19,23 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="34" />
+    <option name="cachedIndexableFilesCount" value="40" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "JesminSheladiya"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;JesminSheladiya&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/JesminSheladiya/ToDo-App.git",
-    "accountId": "4507b3c1-9671-41e0-9bd8-9d4f23911399"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/JesminSheladiya/ToDo-App.git&quot;,
+    &quot;accountId&quot;: &quot;4507b3c1-9671-41e0-9bd8-9d4f23911399&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -54,22 +43,22 @@
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0" />
-      <entry key="S30" value="1.0" />
-      <entry key="S60" value="1.0" />
-      <entry key="M2" value="1.0" />
-      <entry key="M5" value="1.0" />
-      <entry key="M10" value="1.0" />
-      <entry key="M15" value="1.0" />
-      <entry key="M30" value="1.0" />
-      <entry key="H1" value="1.0" />
-      <entry key="H2" value="1.0" />
-      <entry key="H4" value="1.0" />
-      <entry key="D1" value="1.0" />
-      <entry key="W1" value="1.0" />
+      <entry key="MS500" value="1.0000023714718913" />
+      <entry key="S2" value="1.0817972831393319" />
+      <entry key="S5" value="1.799830227554574" />
+      <entry key="S10" value="2.7744180870509716" />
+      <entry key="S30" value="4.6877913803682265" />
+      <entry key="S60" value="7.100982829300194" />
+      <entry key="M2" value="10.070808660821394" />
+      <entry key="M5" value="13.178901492481796" />
+      <entry key="M10" value="15.05899610015634" />
+      <entry key="M15" value="16.242910546268078" />
+      <entry key="M30" value="18.261998565693524" />
+      <entry key="H1" value="20.07641591764489" />
+      <entry key="H2" value="22.032209369598284" />
+      <entry key="H4" value="24.061114511158053" />
+      <entry key="D1" value="27.131398685687262" />
+      <entry key="W1" value="27.869163316958552" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -91,50 +80,50 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.5509525579383053" />
-      <entry key="MS500" value="0.8876113372694978" />
-      <entry key="S2" value="0.9706344697695466" />
-      <entry key="S5" value="0.988148655514205" />
-      <entry key="S10" value="0.9940566661484671" />
-      <entry key="S30" value="0.9980149509035494" />
-      <entry key="S60" value="0.9990069824098075" />
-      <entry key="M2" value="0.999503367883174" />
-      <entry key="M5" value="0.9998013175482126" />
-      <entry key="M10" value="0.9999006538392764" />
-      <entry key="M15" value="0.999933768129507" />
-      <entry key="M30" value="0.9999668835164027" />
-      <entry key="H1" value="0.9999834416211114" />
-      <entry key="H2" value="0.999991720776283" />
-      <entry key="H4" value="0.9999958603795732" />
-      <entry key="D1" value="0.9999993100620722" />
-      <entry key="W1" value="0.9999999014374097" />
+      <entry key="MS100" value="0.9726549474122855" />
+      <entry key="MS500" value="0.9944725251431104" />
+      <entry key="S2" value="1.0802732833494466" />
+      <entry key="S5" value="1.798697148493119" />
+      <entry key="S10" value="2.773482276637806" />
+      <entry key="S30" value="4.6872325921611955" />
+      <entry key="S60" value="7.100538629728638" />
+      <entry key="M2" value="10.070481345159923" />
+      <entry key="M5" value="13.178721405022275" />
+      <entry key="M10" value="15.05887350485924" />
+      <entry key="M15" value="16.242806995702484" />
+      <entry key="M30" value="18.26192417938041" />
+      <entry key="H1" value="20.076364669052126" />
+      <entry key="H2" value="22.03217172080964" />
+      <entry key="H4" value="24.06108802111589" />
+      <entry key="D1" value="27.131392172247683" />
+      <entry key="W1" value="27.86916231242577" />
     </decayedShown>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1,
-  "fromUser": false
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1,
+  &quot;fromUser&quot;: false
+}</component>
   <component name="ProjectId" id="3FCfO5cAF2pkYtMH6yNBFLmcqTz" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "backend",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "ml.llm.AcpAgentsConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.AcpAgentsConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -152,10 +141,58 @@
       <updated>1781583949926</updated>
       <workItem from="1781583960920" duration="1307000" />
     </task>
+    <task id="LOCAL-00001" summary="Mail sending">
+      <option name="closed" value="true" />
+      <created>1781874180789</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1781874180789</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Mail sending">
+      <option name="closed" value="true" />
+      <created>1781874185213</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1781874185213</updated>
+    </task>
+    <task id="LOCAL-00003" summary="implement forgot password, OTP verification, and password reset flows">
+      <option name="closed" value="true" />
+      <created>1781938705580</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1781938705580</updated>
+    </task>
+    <task id="LOCAL-00004" summary="user profile add">
+      <option name="closed" value="true" />
+      <created>1781944593942</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1781944593942</updated>
+    </task>
+    <task id="LOCAL-00005" summary="add: profile Photo Upload, DOB.">
+      <option name="closed" value="true" />
+      <created>1782125365963</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1782125365963</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Mail sending" />
+    <MESSAGE value="implement forgot password, OTP verification, and password reset flows" />
+    <MESSAGE value="user profile add" />
+    <MESSAGE value="add: profile Photo Upload, DOB." />
+    <option name="LAST_COMMIT_MESSAGE" value="add: profile Photo Upload, DOB." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
