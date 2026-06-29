@@ -6,9 +6,10 @@ import { register } from "../store/authSlice";
 import {
     Box, Button, IconButton, InputAdornment, TextField, Typography, Link, CircularProgress,
 } from "@mui/material";
-import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa6";
-import { IoMail } from "react-icons/io5";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { MdPassword } from "react-icons/md";
+import { FiMail } from "react-icons/fi";
+import { LiaUserSolid } from "react-icons/lia";
 
 const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -118,7 +119,7 @@ function RegisterPage() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment className="register-page__input-adornment" position="start">
-                                        <FaUser size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        <LiaUserSolid size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                             },
@@ -141,7 +142,7 @@ function RegisterPage() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment className="register-page__input-adornment" position="start">
-                                        <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        <FiMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                             },

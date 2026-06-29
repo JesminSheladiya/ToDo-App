@@ -12,12 +12,14 @@ import {
 import Cropper from "react-easy-crop";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
-import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa6";
-import { IoMail, IoCalendarNumber, IoCamera, IoClose, IoImage, IoEye } from "react-icons/io5";
+import { FaEye, FaEyeSlash, FaImage } from "react-icons/fa6";
+import { IoCamera, IoClose, IoCalendarNumberOutline } from "react-icons/io5";
 import { BiSolidCalendarEdit } from "react-icons/bi";
 import { MdPassword, MdArrowBack } from "react-icons/md";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { FiMail, FiTrash } from "react-icons/fi";
+import { LiaUserSolid } from "react-icons/lia";
 
 const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -126,7 +128,6 @@ function ProfilePage() {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [uploadLoading, setUploadLoading] = useState(false);
     const fileInputRef = useRef(null);
-    const cameraInputRef = useRef(null);
     const avatarAnchorRef = useRef(null);
     const [viewPhotoOpen, setViewPhotoOpen] = useState(false);
 
@@ -272,11 +273,6 @@ function ProfilePage() {
         e.target.value = "";
     };
 
-    const handleCameraClick = () => {
-        setAvatarMenuOpen(false);
-        toast.info("Camera feature coming soon. Please use Upload Photo.");
-    };
-
     const handleUploadClick = () => {
         setAvatarMenuOpen(false);
         fileInputRef.current?.click();
@@ -333,11 +329,8 @@ function ProfilePage() {
 
     return (
         <Box className="profile-page__container" sx={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
-            {/* Hidden file inputs */}
-            <input ref={fileInputRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" style={{ display: "none" }} onChange={handleFileSelect} />
-            <input ref={cameraInputRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" capture="environment" style={{ display: "none" }} onChange={handleFileSelect} />
+            <input className="profile-page__file-input" ref={fileInputRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" style={{ display: "none" }} onChange={handleFileSelect} />
 
-            {/* Top Bar */}
             <Box className="profile-page__top-bar" sx={{
                 display: "flex",
                 alignItems: "center",
@@ -354,7 +347,7 @@ function ProfilePage() {
                             "&:hover": { bgcolor: "hsl(240, 20%, 96%)" },
                         }}
                     >
-                        <MdArrowBack sx={{ fontSize: 22 }} />
+                        <MdArrowBack className="profile-page__back-icon" sx={{ fontSize: 22 }} />
                     </IconButton>
                     <Typography className="profile-page__title" sx={{
                         fontFamily: "'Sora', sans-serif",
@@ -368,17 +361,27 @@ function ProfilePage() {
                 </Box>
             </Box>
 
-            {/* User Info Card */}
-            <Box className="profile-page__user-card" sx={{ ...cardSx, mb: 1.5 }}>
-                <Box className="profile-page__user-row" sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center", gap: 2 }}>
+            <Box className="profile-page__user-card" sx={{
+                ...cardSx, mb: 1.5,
+                overflow: "hidden",
+                p: 0,
+            }}>
+                <Box className="profile-page__user-accent" sx={{
+                    height: 4,
+                    background: "linear-gradient(90deg, #7c3aed, #a855f7, #ec4899)",
+                }} />
+                <Box className="profile-page__user-row" sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center", gap: 2, p: { xs: 2.5, sm: 3 } }}>
                     <Box className="profile-page__avatar-wrapper" sx={{ position: "relative", flexShrink: 0 }}>
                         {user?.photo ? (
-                            <Box className="profile-page__avatar" sx={{
-                                width: 80, height: 80, borderRadius: "50%",
-                                backgroundImage: `url(${user.photo})`,
-                                backgroundSize: "cover", backgroundPosition: "center",
-                                boxShadow: "0 4px 12px rgb(124, 58, 237 / .25)",
-                            }} />
+                            <Box
+                                onClick={() => setViewPhotoOpen(true)}
+                                className="profile-page__avatar" sx={{
+                                    width: 80, height: 80, borderRadius: "50%",
+                                    backgroundImage: `url(${user.photo})`,
+                                    backgroundSize: "cover", backgroundPosition: "center",
+                                    boxShadow: "0 4px 12px rgb(124, 58, 237 / .25)",
+                                    cursor: "pointer",
+                                }} />
                         ) : (
                             <Box className="profile-page__avatar" sx={{
                                 width: 80, height: 80, borderRadius: "50%",
@@ -402,7 +405,7 @@ function ProfilePage() {
                             transition: "all 150ms ease",
                             "&:hover": { bgcolor: "#6d28d9", transform: "scale(1.1)" },
                         }}>
-                            <IoCamera size={14} color="#fff" />
+                            <IoCamera className="profile-page__camera-icon" size={14} color="#fff" />
                         </Box>
                     </Box>
                     <Box className="profile-page__user-info" sx={{ minWidth: 0, width: "100%", textAlign: { xs: "center", sm: "left" } }}>
@@ -426,7 +429,6 @@ function ProfilePage() {
                 </Box>
             </Box>
 
-            {/* Avatar Menu Dropdown */}
             <Popper
                 className="profile-page__avatar-popper"
                 open={avatarMenuOpen}
@@ -435,6 +437,7 @@ function ProfilePage() {
                 sx={{ zIndex: 1400 }}
             >
                 <Paper
+                    className="profile-page__avatar-paper"
                     elevation={0}
                     sx={{
                         mt: 0.5,
@@ -445,26 +448,22 @@ function ProfilePage() {
                         overflow: "hidden",
                     }}
                 >
-                    <ClickAwayListener onClickAway={() => setAvatarMenuOpen(false)}>
-                        <List disablePadding>
+                    <ClickAwayListener className="profile-page__avatar-clickaway" onClickAway={() => setAvatarMenuOpen(false)}>
+                        <List className="profile-page__avatar-menu-list" disablePadding>
                             {user?.photo && (
-                                <ListItemButton onClick={() => { setAvatarMenuOpen(false); setViewPhotoOpen(true); }} sx={{ py: 1.4, px: 2 }}>
-                                    <ListItemIcon sx={{ minWidth: 34 }}><IoEye size={18} color="hsl(240, 8%, 40%)" /></ListItemIcon>
-                                    <ListItemText primary="View Photo" primaryTypographyProps={{ fontSize: 13, fontWeight: 600 }} />
+                                <ListItemButton className="profile-page__view-photo-btn" onClick={() => { setAvatarMenuOpen(false); setViewPhotoOpen(true); }} sx={{ py: 1, px: 2 }}>
+                                    <ListItemIcon className="profile-page__view-photo-icon" sx={{ minWidth: 30 }}><FaEye className="profile-page__view-photo-svg" size={18} color="hsl(240, 8%, 40%)" /></ListItemIcon>
+                                    <ListItemText className="profile-page__view-photo-text" primary="View Photo" primaryTypographyProps={{ fontSize: 13, fontWeight: 600 }} />
                                 </ListItemButton>
                             )}
-                            <ListItemButton onClick={handleCameraClick} sx={{ py: 1.4, px: 2 }}>
-                                <ListItemIcon sx={{ minWidth: 34 }}><IoCamera size={18} color="hsl(240, 8%, 40%)" /></ListItemIcon>
-                                <ListItemText primary="Take Photo" primaryTypographyProps={{ fontSize: 13, fontWeight: 600 }} />
-                            </ListItemButton>
-                            <ListItemButton onClick={handleUploadClick} sx={{ py: 1.4, px: 2 }}>
-                                <ListItemIcon sx={{ minWidth: 34 }}><IoImage size={18} color="hsl(240, 8%, 40%)" /></ListItemIcon>
-                                <ListItemText primary="Upload Photo" primaryTypographyProps={{ fontSize: 13, fontWeight: 600 }} />
+                            <ListItemButton className="profile-page__upload-photo-btn" onClick={handleUploadClick} sx={{ py: 1, px: 2 }}>
+                                <ListItemIcon className="profile-page__upload-photo-icon" sx={{ minWidth: 30 }}><FaImage className="profile-page__upload-photo-svg" size={16} color="hsl(240, 8%, 40%)" /></ListItemIcon>
+                                <ListItemText className="profile-page__upload-photo-text" primary={user?.photo ? "Change Photo" : "Upload Photo"} primaryTypographyProps={{ fontSize: 13, fontWeight: 600 }} />
                             </ListItemButton>
                             {user?.photo && (
-                                <ListItemButton onClick={handleRemovePhoto} sx={{ py: 1.4, px: 2 }}>
-                                    <ListItemIcon sx={{ minWidth: 34 }}><IoClose size={18} color="#dc2626" /></ListItemIcon>
-                                    <ListItemText primary="Remove Photo" primaryTypographyProps={{ fontSize: 13, fontWeight: 600, color: "#dc2626" }} />
+                                <ListItemButton className="profile-page__remove-photo-btn" onClick={handleRemovePhoto} sx={{ py: 1, px: 2 }}>
+                                    <ListItemIcon className="profile-page__remove-photo-icon" sx={{ minWidth: 30 }}><FiTrash className="profile-page__remove-photo-svg" size={18} color="#dc2626" /></ListItemIcon>
+                                    <ListItemText className="profile-page__remove-photo-text" primary="Remove Photo" primaryTypographyProps={{ fontSize: 13, fontWeight: 600, color: "#dc2626" }} />
                                 </ListItemButton>
                             )}
                         </List>
@@ -472,35 +471,44 @@ function ProfilePage() {
                 </Paper>
             </Popper>
 
-            {/* View Photo Dialog */}
             <Dialog
+                className="profile-page__view-photo-dialog"
                 open={viewPhotoOpen}
                 onClose={() => setViewPhotoOpen(false)}
-                maxWidth="xs"
-                fullWidth
-                PaperProps={{ sx: { borderRadius: "14px", overflow: "hidden", bgcolor: "#000" } }}
+                sx={{
+                    "& .MuiDialog-paper": {
+                        borderRadius: "14px",
+                        overflow: "hidden",
+                        bgcolor: "transparent",
+                    },
+                    "& .MuiBackdrop-root": {
+                        backdropFilter: "blur(3px)",
+                        bgcolor: "rgba(0,0,0,0.3)",
+                    }
+                }}
             >
-                <IconButton onClick={() => setViewPhotoOpen(false)} sx={{
+                <IconButton className="profile-page__view-photo-close-btn" onClick={() => setViewPhotoOpen(false)} sx={{
                     position: "absolute", top: 8, right: 8, zIndex: 1,
                     color: "#fff", bgcolor: "rgba(0,0,0,0.4)", "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
                 }}>
-                    <IoClose size={22} />
+                    <IoClose className="profile-page__view-photo-close-icon" size={22} />
                 </IconButton>
-                <Box sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", p: 0 }}>
+                <Box className="profile-page__view-photo-wrapper" sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", p: 0 }}>
                     <Box
+                        className="profile-page__view-photo-img"
                         component="img"
                         src={user?.photo}
                         alt="Profile"
-                        sx={{ width: "100%", maxHeight: "70vh", objectFit: "contain" }}
+                        sx={{ width: "100%", maxHeight: "80vh", objectFit: "contain", bgcolor: "transparent" }}
                     />
                 </Box>
             </Dialog>
 
-            {/* Cropper Dialog */}
             <Dialog className="profile-page__crop-dialog" open={cropOpen} onClose={handleCropClose} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: "14px", overflow: "hidden" } }}>
-                <Box sx={{ position: "relative", width: "100%", height: 350, bgcolor: "#000" }}>
+                <Box className="profile-page__crop-wrapper" sx={{ position: "relative", width: "100%", height: 350, bgcolor: "#000" }}>
                     {selectedImage && (
                         <Cropper
+                            className="profile-page__cropper"
                             image={selectedImage}
                             crop={cropData}
                             zoom={zoom}
@@ -511,14 +519,15 @@ function ProfilePage() {
                         />
                     )}
                     {uploadLoading && (
-                        <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", bgcolor: "rgba(0,0,0,0.5)", zIndex: 10 }}>
-                            <CircularProgress size={40} sx={{ color: "#fff" }} />
+                        <Box className="profile-page__crop-loading" sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", bgcolor: "rgba(0,0,0,0.5)", zIndex: 10 }}>
+                            <CircularProgress className="profile-page__crop-spinner" size={40} sx={{ color: "#fff" }} />
                         </Box>
                     )}
                 </Box>
-                <Box sx={{ px: 3, py: 2 }}>
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 1 }}>Zoom</Typography>
+                <Box className="profile-page__crop-controls" sx={{ px: 3, py: 2 }}>
+                    <Typography className="profile-page__zoom-label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 40%)", mb: 1 }}>Zoom</Typography>
                     <Slider
+                        className="profile-page__zoom-slider"
                         value={zoom}
                         min={1}
                         max={3}
@@ -527,11 +536,12 @@ function ProfilePage() {
                         sx={{ color: "#7c3aed", "& .MuiSlider-thumb": { width: 18, height: 18 } }}
                     />
                 </Box>
-                <DialogActions sx={{ px: 3, pb: 2, pt: 0, gap: 1 }}>
-                    <Button onClick={handleCropClose} sx={{ fontSize: 13, fontWeight: 700, color: "hsl(240, 8%, 50%)", textTransform: "none", borderRadius: "10px", px: 3, py: 1, "&:hover": { bgcolor: "hsl(240, 20%, 95%)" } }}>
+                <DialogActions className="profile-page__crop-actions" sx={{ px: 3, pb: 2, pt: 0, gap: 1 }}>
+                    <Button className="profile-page__crop-cancel-btn" onClick={handleCropClose} sx={{ fontSize: 13, fontWeight: 700, color: "hsl(240, 8%, 50%)", textTransform: "none", borderRadius: "10px", px: 3, py: 1, "&:hover": { bgcolor: "hsl(240, 20%, 95%)" } }}>
                         Cancel
                     </Button>
                     <Button
+                        className="profile-page__crop-apply-btn"
                         variant="contained"
                         onClick={handleCropApply}
                         disabled={uploadLoading}
@@ -548,272 +558,270 @@ function ProfilePage() {
                 </DialogActions>
             </Dialog>
 
-            {/* Personal Info + Password Row */}
-            <Box className="profile-page__cards-row" sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 1.5, mb: 0 }}>
-            {/* Personal Information Card */}
-            <Box className="profile-page__personal-card" sx={{ ...cardSx, flex: 1, mb: 0 }}>
-                <Typography className="profile-page__personal-heading" sx={headingSx}>
-                    Personal Information
-                </Typography>
+            <Box className="profile-page__cards-row" sx={{ display: "flex", flexDirection: { xs: "column", lg: "row" }, gap: 1.5, mb: 0 }}>
+                <Box className="profile-page__personal-card" sx={{ ...cardSx, flex: 1, mb: 0 }}>
+                    <Typography className="profile-page__personal-heading" sx={headingSx}>
+                        Personal Information
+                    </Typography>
 
-                <Typography className="profile-page__label" sx={labelSx}>Name</Typography>
-                <TextField
-                    className="profile-page__name-input"
-                    fullWidth
-                    placeholder="John Doe"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    variant="outlined"
-                    size="small"
-                    sx={{ mb: 2, ...inputSx }}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <FaUser size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
-
-                <Typography className="profile-page__label" sx={labelSx}>Email</Typography>
-                <TextField
-                    className="profile-page__email-input"
-                    fullWidth
-                    value={user?.email || ""}
-                    variant="outlined"
-                    size="small"
-                    disabled
-                    sx={{ mb: 2, ...inputSx }}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <IoMail size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
-
-                <Typography className="profile-page__label" sx={{ ...labelSx, mt: 1 }}>Date of Birth</Typography>
-                <TextField
-                    className="profile-page__dob-input"
-                    fullWidth
-                    placeholder="DD/MM/YYYY"
-                    value={dobDisplay}
-                    onChange={handleDobInput}
-                    onBlur={handleDobBlur}
-                    variant="outlined"
-                    size="small"
-                    sx={inputSx}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <IoCalendarNumber size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <Box
-                                        ref={dobAnchorRef}
-                                        className="profile-page__dob-calendar-btn"
-                                        onClick={() => setDobOpen((p) => !p)}
-                                        sx={{ display: "flex", alignItems: "center", cursor: "pointer", color: "hsl(240, 8%, 55%)", "&:hover": { color: "#7c3aed" }, transition: "color 150ms ease" }}
-                                    >
-                                        <BiSolidCalendarEdit size={20} />
-                                    </Box>
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
-                <Popper className="profile-page__dob-popper" open={dobOpen} anchorEl={dobAnchorRef.current} placement="bottom-start" sx={{ zIndex: 1400 }}>
-                    <Paper className="profile-page__dob-paper" elevation={0} sx={{
-                        mt: 0.5, borderRadius: "14px",
-                        border: "1px solid hsl(240, 10%, 90%)",
-                        boxShadow: "0 8px 24px rgb(0 0 0 / .12)",
-                    }}>
-                        <ClickAwayListener className="profile-page__dob-clickaway" onClickAway={() => setDobOpen(false)}>
-                            <Box className="profile-page__dob-calendar" sx={{
-                                ".MuiDateCalendar-root": { width: "auto", height: "100%" },
-                                ".MuiDayCalendar-slideTransition": { minHeight: 190 },
-                                ".MuiPickersCalendarHeader-root": { px: 1.5, fontFamily: "'Sora', sans-serif" },
-                                ".MuiPickersCalendarHeader-labelContainer": { fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 14, color: "hsl(240, 15%, 10%)", cursor: "pointer", "&:hover": { bgcolor: "hsl(240, 20%, 95%)", borderRadius: "6px" } },
-                                ".MuiPickersArrowSwitcher-root": { "& button": { color: "hsl(240, 8%, 50%)", width: 28, height: 28, borderRadius: "8px", "&:hover": { bgcolor: "hsl(240, 20%, 95%)" } } },
-                                ".MuiDayCalendar-weekDayLabel": { fontSize: 12, fontWeight: 600, color: "hsl(240, 15%, 10%)", fontFamily: "'Inter', sans-serif", width: 36, height: 30 },
-                                ".MuiDayCalendar-weekContainer": { my: 0 },
-                                ".MuiPickerDay-root": { fontSize: 13, fontWeight: 600, fontFamily: "'Inter', sans-serif", width: 36, height: 36, borderRadius: "50%", transition: "all 150ms ease", "&:hover": { bgcolor: "hsl(240, 20%, 95%) !important" }, "&:not(.Mui-selected)": { borderColor: "transparent" } },
-                                ".MuiPickerDay-root.Mui-selected": { background: "#7c3aed !important", color: "#fff !important", fontWeight: 700 },
-                                ".MuiPickersDay-today:not(.Mui-selected)": { borderColor: "#7c3aed" },
-                                ".MuiYearCalendar-root": { maxHeight: 250, overflowY: "auto" },
-                                ".MuiYearCalendar-button": { fontSize: 14, fontWeight: 600, fontFamily: "'Inter', sans-serif", width: 72, height: 36, borderRadius: "8px", margin: "2px", color: "hsl(240, 15%, 15%)", "&:hover": { bgcolor: "hsl(240, 20%, 95%) !important" } },
-                                ".MuiYearCalendar-button.Mui-selected": { background: "#7c3aed !important", color: "#fff !important", fontWeight: 700 },
-                                ".MuiMonthCalendar-button": { fontSize: 14, fontWeight: 600, fontFamily: "'Inter', sans-serif", width: 72, height: 36, borderRadius: "8px", margin: "2px", color: "hsl(240, 15%, 15%)", "&:hover": { bgcolor: "hsl(240, 20%, 95%) !important" } },
-                                ".MuiMonthCalendar-button.Mui-selected": { background: "#7c3aed !important", color: "#fff !important", fontWeight: 700 },
-                                ".MuiPickersDay-hiddenDaySpacing": { display: "none" },
-                                ".MuiPickersLayout-actionBar": { display: "none" },
-                            }}>
-                                <DateCalendar
-                                    value={dobValue ? dayjs(dobValue) : null}
-                                    onChange={handleDobCalendarChange}
-                                    views={["year", "month", "day"]}
-                                    maxDate={dayjs()}
-                                    disableFuture
-                                />
-                            </Box>
-                        </ClickAwayListener>
-                    </Paper>
-                </Popper>
-
-                <Box className="profile-page__personal-actions" sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 2.5 }}>
-                    <Button
-                        className="profile-page__cancel-btn"
-                        onClick={handleCancelProfile}
-                        disabled={profileLoading}
-                        sx={{
-                            fontSize: 13, fontWeight: 700, color: "hsl(240, 8%, 50%)", textTransform: "none",
-                            borderRadius: "10px", px: 3, py: 1,
-                            "&:hover": { bgcolor: "hsl(240, 20%, 95%)" },
+                    <Typography className="profile-page__label" sx={labelSx}>Name</Typography>
+                    <TextField
+                        className="profile-page__name-input"
+                        fullWidth
+                        placeholder="John Doe"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ mb: 2, ...inputSx }}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment className="profile-page__name-adornment" position="start">
+                                        <LiaUserSolid className="profile-page__name-icon" size={18} style={{ color: "hsl(240, 10%, 40%)" }} />
+                                    </InputAdornment>
+                                ),
+                            },
                         }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        className="profile-page__save-btn"
-                        variant="contained"
-                        disabled={!hasProfileChanges || profileLoading}
-                        onClick={handleSaveProfile}
-                        startIcon={profileLoading ? <CircularProgress size={16} color="inherit" /> : null}
-                        sx={{
-                            background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-                            color: "#fff", px: 3, py: 1, fontSize: 13, fontWeight: 700,
-                            borderRadius: "10px", textTransform: "none",
-                            boxShadow: "0 2px 8px rgb(124, 58, 237 / .2)",
-                            "&:hover": { background: "linear-gradient(135deg, #6d28d9, #9333ea)", boxShadow: "0 4px 12px rgb(124, 58, 237 / .3)" },
-                            "&.Mui-disabled": { background: "hsl(240, 10%, 88%)", color: "hsl(240, 6%, 65%)", boxShadow: "none" },
+                    />
+
+                    <Typography className="profile-page__label" sx={labelSx}>Email</Typography>
+                    <TextField
+                        className="profile-page__email-input"
+                        fullWidth
+                        value={user?.email || ""}
+                        variant="outlined"
+                        size="small"
+                        disabled
+                        sx={{ mb: 2, ...inputSx }}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment className="profile-page__email-adornment" position="start">
+                                        <FiMail className="profile-page__email-icon" size={18} style={{ color: "hsl(240, 10%, 65%)" }} />
+                                    </InputAdornment>
+                                ),
+                            },
                         }}
-                    >
-                        {profileLoading ? "Saving..." : "Save"}
-                    </Button>
+                    />
+
+                    <Typography className="profile-page__label" sx={{ ...labelSx, mt: 1 }}>Date of Birth</Typography>
+                    <TextField
+                        className="profile-page__dob-input"
+                        fullWidth
+                        placeholder="DD/MM/YYYY"
+                        value={dobDisplay}
+                        onChange={handleDobInput}
+                        onBlur={handleDobBlur}
+                        variant="outlined"
+                        size="small"
+                        sx={inputSx}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment className="profile-page__dob-adornment-start" position="start">
+                                        <IoCalendarNumberOutline className="profile-page__dob-calendar-icon" size={18} style={{ color: "hsl(240, 10%, 40%)" }} />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment className="profile-page__dob-adornment-end" position="end">
+                                        <Box
+                                            ref={dobAnchorRef}
+                                            className="profile-page__dob-calendar-btn"
+                                            onClick={() => setDobOpen((p) => !p)}
+                                            sx={{ display: "flex", alignItems: "center", cursor: "pointer", color: "hsl(240, 10%, 40%)", "&:hover": { color: "#7c3aed" }, transition: "color 150ms ease" }}
+                                        >
+                                            <BiSolidCalendarEdit className="profile-page__dob-calendar-edit-icon" size={22} />
+                                        </Box>
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
+                    />
+                    <Popper className="profile-page__dob-popper" open={dobOpen} anchorEl={dobAnchorRef.current} placement="bottom-start" sx={{ zIndex: 1400 }}>
+                        <Paper className="profile-page__dob-paper" elevation={0} sx={{
+                            mt: 0.5, borderRadius: "14px",
+                            border: "1px solid hsl(240, 10%, 90%)",
+                            boxShadow: "0 8px 24px rgb(0 0 0 / .12)",
+                        }}>
+                            <ClickAwayListener className="profile-page__dob-clickaway" onClickAway={() => setDobOpen(false)}>
+                                <Box className="profile-page__dob-calendar" sx={{
+                                    ".MuiDateCalendar-root": { width: "auto", height: "100%" },
+                                    ".MuiDayCalendar-slideTransition": { minHeight: 190 },
+                                    ".MuiPickersCalendarHeader-root": { px: 1.5, fontFamily: "'Sora', sans-serif" },
+                                    ".MuiPickersCalendarHeader-labelContainer": { fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 14, color: "hsl(240, 15%, 10%)", cursor: "pointer", "&:hover": { bgcolor: "hsl(240, 20%, 95%)", borderRadius: "6px" } },
+                                    ".MuiPickersArrowSwitcher-root": { "& button": { color: "hsl(240, 8%, 50%)", width: 28, height: 28, borderRadius: "8px", "&:hover": { bgcolor: "hsl(240, 20%, 95%)" } } },
+                                    ".MuiDayCalendar-weekDayLabel": { fontSize: 12, fontWeight: 600, color: "hsl(240, 15%, 10%)", fontFamily: "'Inter', sans-serif", width: 36, height: 30 },
+                                    ".MuiDayCalendar-weekContainer": { my: 0 },
+                                    ".MuiPickerDay-root": { fontSize: 13, fontWeight: 600, fontFamily: "'Inter', sans-serif", width: 36, height: 36, borderRadius: "50%", transition: "all 150ms ease", "&:hover": { bgcolor: "hsl(240, 20%, 95%) !important" }, "&:not(.Mui-selected)": { borderColor: "transparent" } },
+                                    ".MuiPickerDay-root.Mui-selected": { background: "#7c3aed !important", color: "#fff !important", fontWeight: 700 },
+                                    ".MuiPickersDay-today:not(.Mui-selected)": { borderColor: "#7c3aed" },
+                                    ".MuiYearCalendar-root": { maxHeight: 250, overflowY: "auto" },
+                                    ".MuiYearCalendar-button": { fontSize: 14, fontWeight: 600, fontFamily: "'Inter', sans-serif", width: 72, height: 36, borderRadius: "8px", margin: "2px", color: "hsl(240, 15%, 15%)", "&:hover": { bgcolor: "hsl(240, 20%, 95%) !important" } },
+                                    ".MuiYearCalendar-button.Mui-selected": { background: "#7c3aed !important", color: "#fff !important", fontWeight: 700 },
+                                    ".MuiMonthCalendar-button": { fontSize: 14, fontWeight: 600, fontFamily: "'Inter', sans-serif", width: 72, height: 36, borderRadius: "8px", margin: "2px", color: "hsl(240, 15%, 15%)", "&:hover": { bgcolor: "hsl(240, 20%, 95%) !important" } },
+                                    ".MuiMonthCalendar-button.Mui-selected": { background: "#7c3aed !important", color: "#fff !important", fontWeight: 700 },
+                                    ".MuiPickersDay-hiddenDaySpacing": { display: "none" },
+                                    ".MuiPickersLayout-actionBar": { display: "none" },
+                                }}>
+                                    <DateCalendar
+                                        className="profile-page__date-calendar"
+                                        value={dobValue ? dayjs(dobValue) : null}
+                                        onChange={handleDobCalendarChange}
+                                        views={["year", "month", "day"]}
+                                        maxDate={dayjs()}
+                                        disableFuture
+                                    />
+                                </Box>
+                            </ClickAwayListener>
+                        </Paper>
+                    </Popper>
+
+                    <Box className="profile-page__personal-actions" sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 2.5 }}>
+                        <Button
+                            className="profile-page__cancel-btn"
+                            onClick={handleCancelProfile}
+                            disabled={profileLoading}
+                            sx={{
+                                fontSize: 13, fontWeight: 700, color: "hsl(240, 8%, 50%)", textTransform: "none",
+                                borderRadius: "10px", px: 3, py: 1,
+                                "&:hover": { bgcolor: "hsl(240, 20%, 95%)" },
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            className="profile-page__save-btn"
+                            variant="contained"
+                            disabled={!hasProfileChanges || profileLoading}
+                            onClick={handleSaveProfile}
+                            startIcon={profileLoading ? <CircularProgress className="profile-page__save-spinner" size={16} color="inherit" /> : null}
+                            sx={{
+                                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                                color: "#fff", px: 3, py: 1, fontSize: 13, fontWeight: 700,
+                                borderRadius: "10px", textTransform: "none",
+                                boxShadow: "0 2px 8px rgb(124, 58, 237 / .2)",
+                                "&:hover": { background: "linear-gradient(135deg, #6d28d9, #9333ea)", boxShadow: "0 4px 12px rgb(124, 58, 237 / .3)" },
+                                "&.Mui-disabled": { background: "hsl(240, 10%, 88%)", color: "hsl(240, 6%, 65%)", boxShadow: "none" },
+                            }}
+                        >
+                            {profileLoading ? "Saving..." : "Save"}
+                        </Button>
+                    </Box>
                 </Box>
-            </Box>
 
-            {/* Change Password Card */}
-            <Box className="profile-page__password-card" sx={{ ...cardSx, flex: 1, mb: 0 }}>
-                <Typography className="profile-page__password-heading" sx={headingSx}>
-                    Change Password
-                </Typography>
+                <Box className="profile-page__password-card" sx={{ ...cardSx, flex: 1, mb: 0 }}>
+                    <Typography className="profile-page__password-heading" sx={headingSx}>
+                        Change Password
+                    </Typography>
 
-                <Typography className="profile-page__label" sx={labelSx}>Current Password</Typography>
-                <TextField
-                    className="profile-page__current-password-input"
-                    fullWidth
-                    placeholder="Enter current password"
-                    type={showCurrent ? "text" : "password"}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    variant="outlined"
-                    size="small"
-                    sx={{ mb: 2, ...inputSx }}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <MdPassword size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowCurrent((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)", "&:hover": { color: "#7c3aed" } }}>
-                                        {showCurrent ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
-
-                <Typography className="profile-page__label" sx={labelSx}>New Password</Typography>
-                <TextField
-                    className="profile-page__new-password-input"
-                    fullWidth
-                    placeholder="Enter new password"
-                    type={showNew ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    variant="outlined"
-                    size="small"
-                    sx={{ mb: 2, ...inputSx }}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <MdPassword size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowNew((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)", "&:hover": { color: "#7c3aed" } }}>
-                                        {showNew ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
-
-                <Typography className="profile-page__label" sx={labelSx}>Confirm Password</Typography>
-                <TextField
-                    className="profile-page__confirm-password-input"
-                    fullWidth
-                    placeholder="Re-enter new password"
-                    type={showConfirm ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    variant="outlined"
-                    size="small"
-                    sx={inputSx}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <MdPassword size={16} style={{ color: "hsl(240, 10%, 65%)" }} />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowConfirm((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 55%)", "&:hover": { color: "#7c3aed" } }}>
-                                        {showConfirm ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
-
-                <Box className="profile-page__password-actions" sx={{ display: "flex", justifyContent: "flex-end", mt: 2.5 }}>
-                    <Button
-                        className="profile-page__update-password-btn"
-                        variant="contained"
-                        disabled={!hasPasswordChange || passwordLoading}
-                        onClick={handleUpdatePassword}
-                        startIcon={passwordLoading ? <CircularProgress size={16} color="inherit" /> : null}
-                        sx={{
-                            background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-                            color: "#fff", px: 3, py: 1, fontSize: 13, fontWeight: 700,
-                            borderRadius: "10px", textTransform: "none",
-                            boxShadow: "0 2px 8px rgb(124, 58, 237 / .2)",
-                            "&:hover": { background: "linear-gradient(135deg, #6d28d9, #9333ea)", boxShadow: "0 4px 12px rgb(124, 58, 237 / .3)" },
-                            "&.Mui-disabled": { background: "hsl(240, 10%, 88%)", color: "hsl(240, 6%, 65%)", boxShadow: "none" },
+                    <Typography className="profile-page__label" sx={labelSx}>Current Password</Typography>
+                    <TextField
+                        className="profile-page__current-password-input"
+                        fullWidth
+                        placeholder="Enter current password"
+                        type={showCurrent ? "text" : "password"}
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ mb: 2, ...inputSx }}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment className="profile-page__current-password-adornment-start" position="start">
+                                        <MdPassword className="profile-page__current-password-icon" size={18} style={{ color: "hsl(240, 10%, 40%)" }} />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment className="profile-page__current-password-adornment-end" position="end">
+                                        <IconButton className="profile-page__current-password-toggle" onClick={() => setShowCurrent((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 40%)", "&:hover": { color: "#7c3aed" } }}>
+                                            {showCurrent ? <FaEyeSlash className="profile-page__eye-slash-icon" size={18} /> : <FaEye className="profile-page__eye-icon" size={18} />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            },
                         }}
-                    >
-                        {passwordLoading ? "Updating..." : "Update Password"}
-                    </Button>
+                    />
+
+                    <Typography className="profile-page__label" sx={labelSx}>New Password</Typography>
+                    <TextField
+                        className="profile-page__new-password-input"
+                        fullWidth
+                        placeholder="Enter new password"
+                        type={showNew ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ mb: 2, ...inputSx }}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment className="profile-page__new-password-adornment-start" position="start">
+                                        <MdPassword className="profile-page__new-password-icon" size={18} style={{ color: "hsl(240, 10%, 40%)" }} />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment className="profile-page__new-password-adornment-end" position="end">
+                                        <IconButton className="profile-page__new-password-toggle" onClick={() => setShowNew((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 40%)", "&:hover": { color: "#7c3aed" } }}>
+                                            {showNew ? <FaEyeSlash className="profile-page__eye-slash-icon" size={18} /> : <FaEye className="profile-page__eye-icon" size={18} />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
+                    />
+
+                    <Typography className="profile-page__label" sx={labelSx}>Confirm Password</Typography>
+                    <TextField
+                        className="profile-page__confirm-password-input"
+                        fullWidth
+                        placeholder="Re-enter new password"
+                        type={showConfirm ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={inputSx}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment className="profile-page__confirm-password-adornment-start" position="start">
+                                        <MdPassword className="profile-page__confirm-password-icon" size={18} style={{ color: "hsl(240, 10%, 40%)" }} />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment className="profile-page__confirm-password-adornment-end" position="end">
+                                        <IconButton className="profile-page__confirm-password-toggle" onClick={() => setShowConfirm((p) => !p)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 40%)", "&:hover": { color: "#7c3aed" } }}>
+                                            {showConfirm ? <FaEyeSlash className="profile-page__eye-slash-icon" size={18} /> : <FaEye className="profile-page__eye-icon" size={18} />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
+                    />
+
+                    <Box className="profile-page__password-actions" sx={{ display: "flex", justifyContent: "flex-end", mt: 2.5 }}>
+                        <Button
+                            className="profile-page__update-password-btn"
+                            variant="contained"
+                            disabled={!hasPasswordChange || passwordLoading}
+                            onClick={handleUpdatePassword}
+                            startIcon={passwordLoading ? <CircularProgress className="profile-page__update-spinner" size={16} color="inherit" /> : null}
+                            sx={{
+                                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                                color: "#fff", px: 3, py: 1, fontSize: 13, fontWeight: 700,
+                                borderRadius: "10px", textTransform: "none",
+                                boxShadow: "0 2px 8px rgb(124, 58, 237 / .2)",
+                                "&:hover": { background: "linear-gradient(135deg, #6d28d9, #9333ea)", boxShadow: "0 4px 12px rgb(124, 58, 237 / .3)" },
+                                "&.Mui-disabled": { background: "hsl(240, 10%, 88%)", color: "hsl(240, 6%, 65%)", boxShadow: "none" },
+                            }}
+                        >
+                            {passwordLoading ? "Updating..." : "Update Password"}
+                        </Button>
+                    </Box>
                 </Box>
-            </Box>
             </Box>
         </Box>
     );

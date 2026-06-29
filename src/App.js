@@ -16,6 +16,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import OtpVerificationPage from "./pages/OtpVerificationPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ProfilePage from "./pages/ProfilePage";
+import AccountPage from "./pages/AccountPage";
 import ProtectedRoute, { GuestRoute } from "./components/ProtectedRoute";
 import { fetchCategories } from "./store/configSlice";
 import { fetchCurrentUser } from "./store/authSlice";
@@ -50,6 +51,7 @@ function AppRoutes() {
                         <Route index element={<CategoriesPage />} />
                         <Route path="list" element={<ListPage />} />
                         <Route path="profile" element={<ProfilePage />} />
+                        <Route path="account" element={<AccountPage />} />
                         <Route path="goals/:id" element={<GoalDetailPage />} />
                     </Route>
                 </Route>

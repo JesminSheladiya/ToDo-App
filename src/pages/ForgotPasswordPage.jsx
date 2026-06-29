@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { IoMail } from "react-icons/io5";
 import { TbArrowLeft } from "react-icons/tb";
+import { FiMail } from "react-icons/fi";
 
 const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -147,7 +148,7 @@ function ForgotPasswordPage() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment className="forgot-password-page__input-adornment" position="start">
-                                        <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        <FiMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                             },

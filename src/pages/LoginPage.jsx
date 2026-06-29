@@ -6,9 +6,9 @@ import { login } from "../store/authSlice";
 import {
     Box, Button, IconButton, InputAdornment, TextField, Typography, Link, CircularProgress,
 } from "@mui/material";
-import { IoMail } from "react-icons/io5";
 import { MdPassword } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { FiMail } from "react-icons/fi";
 
 const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -117,7 +117,7 @@ function LoginPage() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment className="login-page__input-adornment" position="start">
-                                        <IoMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        <FiMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
                                     </InputAdornment>
                                 ),
                             },

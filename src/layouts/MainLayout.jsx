@@ -10,7 +10,7 @@ import { useTheme } from "@mui/material/styles";
 import { PiListBold, PiPlusBold } from "react-icons/pi";
 import { FaListUl } from "react-icons/fa6";
 import { RiDashboardFill } from "react-icons/ri";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiSettings } from "react-icons/fi";
 import { IoChevronDown } from "react-icons/io5";
 import { LiaUserSolid } from "react-icons/lia";
 import { fetchGoals } from "../store/goalsSlice";
@@ -106,18 +106,24 @@ function Sidebar({ categories, onClose }) {
                             width: 36,
                             height: 36,
                             borderRadius: "10px",
-                            background: "linear-gradient(135deg, #7c3aed, #a855f7, #ec4899)",
-                            display: "grid",
-                            placeItems: "center",
-                            color: "#fff",
-                            fontSize: 17,
-                            fontWeight: 800,
+                            ...(!user?.photo ? {
+                                background: "linear-gradient(135deg, #7c3aed, #a855f7, #ec4899)",
+                                display: "grid",
+                                placeItems: "center",
+                                color: "#fff",
+                                fontSize: 17,
+                                fontWeight: 800,
+                            } : {
+                                backgroundImage: `url(${user.photo})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                            }),
                             fontFamily: "'Sora', sans-serif",
                             flexShrink: 0,
                             boxShadow: "0 2px 8px rgb(124, 58, 237 / .3)",
                         }}
                     >
-                        {user?.name?.split(" ")[0]?.charAt(0)?.toUpperCase() + user?.name?.split(" ")[1]?.charAt(0)?.toUpperCase()}
+                        {!user?.photo && (user?.name?.split(" ")[0]?.charAt(0)?.toUpperCase() + user?.name?.split(" ")[1]?.charAt(0)?.toUpperCase())}
                     </Box>
                     <Box className="sidebar__brand-text" sx={{ minWidth: 0, flex: 1 }}>
                         <Typography className="sidebar__brand-title"
@@ -168,16 +174,14 @@ function Sidebar({ categories, onClose }) {
                         />
                         <Box sx={{
                             position: "absolute",
-                            top: "100%",
-                            left: 12,
-                            right: 12,
+                            top: "95%",
+                            left: 10,
+                            right: 10,
                             zIndex: 1301,
                             bgcolor: "#fff",
                             borderRadius: "14px",
                             border: "1px solid hsl(240, 10%, 90%)",
                             boxShadow: "0 12px 32px rgb(0 0 0 / .12)",
-                            py: 0.75,
-                            mt: 0.75,
                             overflow: "hidden",
                         }}>
                             <Box
@@ -193,12 +197,30 @@ function Sidebar({ categories, onClose }) {
                                     transition: "background 120ms",
                                 }}
                             >
-                                <LiaUserSolid size={17} style={{ color: "#7c3aed" }} />
-                                <Typography sx={{ fontSize: 13.5, fontWeight: 600, color: "hsl(240, 15%, 10%)" }}>
+                                <LiaUserSolid size={18} style={{ color: "#7c3aed" }} />
+                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
                                     Profile
                                 </Typography>
                             </Box>
-                            <Box sx={{ mx: 1.5, height: "1px", bgcolor: "hsl(240, 10%, 92%)" }} />
+                            <Box
+                                onClick={() => { setBrandMenuOpen(false); navigate("/account"); onClose?.(); }}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1.25,
+                                    px: 2,
+                                    py: 1.25,
+                                    cursor: "pointer",
+                                    "&:hover": { bgcolor: "hsl(262, 83%, 96%)" },
+                                    transition: "background 120ms",
+                                }}
+                            >
+                                <FiSettings size={17} style={{ color: "#7c3aed" }} />
+                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
+                                    Account
+                                </Typography>
+                            </Box>
+                            <Box sx={{ height: "1px", bgcolor: "hsl(240, 10%, 92%)" }} />
                             <Box
                                 onClick={() => { setBrandMenuOpen(false); handleLogout(); }}
                                 sx={{
@@ -213,7 +235,7 @@ function Sidebar({ categories, onClose }) {
                                 }}
                             >
                                 <FiLogOut size={17} style={{ color: "#ef4444" }} />
-                                <Typography sx={{ fontSize: 13.5, fontWeight: 600, color: "hsl(240, 15%, 10%)" }}>
+                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
                                     Sign Out
                                 </Typography>
                             </Box>
@@ -501,6 +523,7 @@ function MainLayout() {
 
     const isDetail = location.pathname.startsWith("/goals/") && !location.pathname.endsWith("/new") && !location.pathname.endsWith("/edit");
     const isProfile = location.pathname === "/profile";
+    const isAccount = location.pathname === "/account";
 
     const stats = useMemo(() => {
         const total = goals.length;
@@ -554,7 +577,7 @@ function MainLayout() {
                 display: "flex",
                 flexDirection: "column",
             }}>
-                {!isDetail && !isProfile && (
+                {!isDetail && !isProfile && !isAccount && (
                     <Box className="main-layout__header"
                         sx={{
                             px: { xs: 2, sm: 3.5 },
@@ -649,7 +672,7 @@ function MainLayout() {
                     </Box>
                 )}
 
-                {isProfile && (
+                {(isProfile || isAccount) && (
                     <Box className="main-layout__profile-header" sx={{
                         px: { xs: 2, sm: 3.5 },
                         pt: { xs: 2, sm: 3 },
@@ -677,9 +700,9 @@ function MainLayout() {
                     pb: 4,
                     flex: 1,
                     overflowY: "auto",
-                    pt: (isDetail || isProfile) ? { xs: 2, sm: 3 } : undefined,
+                    pt: (isDetail || isProfile || isAccount) ? { xs: 2, sm: 3 } : undefined,
                 }}>
-                    {isDetail || isProfile ? (
+                    {(isDetail || isProfile || isAccount) ? (
                         <Outlet />
                     ) : (
                         <Stack className="main-layout__stack" spacing={2.5}>
