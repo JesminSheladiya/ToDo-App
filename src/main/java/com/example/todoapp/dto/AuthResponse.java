@@ -12,4 +12,5 @@ public class AuthResponse {
     private String email;
     private String dob;
     private String photo;
+    private String createdAt;
 }

@@ -4,24 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="user profile add">
+    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="add: profile Photo Upload, DOB.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/WebConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/AuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/UpdateProfileRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/UpdateProfileRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/repository/TaskRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/repository/TaskRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/AuthController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse$AuthResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse$AuthResponseBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User$UserBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService$OtpData.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService$OtpData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +19,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="39" />
+    <option name="cachedIndexableFilesCount" value="40" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -52,23 +42,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.2888305467076688" />
-      <entry key="MS500" value="2.220534639013877" />
-      <entry key="S2" value="3.6909599814585143" />
-      <entry key="S5" value="4.776979002183502" />
-      <entry key="S10" value="5.32149242420709" />
-      <entry key="S30" value="5.75686167735841" />
-      <entry key="S60" value="5.87616420879761" />
-      <entry key="M2" value="5.937503898192335" />
-      <entry key="M5" value="5.974861283519974" />
-      <entry key="M10" value="5.9874078869828535" />
-      <entry key="M15" value="5.991740879340611" />
-      <entry key="M30" value="6.022595977236595" />
-      <entry key="H1" value="6.377224748643447" />
-      <entry key="H2" value="7.470579329167633" />
-      <entry key="H4" value="8.94625408688912" />
-      <entry key="D1" value="11.322017085985804" />
-      <entry key="W1" value="11.897880824628418" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000023714718913" />
+      <entry key="S2" value="1.0817972831393319" />
+      <entry key="S5" value="1.799830227554574" />
+      <entry key="S10" value="2.7744180870509716" />
+      <entry key="S30" value="4.6877913803682265" />
+      <entry key="S60" value="7.100982829300194" />
+      <entry key="M2" value="10.070808660821394" />
+      <entry key="M5" value="13.178901492481796" />
+      <entry key="M10" value="15.05899610015634" />
+      <entry key="M15" value="16.242910546268078" />
+      <entry key="M30" value="18.261998565693524" />
+      <entry key="H1" value="20.07641591764489" />
+      <entry key="H2" value="22.032209369598284" />
+      <entry key="H4" value="24.061114511158053" />
+      <entry key="D1" value="27.131398685687262" />
+      <entry key="W1" value="27.869163316958552" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -90,23 +80,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.5564611342659773" />
-      <entry key="MS500" value="1.9862118028458369" />
-      <entry key="S2" value="3.6233702420010907" />
-      <entry key="S5" value="4.748349554277332" />
-      <entry key="S10" value="5.30681506213551" />
-      <entry key="S30" value="5.751875918938168" />
-      <entry key="S60" value="5.873658750086235" />
-      <entry key="M2" value="5.936247950104718" />
-      <entry key="M5" value="5.974358122107873" />
-      <entry key="M10" value="5.987156175012209" />
-      <entry key="M15" value="5.991573031516615" />
-      <entry key="M30" value="6.022511032772804" />
-      <entry key="H1" value="6.377175651740897" />
-      <entry key="H2" value="7.470544596403069" />
-      <entry key="H4" value="8.946229892850775" />
-      <entry key="D1" value="11.322011233488617" />
-      <entry key="W1" value="11.897879925769482" />
+      <entry key="MS100" value="0.9726549474122855" />
+      <entry key="MS500" value="0.9944725251431104" />
+      <entry key="S2" value="1.0802732833494466" />
+      <entry key="S5" value="1.798697148493119" />
+      <entry key="S10" value="2.773482276637806" />
+      <entry key="S30" value="4.6872325921611955" />
+      <entry key="S60" value="7.100538629728638" />
+      <entry key="M2" value="10.070481345159923" />
+      <entry key="M5" value="13.178721405022275" />
+      <entry key="M10" value="15.05887350485924" />
+      <entry key="M15" value="16.242806995702484" />
+      <entry key="M30" value="18.26192417938041" />
+      <entry key="H1" value="20.076364669052126" />
+      <entry key="H2" value="22.03217172080964" />
+      <entry key="H4" value="24.06108802111589" />
+      <entry key="D1" value="27.131392172247683" />
+      <entry key="W1" value="27.86916231242577" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -183,7 +173,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781944593942</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="add: profile Photo Upload, DOB.">
+      <option name="closed" value="true" />
+      <created>1782125365963</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1782125365963</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -193,7 +191,8 @@
     <MESSAGE value="Mail sending" />
     <MESSAGE value="implement forgot password, OTP verification, and password reset flows" />
     <MESSAGE value="user profile add" />
-    <option name="LAST_COMMIT_MESSAGE" value="user profile add" />
+    <MESSAGE value="add: profile Photo Upload, DOB." />
+    <option name="LAST_COMMIT_MESSAGE" value="add: profile Photo Upload, DOB." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

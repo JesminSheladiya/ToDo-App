@@ -10,12 +10,14 @@ import com.example.todoapp.dto.UpdateProfileRequest;
 import com.example.todoapp.dto.VerifyOtpRequest;
 import com.example.todoapp.entity.User;
 import com.example.todoapp.exception.ValidationException;
+import com.example.todoapp.repository.TaskRepository;
 import com.example.todoapp.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final EmailService emailService;
@@ -50,10 +53,12 @@ public class UserService implements UserDetailsService {
     }
 
     public UserService(UserRepository userRepository,
+                       TaskRepository taskRepository,
                        PasswordEncoder passwordEncoder,
                        JwtUtil jwtUtil,
                        EmailService emailService) {
         this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.emailService = emailService;
@@ -109,9 +114,15 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
-        emailService.sendWelcomeEmail(user.getEmail(), user.getName());
+        try {
+            emailService.sendWelcomeEmail(user.getEmail(), user.getName());
+        } catch (Exception e) {
+            // welcome email is non-critical — don't block registration
+        }
 
         String token = jwtUtil.generateToken(user.getEmail());
+
+        String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
 
         return AuthResponse.builder()
                 .token(token)
@@ -119,6 +130,7 @@ public class UserService implements UserDetailsService {
                 .email(user.getEmail())
                 .dob(user.getDob())
                 .photo(user.getPhoto())
+                .createdAt(createdAt)
                 .build();
     }
 
@@ -139,12 +151,15 @@ public class UserService implements UserDetailsService {
 
         String token = jwtUtil.generateToken(user.getEmail());
 
+        String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+
         return AuthResponse.builder()
                 .token(token)
                 .name(user.getName())
                 .email(user.getEmail())
                 .dob(user.getDob())
                 .photo(user.getPhoto())
+                .createdAt(createdAt)
                 .build();
     }
 
@@ -152,12 +167,15 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+
         return AuthResponse.builder()
                 .token(null)
                 .name(user.getName())
                 .email(user.getEmail())
                 .dob(user.getDob())
                 .photo(user.getPhoto())
+                .createdAt(createdAt)
                 .build();
     }
 
@@ -273,12 +291,15 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
+        String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+
         return AuthResponse.builder()
                 .token(null)
                 .name(user.getName())
                 .email(user.getEmail())
                 .dob(user.getDob())
                 .photo(user.getPhoto())
+                .createdAt(createdAt)
                 .build();
     }
 
@@ -323,12 +344,24 @@ public class UserService implements UserDetailsService {
         user.setPhoto(null);
         userRepository.save(user);
 
+        String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+
         return AuthResponse.builder()
                 .token(null)
                 .name(user.getName())
                 .email(user.getEmail())
                 .dob(user.getDob())
                 .photo(null)
+                .createdAt(createdAt)
                 .build();
+    }
+
+    @Transactional
+    public void deleteAccount(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        taskRepository.deleteByUserId(user.getId());
+        userRepository.delete(user);
     }
 }

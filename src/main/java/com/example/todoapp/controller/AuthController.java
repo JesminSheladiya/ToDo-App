@@ -92,4 +92,12 @@ public class AuthController {
         String email = auth.getName();
         return userService.removePhoto(email);
     }
+
+    @DeleteMapping("/delete-account")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        userService.deleteAccount(email);
+    }
 }
