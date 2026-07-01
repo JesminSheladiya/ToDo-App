@@ -267,6 +267,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                     </IconButton>
 
                                     <RoundedGoalIcon
+                                        className="list-view__goal-icon"
                                         iconKey={goal.emoji}
                                         fallbackKey={category.iconKey}
                                         sx={{ color: category.text, fontSize: 18, flexShrink: 0 }}

@@ -160,7 +160,7 @@ function ForgotPasswordPage() {
                         fullWidth
                         variant="contained"
                         disabled={disabled || loading}
-                        startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                        startIcon={loading ? <CircularProgress className="forgot-password-page__spinner" size={18} color="inherit" /> : null}
                         sx={{
                             background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                             color: "#fff",

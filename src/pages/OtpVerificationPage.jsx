@@ -215,7 +215,7 @@ function OtpVerificationPage() {
                         fullWidth
                         variant="contained"
                         disabled={!isComplete || loading}
-                        startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                        startIcon={loading ? <CircularProgress className="otp-page__spinner" size={18} color="inherit" /> : null}
                         sx={{
                             background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                             color: "#fff",

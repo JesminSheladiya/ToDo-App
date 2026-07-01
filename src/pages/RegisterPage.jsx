@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { register } from "../store/authSlice";
 import {
-    Box, Button, IconButton, InputAdornment, TextField, Typography, Link, CircularProgress,
+    Box, Button, IconButton, InputAdornment, TextField, Typography, CircularProgress,
+    Tab, Tabs
 } from "@mui/material";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { MdPassword } from "react-icons/md";
 import { FiMail } from "react-icons/fi";
 import { LiaUserSolid } from "react-icons/lia";
+
 
 const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -102,119 +104,115 @@ function RegisterPage() {
                 </Box>
 
                 <Box className="register-page__form" component="form" onSubmit={handleSubmit} noValidate>
-                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
-                        Full Name
-                    </Typography>
-                    <TextField
-                        className="register-page__name-input"
-                        fullWidth
-                        placeholder="John Doe"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        variant="outlined"
-                        size="small"
-                        sx={{ mb: 2, ...inputSx }}
-                        slotProps={{
-                            input: {
-                                startAdornment: (
-                                    <InputAdornment className="register-page__input-adornment" position="start">
-                                        <LiaUserSolid size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
-                                    </InputAdornment>
-                                ),
-                            },
-                        }}
-                    />
-                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
-                        Email
-                    </Typography>
-                    <TextField
-                        className="register-page__email-input"
-                        fullWidth
-                        placeholder="john@example.com"
-                        type="text"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        variant="outlined"
-                        size="small"
-                        sx={{ mb: 2, ...inputSx }}
-                        slotProps={{
-                            input: {
-                                startAdornment: (
-                                    <InputAdornment className="register-page__input-adornment" position="start">
-                                        <FiMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
-                                    </InputAdornment>
-                                ),
-                            },
-                        }}
-                    />
-                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
-                        Password
-                    </Typography>
-                    <TextField
-                        className="register-page__password-input"
-                        fullWidth
-                        placeholder="Enter your password"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        variant="outlined"
-                        size="small"
-                        sx={{ mb: 2, ...inputSx }}
-                        slotProps={{
-                            input: {
-                                startAdornment: (
-                                    <InputAdornment className="register-page__input-adornment" position="start">
-                                        <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment className="register-page__input-adornment" position="end">
-                                        <IconButton className="register-page__toggle-btn" onClick={() => setShowPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
-                                            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            },
-                        }}
-                    />
-                    <Typography className="register-page__label" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 20%)", mb: 0.2 }}>
-                        Confirm Password
-                    </Typography>
-                    <TextField
-                        className="register-page__confirm-password-input"
-                        fullWidth
-                        placeholder="Re-enter your password"
-                        type={showConfirmPassword ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        variant="outlined"
-                        size="small"
-                        sx={{ mb: 3, ...inputSx }}
-                        slotProps={{
-                            input: {
-                                startAdornment: (
-                                    <InputAdornment className="register-page__input-adornment" position="start">
-                                        <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment className="register-page__input-adornment" position="end">
-                                        <IconButton className="register-page__toggle-btn" onClick={() => setShowConfirmPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
-                                            {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            },
-                        }}
-                    />
+                    <Box className="register-page__input-wrapper" sx={{ mb: 2.5 }}>
+                        <TextField
+                            className="register-page__name-input"
+                            fullWidth
+                            placeholder="John Doe"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            sx={{ ...inputSx }}
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment className="register-page__input-adornment" position="start">
+                                            <LiaUserSolid size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Box>
+                    <Box className="register-page__input-wrapper" sx={{ mb: 2.5 }}>
+                        <TextField
+                            className="register-page__email-input"
+                            fullWidth
+                            placeholder="john@example.com"
+                            type="text"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            sx={{ ...inputSx }}
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment className="register-page__input-adornment" position="start">
+                                            <FiMail size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Box>
+                    <Box className="register-page__input-wrapper" sx={{ mb: 2.5 }}>
+                        <TextField
+                            className="register-page__password-input"
+                            fullWidth
+                            placeholder="Enter your password"
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            sx={{ ...inputSx }}
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment className="register-page__input-adornment" position="start">
+                                            <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment className="register-page__input-adornment" position="end">
+                                            <IconButton className="register-page__toggle-btn" onClick={() => setShowPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Box>
+                    <Box className="register-page__input-wrapper" sx={{ mb: 3 }}>
+                        <TextField
+                            className="register-page__confirm-password-input"
+                            fullWidth
+                            placeholder="Re-enter your password"
+                            type={showConfirmPassword ? "text" : "password"}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            sx={{ ...inputSx }}
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment className="register-page__input-adornment" position="start">
+                                            <MdPassword size={18} style={{ color: "hsl(240, 10%, 30%)" }} />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment className="register-page__input-adornment" position="end">
+                                            <IconButton className="register-page__toggle-btn" onClick={() => setShowConfirmPassword((prev) => !prev)} edge="end" size="small" sx={{ color: "hsl(240, 10%, 30%)" }}>
+                                                {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Box>
                     <Button
                         className="register-page__submit-btn"
                         type="submit"
                         fullWidth
                         variant="contained"
                         disabled={disabled || loading}
-                        startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                        startIcon={loading ? <CircularProgress className="register-page__spinner" size={18} color="inherit" /> : null}
                         sx={{
                             background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                             color: "#fff",
@@ -239,16 +237,13 @@ function RegisterPage() {
                     </Button>
                 </Box>
 
-                <Typography className="register-page__login-text" sx={{ textAlign: "center", mt: 3, fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
+                <Typography className="register-page__separator" sx={{ mt: 2, mb: 1, fontSize: 13, color: "hsl(240, 8%, 50%)", textAlign: "center" }}>or</Typography>
+
+                <Typography className="register-page__login-text" sx={{ mt: 2, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
                     Already have an account?{" "}
-                    <Link className="register-page__login-link" component="button" type="button" onClick={() => navigate("/login", { replace: true })} sx={{
-                        color: "#7c3aed",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        "&:hover": { textDecoration: "underline" },
-                    }}>
+                    <Box component="span" onClick={() => navigate("/login", { replace: true })} sx={{ color: "#7c3aed", fontWeight: 700, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>
                         Sign in
-                    </Link>
+                    </Box>
                 </Typography>
             </Box>
         </Box>

@@ -169,10 +169,11 @@ function Sidebar({ categories, onClose }) {
                 {brandMenuOpen && (
                     <>
                         <Box
+                            className="sidebar__brand-menu-overlay"
                             sx={{ position: "fixed", inset: 0, zIndex: 1300 }}
                             onClick={() => setBrandMenuOpen(false)}
                         />
-                        <Box sx={{
+                        <Box className="sidebar__brand-menu" sx={{
                             position: "absolute",
                             top: "95%",
                             left: 10,
@@ -185,6 +186,7 @@ function Sidebar({ categories, onClose }) {
                             overflow: "hidden",
                         }}>
                             <Box
+                                className="sidebar__brand-menu-item"
                                 onClick={() => { setBrandMenuOpen(false); navigate("/profile"); onClose?.(); }}
                                 sx={{
                                     display: "flex",
@@ -198,11 +200,12 @@ function Sidebar({ categories, onClose }) {
                                 }}
                             >
                                 <LiaUserSolid size={18} style={{ color: "#7c3aed" }} />
-                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
+                                <Typography className="sidebar__brand-menu-label" sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
                                     Profile
                                 </Typography>
                             </Box>
                             <Box
+                                className="sidebar__brand-menu-item"
                                 onClick={() => { setBrandMenuOpen(false); navigate("/account"); onClose?.(); }}
                                 sx={{
                                     display: "flex",
@@ -216,12 +219,13 @@ function Sidebar({ categories, onClose }) {
                                 }}
                             >
                                 <FiSettings size={17} style={{ color: "#7c3aed" }} />
-                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
+                                <Typography className="sidebar__brand-menu-label" sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
                                     Account
                                 </Typography>
                             </Box>
-                            <Box sx={{ height: "1px", bgcolor: "hsl(240, 10%, 92%)" }} />
+                            <Box className="sidebar__brand-menu-divider" sx={{ height: "1px", bgcolor: "hsl(240, 10%, 92%)" }} />
                             <Box
+                                className="sidebar__brand-menu-item sidebar__brand-menu-item--danger"
                                 onClick={() => { setBrandMenuOpen(false); handleLogout(); }}
                                 sx={{
                                     display: "flex",
@@ -235,7 +239,7 @@ function Sidebar({ categories, onClose }) {
                                 }}
                             >
                                 <FiLogOut size={17} style={{ color: "#ef4444" }} />
-                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
+                                <Typography className="sidebar__brand-menu-label" sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 20%)" }}>
                                     Sign Out
                                 </Typography>
                             </Box>

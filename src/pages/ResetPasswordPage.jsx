@@ -224,7 +224,7 @@ function ResetPasswordPage() {
                         fullWidth
                         variant="contained"
                         disabled={loading}
-                        startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                        startIcon={loading ? <CircularProgress className="reset-password-page__spinner" size={18} color="inherit" /> : null}
                         sx={{
                             background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                             color: "#fff",

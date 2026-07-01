@@ -405,7 +405,7 @@ function GoalFormPage() {
                                                 },
                                             }}
                                         >
-                                            <RoundedGoalIcon iconKey={item.iconKey} sx={{ color: item.text, fontSize: 18 }} />
+                                            <RoundedGoalIcon className="goal-form-page__category-icon" iconKey={item.iconKey} sx={{ color: item.text, fontSize: 18 }} />
                                             <Typography className="goal-form-page__category-label" sx={{
                                                 fontSize: 10,
                                                 fontWeight: 700,

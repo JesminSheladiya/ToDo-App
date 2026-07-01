@@ -58,7 +58,7 @@ function SortableDetailStep({ step, category, onToggle, index, loading, disabled
                 <Box className="detail-subtask__toggle" onClick={() => !disabled && onToggle(step.stepId)}
                     sx={{ display: "flex", cursor: disabled ? "default" : "pointer", lineHeight: 0, flexShrink: 0 }}>
                     {loading ? (
-                        <CircularProgress size={14} sx={{ color: "hsl(240, 10%, 60%)" }} />
+                        <CircularProgress className="detail-subtask__spinner" size={14} sx={{ color: "hsl(240, 10%, 60%)" }} />
                     ) : step.done ? (
                         <FaCircleCheck size={16} color={category.text} />
                     ) : (
@@ -220,7 +220,7 @@ function GoalDetailPage() {
                                 bgcolor: category.soft, display: "grid", placeItems: "center",
                                 flexShrink: 0,
                             }}>
-                                <RoundedGoalIcon iconKey={goal.emoji} fallbackKey={category.iconKey}
+                                <RoundedGoalIcon className="goal-detail-page__icon" iconKey={goal.emoji} fallbackKey={category.iconKey}
                                     sx={{ color: category.text, fontSize: 24 }} />
                             </Box>
                             <Box className="goal-detail-page__title-text">
@@ -365,7 +365,7 @@ function GoalDetailPage() {
                                     items={steps.map((s) => s.stepId)}
                                     strategy={verticalListSortingStrategy}
                                 >
-                                    <Stack spacing={0.5}>
+                                    <Stack className="goal-detail-page__steps-list" spacing={0.5}>
                                         {steps.map((step, idx) => (
                                             <SortableDetailStep
                                                 key={step.stepId}

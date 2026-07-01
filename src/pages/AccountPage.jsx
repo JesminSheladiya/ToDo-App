@@ -8,8 +8,8 @@ import {
     TextField, Typography,
 } from "@mui/material";
 import { MdArrowBack } from "react-icons/md";
-import { FiTrash2, FiDownload, FiMail } from "react-icons/fi";
-import { IoCalendarNumberOutline } from "react-icons/io5";
+import { FiMail, FiDownload, FiTrash } from "react-icons/fi";
+import { IoCalendarNumberOutline, IoTimeOutline } from "react-icons/io5";
 import dayjs from "dayjs";
 
 const cardSx = {
@@ -95,54 +95,71 @@ function AccountPage() {
                     height: 4,
                     background: "linear-gradient(90deg, #7c3aed, #a855f7, #ec4899)",
                 }} />
-                <Box sx={{ p: { xs: 2.5, sm: 3 } }}>
+                <Box className="account-page__details-content" sx={{ p: { xs: 2.5, sm: 3 } }}>
                     <Typography className="account-page__details-heading" sx={headingSx}>
                         Account Details
                     </Typography>
-                    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: { xs: 2, sm: 4 } }}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                            <Box sx={{
-                                width: 38, height: 38, borderRadius: "10px",
-                                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-                                display: "grid", placeItems: "center", flexShrink: 0,
-                                boxShadow: "0 2px 6px rgb(124, 58, 237 / .25)",
+                    <Box className="account-page__details-grid" sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                        <Box className="account-page__detail-item" sx={{ maxWidth: '100%' }}>
+                            <Typography className="account-page__detail-label" sx={{ fontSize: 13, fontWeight: 600, color: "hsl(240, 8%, 40%)", textTransform: "capitalize", mb: 1 }}>
+                                Email
+                            </Typography>
+                            <Box className="account-page__detail-value" sx={{
+                                display: "inline-flex", alignItems: "center", gap: 1,
+                                bgcolor: "hsl(240, 20%, 98%)", borderRadius: "8px",
+                                px: 1.25, py: 0.75, maxWidth: "100%"
                             }}>
-                                <FiMail size={16} color="#fff" />
-                            </Box>
-                            <Box>
-                                <Typography sx={{ fontSize: 11, fontWeight: 700, color: "hsl(240, 8%, 45%)", lineHeight: 1.2, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                                    Email
-                                </Typography>
-                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 10%)", lineHeight: 1.3, mt: 0.15 }}>
+                                <FiMail size={18} color="hsl(240, 8%, 45%)" />
+                                <Typography className="account-page__detail-text" sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 15%)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                     {user?.email || "—"}
                                 </Typography>
                             </Box>
                         </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                            <Box sx={{
-                                width: 38, height: 38, borderRadius: "10px",
-                                background: "linear-gradient(135deg, #6b7280, #9ca3af)",
-                                display: "grid", placeItems: "center", flexShrink: 0,
-                                boxShadow: "0 2px 6px rgb(0 0 0 / .12)",
+                        <Box className="account-page__detail-item">
+                            <Typography className="account-page__detail-label" sx={{ fontSize: 13, fontWeight: 600, color: "hsl(240, 8%, 40%)", textTransform: "capitalize", mb: 1 }}>
+                                Account Created
+                            </Typography>
+                            <Box className="account-page__detail-value" sx={{
+                                display: "inline-flex", alignItems: "center", gap: 1,
+                                bgcolor: "hsl(240, 20%, 98%)", borderRadius: "8px",
+                                px: 1.25, py: 0.75,
                             }}>
-                                <IoCalendarNumberOutline size={17} color="#fff" />
+                                <IoCalendarNumberOutline size={18} color="hsl(240, 8%, 45%)" />
+                                <Typography className="account-page__detail-text" sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 15%)" }}>
+                                    {user?.createdAt ? dayjs(user.createdAt).format("DD MMM, YYYY") : "—"}
+                                </Typography>
                             </Box>
-                            <Box>
-                                <Typography sx={{ fontSize: 11, fontWeight: 700, color: "hsl(240, 8%, 45%)", lineHeight: 1.2, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                                    Account Created
+                        </Box>
+                        <Box className="account-page__detail-item">
+                            <Typography className="account-page__detail-label" sx={{ fontSize: 13, fontWeight: 600, color: "hsl(240, 8%, 40%)", textTransform: "capitalize", mb: 1 }}>
+                                Last Login
+                            </Typography>
+                            <Box className="account-page__detail-value" sx={{
+                                display: "inline-flex", alignItems: "center", gap: 1,
+                                bgcolor: "hsl(240, 20%, 98%)", borderRadius: "8px",
+                                px: 1.25, py: 0.75,
+                            }}>
+                                <IoCalendarNumberOutline size={18} color="hsl(240, 8%, 45%)" />
+                                <Typography className="account-page__detail-text" sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 15%)" }}>
+                                    {user?.lastLogin ? dayjs(user.lastLogin).format("DD MMM, YYYY") : "—"}
                                 </Typography>
-                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 10%)", lineHeight: 1.3, mt: 0.15 }}>
-                                    {user?.createdAt ? dayjs(user.createdAt).format("MMMM D, YYYY") : "—"}
-                                </Typography>
+                                {user?.lastLogin && (
+                                    <>
+                                        <Box className="account-page__detail-separator" sx={{ width: "1px", height: 16, bgcolor: "hsl(240, 10%, 85%)" }} />
+                                        <IoTimeOutline size={18} color="hsl(240, 8%, 45%)" />
+                                        <Typography className="account-page__detail-text" sx={{ fontSize: 14, fontWeight: 600, color: "hsl(240, 15%, 15%)" }}>
+                                            {dayjs(user.lastLogin).format("hh:mm A")}
+                                        </Typography>
+                                    </>
+                                )}
                             </Box>
                         </Box>
                     </Box>
                 </Box>
             </Box>
-
             <Box className="account-page__export-card" sx={cardSx}>
-                <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
-                    <Box>
+                <Box className="account-page__export-content" sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
+                    <Box className="account-page__export-text">
                         <Typography className="account-page__export-heading" sx={headingSx}>
                             Export Data
                         </Typography>
@@ -216,7 +233,7 @@ function AccountPage() {
                     className="account-page__delete-btn"
                     variant="contained"
                     onClick={() => setDeleteDialogOpen(true)}
-                    startIcon={<FiTrash2 className="account-page__delete-icon" size={16} />}
+                    startIcon={<FiTrash className="account-page__delete-icon" size={16} />}
                     sx={{
                         bgcolor: "#dc2626",
                         color: "#fff",
