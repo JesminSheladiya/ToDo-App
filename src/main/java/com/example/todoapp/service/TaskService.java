@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 @Service
 public class TaskService {
@@ -22,8 +24,42 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<Task> getAllTasks(Long userId) {
-        return taskRepository.findByUserIdOrderByTaskOrderAsc(userId);
+    public List<Task> getAllTasks(Long userId, String search, String category, String status, String sortBy, String sortOrder) {
+        Stream<Task> stream = taskRepository.findByUserIdOrderByTaskOrderAsc(userId).stream();
+
+        if (search != null && !search.isBlank()) {
+            stream = stream.filter(t -> t.getTitle().toLowerCase().contains(search.toLowerCase()));
+        }
+        if (category != null && !category.isBlank()) {
+            stream = stream.filter(t -> category.equals(t.getCategory()));
+        }
+        if (status != null && !status.isBlank()) {
+            stream = stream.filter(t -> status.equals(t.getStatus()));
+        }
+
+        return stream.sorted(getComparator(sortBy, sortOrder)).collect(Collectors.toList());
+    }
+
+    private Comparator<Task> getComparator(String sortBy, String sortOrder) {
+        Comparator<Task> comparator;
+        if (sortBy == null) sortBy = "taskOrder";
+        switch (sortBy) {
+            case "title":
+                comparator = Comparator.comparing(Task::getTitle, String.CASE_INSENSITIVE_ORDER);
+                break;
+            case "createdAt":
+                comparator = Comparator.comparing(Task::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+                break;
+            case "status":
+                comparator = Comparator.comparing(Task::getStatus);
+                break;
+            default:
+                comparator = Comparator.comparing(Task::getTaskOrder, Comparator.nullsLast(Comparator.naturalOrder()));
+        }
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
     }
 
     @Transactional
@@ -31,6 +67,7 @@ public class TaskService {
         task.setUserId(userId);
         normalizeTask(task);
         syncCompletion(task);
+        updateCompletedAt(task);
         task.setCreatedAt(LocalDateTime.now());
         return taskRepository.save(task);
     }
@@ -58,6 +95,7 @@ public class TaskService {
 
         normalizeTask(task);
         syncCompletion(task);
+        updateCompletedAt(task);
 
         return taskRepository.save(task);
     }
@@ -116,6 +154,16 @@ public class TaskService {
             if (!"paused".equals(task.getStatus())) {
                 task.setStatus(allDone ? "completed" : "active");
             }
+        }
+    }
+
+    private void updateCompletedAt(Task task) {
+        if (task.isCompleted()) {
+            if (task.getCompletedAt() == null) {
+                task.setCompletedAt(LocalDateTime.now());
+            }
+        } else {
+            task.setCompletedAt(null);
         }
     }
 }

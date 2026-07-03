@@ -55,6 +55,10 @@ public class Task {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime completedAt;
+
     @PrePersist
     public void prePersist() {
         if (createdAt == null) {

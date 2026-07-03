@@ -35,8 +35,13 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getTasks() {
-        return taskService.getAllTasks(getCurrentUserId());
+    public List<Task> getTasks(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false, defaultValue = "taskOrder") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder) {
+        return taskService.getAllTasks(getCurrentUserId(), search, category, status, sortBy, sortOrder);
     }
 
     @PostMapping

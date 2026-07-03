@@ -41,6 +41,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 
+    private LocalDateTime lastLogin;
+
     @PrePersist
     public void prePersist() {
         if (createdAt == null) {
