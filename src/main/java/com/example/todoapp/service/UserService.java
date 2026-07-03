@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +124,7 @@ public class UserService implements UserDetailsService {
         String token = jwtUtil.generateToken(user.getEmail());
 
         String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+        String lastLogin = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
 
         return AuthResponse.builder()
                 .token(token)
@@ -131,6 +133,7 @@ public class UserService implements UserDetailsService {
                 .dob(user.getDob())
                 .photo(user.getPhoto())
                 .createdAt(createdAt)
+                .lastLogin(lastLogin)
                 .build();
     }
 
@@ -149,9 +152,13 @@ public class UserService implements UserDetailsService {
             fail("email", "Invalid email or password");
         }
 
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
+
         String token = jwtUtil.generateToken(user.getEmail());
 
         String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+        String lastLogin = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
 
         return AuthResponse.builder()
                 .token(token)
@@ -160,6 +167,7 @@ public class UserService implements UserDetailsService {
                 .dob(user.getDob())
                 .photo(user.getPhoto())
                 .createdAt(createdAt)
+                .lastLogin(lastLogin)
                 .build();
     }
 
@@ -168,6 +176,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+        String lastLogin = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
 
         return AuthResponse.builder()
                 .token(null)
@@ -176,6 +185,7 @@ public class UserService implements UserDetailsService {
                 .dob(user.getDob())
                 .photo(user.getPhoto())
                 .createdAt(createdAt)
+                .lastLogin(lastLogin)
                 .build();
     }
 
@@ -292,6 +302,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+        String lastLogin = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
 
         return AuthResponse.builder()
                 .token(null)
@@ -300,6 +311,7 @@ public class UserService implements UserDetailsService {
                 .dob(user.getDob())
                 .photo(user.getPhoto())
                 .createdAt(createdAt)
+                .lastLogin(lastLogin)
                 .build();
     }
 
@@ -345,6 +357,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         String createdAt = user.getCreatedAt() != null ? user.getCreatedAt().toString() : null;
+        String lastLogin = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
 
         return AuthResponse.builder()
                 .token(null)
@@ -353,6 +366,7 @@ public class UserService implements UserDetailsService {
                 .dob(user.getDob())
                 .photo(null)
                 .createdAt(createdAt)
+                .lastLogin(lastLogin)
                 .build();
     }
 
