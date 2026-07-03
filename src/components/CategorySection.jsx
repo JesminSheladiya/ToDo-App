@@ -7,7 +7,7 @@ import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@
 import SortableGoalRow from "./SortableGoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 
-function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps }) {
+function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps, className }) {
     const [expanded, setExpanded] = useState(true);
     const stats = useMemo(() => {
         const total = goals.length;
@@ -53,7 +53,7 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
     }, [goals, onReorderGoals, category.key]);
 
     return (
-        <Box className="category-section"
+        <Box className={`category-section${className ? ` ${className}` : ""}`}
             sx={{
                 bgcolor: "#ffffff",
                 borderRadius: "16px",
@@ -231,6 +231,7 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
                             >
                                 {goals.map((goal, index) => (
                                     <SortableGoalRow
+                                        className="category-section__sortable-goal-row"
                                         key={goal.id}
                                         goal={goal}
                                         category={category}

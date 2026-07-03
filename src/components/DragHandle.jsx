@@ -1,10 +1,10 @@
 import { MdOutlineDragIndicator } from "react-icons/md";
 
-function DragHandle({ listeners, attributes, activatorRef, size = 28 }) {
+function DragHandle({ listeners, attributes, activatorRef, size = 28, className }) {
     const iconSize = size <= 22 ? 14 : 18;
     return (
         <button
-            className="drag-handle"
+            className={`drag-handle${className ? ` ${className}` : ""}`}
             ref={activatorRef}
             {...listeners}
             {...attributes}

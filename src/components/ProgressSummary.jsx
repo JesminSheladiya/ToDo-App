@@ -1,7 +1,7 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import Stack from "./Stack";
 
-function ProgressSummary({ stats, goals, categories }) {
+function ProgressSummary({ stats, goals, categories, className }) {
     const overallProgress = goals.length > 0
         ? Math.round(
             goals.reduce((sum, g) => {
@@ -19,7 +19,7 @@ function ProgressSummary({ stats, goals, categories }) {
     const pausedCount = goals.filter((g) => g.status === "paused").length;
 
     return (
-        <Box className="progress-summary" sx={{
+        <Box className={`progress-summary${className ? ` ${className}` : ""}`} sx={{
             bgcolor: "#ffffff",
             borderRadius: "16px",
             border: "1px solid hsl(240, 10%, 90%)",
@@ -39,12 +39,13 @@ function ProgressSummary({ stats, goals, categories }) {
 
             <Box className="progress-summary__content" sx={{ p: { xs: 2, sm: 2.5 } }}>
                 <Stack spacing={2} className="progress-summary__body">
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" className="progress-summary__header">
+                    <Stack direction="row" justifyContent="space-between" alignItems="flex-end" className="progress-summary__header">
                         <Typography className="progress-summary__title" sx={{
                             fontWeight: 700,
                             fontSize: 15,
                             color: "hsl(240, 15%, 10%)",
                             fontFamily: "'Sora', sans-serif",
+                            lineHeight: 1,
                         }}>
                             Overall Progress
                         </Typography>
@@ -83,17 +84,17 @@ function ProgressSummary({ stats, goals, categories }) {
                                 }
                             }}
                         />
-                        <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.75 }} className="progress-summary__stats">
+                        <Stack direction="row" justifyContent="space-between" sx={{ mt: 2 }} className="progress-summary__stats">
                             <Typography className="progress-summary__stat" sx={{
                                 fontSize: 12,
-                                color: "hsl(240, 8%, 50%)",
+                                color: "hsl(240, 8%, 10%)",
                                 fontWeight: 500,
                             }}>
                                 {stats.completed}/{stats.total} goals completed
                             </Typography>
                             <Typography className="progress-summary__stat" sx={{
                                 fontSize: 12,
-                                color: "hsl(240, 8%, 50%)",
+                                color: "hsl(240, 8%, 10%)",
                                 fontWeight: 500,
                             }}>
                                 {doneSteps}/{totalSteps} steps done

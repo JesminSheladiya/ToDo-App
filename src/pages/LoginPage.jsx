@@ -79,16 +79,78 @@ function LoginPage() {
                 boxShadow: "0 4px 24px rgb(0 0 0 / .06)",
                 border: "1px solid hsl(240, 10%, 90%)",
                 p: { xs: 3, sm: 4.5 },
+                my: 4,
             }}>
-                <Box className="login-page__header" sx={{ textAlign: "center", mb: 4 }}>
+                <Box className="login-page__tabs" sx={{
+                    display: "flex",
+                    bgcolor: "hsl(240, 10%, 92%)",
+                    border: "1px solid hsl(240, 10%, 90%)",
+                    borderRadius: "14px",
+                    p: "5px",
+                    mb: 3,
+                    boxShadow: "inset 0 2px 6px rgb(0 0 0 / .08), 0 1px 2px rgb(255 255 255 / .6)",
+                }}>
+                    <Box
+                        className="login-page__tab login-page__tab--active"
+                        sx={{
+                            flex: 1,
+                            py: 1.1,
+                            borderRadius: "10px",
+                            background: "linear-gradient(145deg, #8b4cf6, #7c3aed)",
+                            color: "#fff",
+                            fontSize: 14,
+                            fontWeight: 600,
+                            textAlign: "center",
+                            boxShadow: "0 4px 14px rgb(124, 58, 237 / .35), 0 1px 3px rgb(124, 58, 237 / .2), inset 0 1px 1px rgb(255 255 255 / .15)",
+                            transform: "translateY(-1px)",
+                            letterSpacing: 0.3,
+                            transition: "all 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+                            "@keyframes fadeIn": {
+                                "0%": { opacity: 0, transform: "translateY(-1px) scale(0.95)" },
+                                "100%": { opacity: 1, transform: "translateY(-1px) scale(1)" },
+                            },
+                            animation: "fadeIn 0.35s ease forwards",
+                        }}
+                    >
+                        Sign in
+                    </Box>
+                    <Box
+                        className="login-page__tab"
+                        component="button"
+                        onClick={() => navigate("/register", { replace: true })}
+                        sx={{
+                            flex: 1,
+                            py: 1.1,
+                            border: "none",
+                            borderRadius: "10px",
+                            bgcolor: "transparent",
+                            color: "hsl(240, 8%, 50%)",
+                            fontSize: 14,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            transition: "all 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+                            fontFamily: "inherit",
+                            "&:hover": {
+                                color: "#7c3aed",
+                            },
+                            "&:active": {
+                                transform: "scale(0.96)",
+                            },
+                        }}
+                    >
+                        Sign up
+                    </Box>
+                </Box>
+
+                <Box className="login-page__header" sx={{ textAlign: "center", mb: 3 }}>
                     <Typography className="login-page__title" sx={{
                         fontFamily: "'Sora', sans-serif",
                         fontWeight: 800,
-                        fontSize: 24,
+                        fontSize: 22,
                         color: "hsl(240, 15%, 10%)",
                         mb: 0.5,
                     }}>
-                        Welcome!
+                        Welcome back
                     </Typography>
                     <Typography className="login-page__subtitle" sx={{
                         fontSize: 14,
@@ -135,7 +197,7 @@ function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         variant="outlined"
                         size="small"
-                        sx={{ mb: 3, ...inputSx }}
+                        sx={{ mb: 2, ...inputSx }}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -159,7 +221,7 @@ function LoginPage() {
                         fullWidth
                         variant="contained"
                         disabled={disabled || loading}
-                        startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                        startIcon={loading ? <CircularProgress className="login-page__spinner" size={18} color="inherit" /> : null}
                         sx={{
                             background: "linear-gradient(135deg, #7c3aed, #a855f7)",
                             color: "#fff",
@@ -194,18 +256,6 @@ function LoginPage() {
                         Forgot Password?
                     </Link>
                 </Box>
-
-                <Typography className="login-page__register-text" sx={{ mt: 2, textAlign: "center", fontSize: 14, color: "hsl(240, 8%, 50%)" }}>
-                    Don't have an account?{" "}
-                    <Link className="login-page__register-link" component="button" type="button" onClick={() => navigate("/register", { replace: true })} sx={{
-                        color: "#7c3aed",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        "&:hover": { textDecoration: "underline" },
-                    }}>
-                        Register
-                    </Link>
-                </Typography>
             </Box>
         </Box >
     );

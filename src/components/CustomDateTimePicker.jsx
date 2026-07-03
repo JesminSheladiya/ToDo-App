@@ -157,6 +157,7 @@ export default function CustomDateTimePicker({
     gradientColor,
     softColor = SOFT_FALLBACK,
     label = "Target Date & Time",
+    className,
 }) {
     const [open, setOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("date");
@@ -281,7 +282,7 @@ export default function CustomDateTimePicker({
     });
 
     return (
-        <Box ref={anchorRef} className="custom-date-time-picker">
+        <Box ref={anchorRef} className={`custom-date-time-picker${className ? ` ${className}` : ""}`}>
             <Box className="custom-date-time-picker__trigger"
                 onClick={handleToggle}
                 sx={{

@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode className="index__strict-mode">
     <Provider store={store} className="index__provider">
-      <App />
+      <App className="index__app" />
     </Provider>
   </React.StrictMode>
 );

@@ -6,6 +6,17 @@ export const fetchGoals = createAsyncThunk("goals/fetchGoals", async () => {
     return Array.isArray(response?.data) ? response.data : [];
 });
 
+export const fetchFilteredGoals = createAsyncThunk("goals/fetchFilteredGoals", async (filters) => {
+    const params = {};
+    if (filters?.search) params.search = filters.search;
+    if (filters?.category) params.category = filters.category;
+    if (filters?.status) params.status = filters.status;
+    if (filters?.sortBy) params.sortBy = filters.sortBy;
+    if (filters?.sortOrder) params.sortOrder = filters.sortOrder;
+    const response = await api.get("/tasks", { params });
+    return Array.isArray(response?.data) ? response.data : [];
+});
+
 export const createGoal = createAsyncThunk("goals/createGoal", async (goalData) => {
     const response = await api.post("/tasks", goalData);
     return response.data;
@@ -31,6 +42,8 @@ const goalsSlice = createSlice({
     initialState: {
         items: [],
         loading: true,
+        filteredItems: [],
+        filteredLoading: false,
         saving: false,
         updating: [],
         deleting: []
@@ -62,6 +75,10 @@ const goalsSlice = createSlice({
             state.saving = false;
             state.updating = [];
             state.deleting = [];
+        },
+        clearFiltered(state) {
+            state.filteredItems = [];
+            state.filteredLoading = false;
         }
     },
     extraReducers: (builder) => {
@@ -75,6 +92,16 @@ const goalsSlice = createSlice({
             })
             .addCase(fetchGoals.rejected, (state) => {
                 state.loading = false;
+            })
+            .addCase(fetchFilteredGoals.pending, (state) => {
+                state.filteredLoading = true;
+            })
+            .addCase(fetchFilteredGoals.fulfilled, (state, action) => {
+                state.filteredItems = action.payload;
+                state.filteredLoading = false;
+            })
+            .addCase(fetchFilteredGoals.rejected, (state) => {
+                state.filteredLoading = false;
             })
             .addCase(createGoal.pending, (state) => {
                 state.saving = true;
@@ -121,5 +148,5 @@ const goalsSlice = createSlice({
     }
 });
 
-export const { reorderGoals, reorderSteps, clearProcessing } = goalsSlice.actions;
+export const { reorderGoals, reorderSteps, clearProcessing, clearFiltered } = goalsSlice.actions;
 export default goalsSlice.reducer;

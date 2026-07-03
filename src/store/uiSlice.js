@@ -14,9 +14,6 @@ const uiSlice = createSlice({
         editingGoal: null,
         draft: { ...emptyDraft },
         newStepText: "",
-        query: "",
-        categoryFilter: "all",
-        statusFilter: "all",
         activeCategory: "all",
     },
     reducers: {
@@ -75,15 +72,6 @@ const uiSlice = createSlice({
                 (step) => step.stepId !== id && step._tempId !== id
             );
         },
-        setQuery(state, action) {
-            state.query = action.payload;
-        },
-        setCategoryFilter(state, action) {
-            state.categoryFilter = action.payload;
-        },
-        setStatusFilter(state, action) {
-            state.statusFilter = action.payload;
-        },
         setActiveCategory(state, action) {
             state.activeCategory = action.payload;
         },
@@ -101,9 +89,6 @@ export const {
     setNewStepText,
     addDraftStep,
     removeDraftStep,
-    setQuery,
-    setCategoryFilter,
-    setStatusFilter,
     setActiveCategory,
     clearActiveCategory,
 } = uiSlice.actions;

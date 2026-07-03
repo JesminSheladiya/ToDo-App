@@ -98,6 +98,7 @@ const authSlice = createSlice({
         token: savedToken || null,
         loading: false,
         error: null,
+
     },
     reducers: {
         logout(state) {

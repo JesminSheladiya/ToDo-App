@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import confetti from "canvas-confetti";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -15,7 +16,7 @@ import { getStepProgress } from "../utils/goals";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import DragHandle from "./DragHandle";
 
-function SortableStep({ step, category, onToggleStep, goal, index }) {
+function SortableStep({ step, category, onToggleStep, goal, index, className, onAllStepsComplete }) {
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -30,7 +31,7 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
     };
 
     return (
-        <div ref={setNodeRef} style={style} className={isDragging ? "sortable-step sortable-step--dragging" : "sortable-step group"}>
+        <div ref={setNodeRef} style={style} className={`${isDragging ? "sortable-step sortable-step--dragging" : "sortable-step group"}${className ? ` ${className}` : ""}`}>
             <div className="sortable-step__content" style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -39,6 +40,7 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
             }}>
                 <Box className="sortable-step__drag" sx={{ mt: 0.25 }}>
                     <DragHandle
+                        className="goal-row__drag-handle"
                         activatorRef={setActivatorNodeRef}
                         listeners={listeners}
                         attributes={attributes}
@@ -47,7 +49,12 @@ function SortableStep({ step, category, onToggleStep, goal, index }) {
                 </Box>
                 <IconButton
                     className="sortable-step__toggle"
-                    onClick={() => onToggleStep(goal, step.stepId)}
+                    onClick={(e) => {
+                        if (!step.done && goal.steps.every((s) => s.done || s.stepId === step.stepId)) {
+                            onAllStepsComplete?.(e.currentTarget);
+                        }
+                        onToggleStep(goal, step.stepId);
+                    }}
                     size="small"
                     disableRipple
                     sx={{
@@ -97,6 +104,28 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
     const [expanded, setExpanded] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const mobileAnchorRef = useRef(null);
+    const checkboxElRef = useRef(null);
+
+    const setCheckboxRef = useCallback((node) => {
+        checkboxElRef.current = node;
+    }, []);
+
+    const fireConfetti = useCallback((targetEl) => {
+        const el = targetEl || checkboxElRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+        const colors = ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"];
+        confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x, y }, colors, disableForReducedMotion: true });
+        confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors, disableForReducedMotion: true });
+    }, []);
+
+    const handleCheckboxComplete = useCallback(() => {
+        const wasCompleted = goal.completed || goal.status === "completed";
+        if (!wasCompleted) fireConfetti();
+        onToggleGoal(goal);
+    }, [goal, onToggleGoal, fireConfetti]);
 
     const progress = getStepProgress(goal);
     const completed = goal.status === "completed" || goal.completed;
@@ -148,15 +177,17 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
                     }}
                 >
                     <DragHandle
+                        className="goal-row__drag-handle"
                         activatorRef={setActivatorNodeRef}
                         listeners={listeners}
                         attributes={attributes}
                     />
 
                     <Checkbox
+                        ref={setCheckboxRef}
                         className="goal-row__checkbox"
                         checked={completed}
-                        onChange={() => onToggleGoal(goal)}
+                        onChange={handleCheckboxComplete}
                         disableRipple
                         disabled={paused}
                         sx={{
@@ -415,6 +446,7 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
                                             className="goal-row__menu-item goal-row__menu-complete"
                                             onClick={() => {
                                                 if (!paused) {
+                                                    if (!completed) confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
                                                     onToggleGoal(goal);
                                                     setMobileMenuOpen(false);
                                                 }
@@ -582,12 +614,14 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
                                 >
                                     {goal.steps.map((step, idx) => (
                                         <SortableStep
+                                            className="goal-row__sortable-step"
                                             key={step.stepId}
                                             step={step}
                                             category={category}
                                             onToggleStep={onToggleStep}
                                             goal={goal}
                                             index={idx}
+                                            onAllStepsComplete={fireConfetti}
                                         />
                                     ))}
                                 </SortableContext>

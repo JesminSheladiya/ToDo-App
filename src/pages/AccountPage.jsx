@@ -280,7 +280,7 @@ function AccountPage() {
                     lineHeight: 1.5,
                     mb: 2.5,
                 }}>
-                    This will permanently delete your account and all associated data. Type <strong>delete</strong> to confirm.
+                    This will permanently delete your account and all associated data. Type <strong className="account-page__strong-delete">delete</strong> to confirm.
                 </Typography>
                 <TextField
                     className="account-page__delete-confirm-input"

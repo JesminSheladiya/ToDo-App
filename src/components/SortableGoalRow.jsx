@@ -1,8 +1,9 @@
 import GoalRow from "./GoalRow";
 
-function SortableGoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast }) {
+function SortableGoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast, className }) {
+    const combinedClassName = `sortable-goal-row${className ? ` ${className}` : ""}`;
     return (
-        <GoalRow className="sortable-goal-row"
+        <GoalRow className={combinedClassName}
             goal={goal}
             category={category}
             onViewDetails={onViewDetails}

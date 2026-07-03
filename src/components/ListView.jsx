@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
-import { Box, ClickAwayListener, IconButton, InputAdornment, Popper, TextField, Tooltip, Typography } from "@mui/material";
+import { useRef, useState, useCallback } from "react";
+import confetti from "canvas-confetti";
+import { Box, ClickAwayListener, IconButton, InputAdornment, Popper, Skeleton, TextField, Tooltip, Typography } from "@mui/material";
 import { PiEyeBold, PiMagnifyingGlassBold, PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
@@ -9,13 +10,13 @@ import { FiTrash } from "react-icons/fi";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
-function SelectDropdown({ value, options, onChange, sx }) {
+function SelectDropdown({ value, options, onChange, sx, className }) {
     const [open, setOpen] = useState(false);
     const anchorRef = useRef(null);
     const selected = options.find((o) => o.value === value);
 
     return (
-        <ClickAwayListener className="list-view__select" onClickAway={() => setOpen(false)}>
+        <ClickAwayListener className={`list-view__select${className ? ` ${className}` : ""}`} onClickAway={() => setOpen(false)}>
             <Box ref={anchorRef} sx={{ position: "relative", ...sx }} className="list-view__select-trigger">
                 <Box
                     onClick={() => setOpen((v) => !v)}
@@ -83,9 +84,19 @@ function SelectDropdown({ value, options, onChange, sx }) {
     );
 }
 
-function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle }) {
+function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, loading, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle, className }) {
     const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+
+    const fireConfetti = useCallback((element, categoryColor) => {
+        if (!element) return;
+        const rect = element.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+        const colors = ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"];
+        confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x, y }, colors, disableForReducedMotion: true });
+        confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors, disableForReducedMotion: true });
+    }, []);
 
     const goalsWithoutCategory = allGoals.filter((g) => {
         const matchesQuery = g.title.toLowerCase().includes(query.toLowerCase());
@@ -107,7 +118,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
         paused: goalsWithoutStatus.filter((g) => g.status === "paused").length,
     };
     return (
-        <Stack spacing={2} className="list-view">
+        <Stack spacing={2} className={`list-view${className ? ` ${className}` : ""}`}>
             <Box className="list-view__toolbar" sx={{
                 display: "flex",
                 gap: 1,
@@ -167,7 +178,35 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                 />
             </Box>
 
-            {goals.length === 0 ? (
+            {loading ? (
+                <Box className="list-view__skeleton" sx={{
+                    bgcolor: "#ffffff",
+                    borderRadius: "16px",
+                    border: "1px solid hsl(240, 10%, 90%)",
+                    overflow: "hidden",
+                }}>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <Box key={i} className="list-view__skeleton-row" sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                            px: { xs: 2, sm: 2.5 },
+                            py: 1.5,
+                            borderBottom: i < 5 ? "1px solid hsl(240, 10%, 93%)" : "none",
+                        }}>
+                            <Skeleton className="list-view__skeleton-circle" variant="circular" width={16} height={16} />
+                            <Skeleton className="list-view__skeleton-icon" variant="rounded" width={28} height={28} sx={{ borderRadius: "8px" }} />
+                            <Box className="list-view__skeleton-info" sx={{ flex: 1, minWidth: 0 }}>
+                                <Skeleton className="list-view__skeleton-text" variant="text" width="55%" height={16} />
+                            </Box>
+                            <Skeleton className="list-view__skeleton-badge" variant="rounded" width={72} height={22} sx={{ borderRadius: "8px" }} />
+                            <Skeleton className="list-view__skeleton-action" variant="rounded" width={32} height={32} sx={{ borderRadius: "8px" }} />
+                            <Skeleton className="list-view__skeleton-action" variant="rounded" width={32} height={32} sx={{ borderRadius: "8px" }} />
+                            <Skeleton className="list-view__skeleton-action" variant="rounded" width={32} height={32} sx={{ borderRadius: "8px" }} />
+                        </Box>
+                    ))}
+                </Box>
+            ) : goals.length === 0 ? (
                 <Box className="list-view__empty" sx={{
                     bgcolor: "#ffffff",
                     borderRadius: "16px",
@@ -245,7 +284,10 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                     minHeight: 52,
                                 }}>
                                     <IconButton
-                                        onClick={() => onToggleGoal(goal)}
+                                        onClick={(e) => {
+                                            if (!completed && !paused) fireConfetti(e.currentTarget, category.text);
+                                            onToggleGoal(goal);
+                                        }}
                                         size="small"
                                         className="list-view__toggle-btn"
                                         sx={{
@@ -441,7 +483,7 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                                                         View Details
                                                     </Box>
                                                     <Box
-                                                        onClick={() => { if (goal.status !== "paused") { onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
+                                                        onClick={() => { if (goal.status !== "paused") { if (!completed) confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true }); onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
                                                         className="list-view__dropdown-item"
                                                         sx={{
                                                             px: 1.5, py: 1, fontSize: 13, fontWeight: 500,

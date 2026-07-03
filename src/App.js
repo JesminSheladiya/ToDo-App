@@ -73,8 +73,8 @@ function App() {
     return (
         <BrowserRouter className="app__browser-router">
             <LocalizationProvider dateAdapter={AdapterDayjs} className="app__localization-provider">
-                <AppRoutes />
-                <ToastContainer position="bottom-right" autoClose={1500} hideProgressBar={false} newestOnTop closeOnClick={false} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" transition={Zoom} />
+                <AppRoutes className="app__routes" />
+                <ToastContainer className="app__toast-container" position="bottom-right" autoClose={1500} hideProgressBar={false} newestOnTop closeOnClick={false} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" transition={Zoom} />
             </LocalizationProvider>
         </BrowserRouter>
     );

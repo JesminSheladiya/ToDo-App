@@ -1,17 +1,60 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import ListView from "../components/ListView";
 import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
-import { setCategoryFilter, setQuery, setStatusFilter } from "../store/uiSlice";
+import { fetchFilteredGoals } from "../store/goalsSlice";
 import { useGoalActions } from "../hooks/useGoalActions";
 
 function ListPage() {
     const dispatch = useDispatch();
-    const goals = useSelector((state) => state.goals.items);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const goals = useSelector((state) => state.goals.filteredItems);
+    const allGoals = useSelector((state) => state.goals.items);
+    const loading = useSelector((state) => state.goals.filteredLoading);
     const categories = useSelector((state) => state.config.categories);
-    const query = useSelector((state) => state.ui.query);
-    const categoryFilter = useSelector((state) => state.ui.categoryFilter);
-    const statusFilter = useSelector((state) => state.ui.statusFilter);
+
+    const query = searchParams.get("search") || "";
+    const categoryFilter = searchParams.get("category") || "all";
+    const statusFilter = searchParams.get("status") || "all";
+
+    const [inputValue, setInputValue] = useState(query);
+    const debounceRef = useRef(null);
+
+    useEffect(() => {
+        const filters = {};
+        if (query) filters.search = query;
+        if (categoryFilter && categoryFilter !== "all") filters.category = categoryFilter;
+        if (statusFilter && statusFilter !== "all") filters.status = statusFilter;
+        dispatch(fetchFilteredGoals(Object.keys(filters).length > 0 ? filters : undefined));
+    }, [query, categoryFilter, statusFilter, dispatch]);
+
+    useEffect(() => {
+        setInputValue(query);
+    }, [query]);
+
+    const handleQueryChange = useCallback((value) => {
+        setInputValue(value);
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+            setSearchParams((prev) => {
+                const next = new URLSearchParams(prev);
+                if (value) next.set("search", value);
+                else next.delete("search");
+                return next;
+            }, { replace: true });
+        }, 350);
+    }, [setSearchParams]);
+
+    const updateFilter = useCallback((key, value) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            if (value && value !== "all") next.set(key, value);
+            else next.delete(key);
+            return next;
+        }, { replace: true });
+    }, [setSearchParams]);
+
     const {
         handleOpenDetail,
         handleOpenEdit,
@@ -23,29 +66,20 @@ function ListPage() {
         closeDeleteDialog,
     } = useGoalActions();
 
-    const filteredGoals = useMemo(() => {
-        return goals.filter((goal) => {
-            const matchesQuery = goal.title.toLowerCase().includes(query.toLowerCase());
-            const matchesCategory = categoryFilter === "all" || goal.category === categoryFilter;
-            const matchesStatus = statusFilter === "all" || goal.status === statusFilter;
-
-            return matchesQuery && matchesCategory && matchesStatus;
-        });
-    }, [goals, query, categoryFilter, statusFilter]);
-
     return (
         <>
             <ListView
-                className="list-page"
-                goals={filteredGoals}
-                allGoals={goals}
+                className="list-page__list-view"
+                loading={loading}
+                goals={goals}
+                allGoals={allGoals}
                 categories={categories}
-                query={query}
+                query={inputValue}
                 categoryFilter={categoryFilter}
                 statusFilter={statusFilter}
-                onQueryChange={(value) => dispatch(setQuery(value))}
-                onCategoryFilterChange={(value) => dispatch(setCategoryFilter(value))}
-                onStatusFilterChange={(value) => dispatch(setStatusFilter(value))}
+                onQueryChange={handleQueryChange}
+                onCategoryFilterChange={(value) => updateFilter("category", value)}
+                onStatusFilterChange={(value) => updateFilter("status", value)}
                 onViewDetails={handleOpenDetail}
                 onEdit={handleOpenEdit}
                 onDelete={handleDelete}
@@ -53,6 +87,7 @@ function ListPage() {
                 onPauseToggle={handlePauseToggle}
             />
             <ConfirmDeleteDialog
+                className="list-page__confirm-delete-dialog"
                 open={!!deleteDialog}
                 onClose={closeDeleteDialog}
                 onConfirm={confirmDelete}

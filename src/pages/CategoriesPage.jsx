@@ -48,6 +48,7 @@ function CategoriesPage() {
         <Stack className="categories-page" spacing={2.5}>
             {filteredCategories.map((category) => (
                 <CategorySection
+                    className="categories-page__category-section"
                     key={category.key}
                     category={category}
                     goals={goals
@@ -66,6 +67,7 @@ function CategoriesPage() {
                 />
             ))}
             <ConfirmDeleteDialog
+                className="categories-page__confirm-delete-dialog"
                 open={!!deleteDialog}
                 onClose={closeDeleteDialog}
                 onConfirm={confirmDelete}

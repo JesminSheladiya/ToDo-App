@@ -519,6 +519,7 @@ function GoalFormPage() {
                             Target Date & Time
                         </Typography>
                         <CustomDateTimePicker
+                            className="goal-form-page__date-time-picker"
                             value={{ date: draft.targetDate, time: draft.targetTime }}
                             onChange={({ date, time }) => updateDraft({ targetDate: date, targetTime: time })}
                             accentTextColor={category?.text || "#7c3aed"}
@@ -554,6 +555,7 @@ function GoalFormPage() {
                                             const isEditingStep = editingStep && (editingStep.stepId === stepId || editingStep._tempId === stepId);
                                             return (
                                                 <SortableFormStep
+                                                    className="goal-form-page__sortable-step"
                                                     key={stepId}
                                                     step={step}
                                                     stepId={stepId}
@@ -764,7 +766,7 @@ function GoalFormPage() {
     );
 }
 
-function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditingStepText, handleSaveEditStep, handleCancelEditStep, handleStartEditStep, handleRemoveStep, category, idx }) {
+function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditingStepText, handleSaveEditStep, handleCancelEditStep, handleStartEditStep, handleRemoveStep, category, idx, className }) {
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -773,7 +775,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
     return (
         <Box
             ref={setNodeRef}
-            className={`goal-form-page__step ${isDragging ? "" : "group"}`}
+            className={`goal-form-page__step ${isDragging ? "" : "group"}${className ? ` ${className}` : ""}`}
             style={{
                 transform: CSS.Transform.toString(transform),
                 transition: isDragging ? transition : "none",
@@ -796,6 +798,7 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
             }}
         >
             <DragHandle
+                className="goal-form-page__drag-handle"
                 activatorRef={setActivatorNodeRef}
                 listeners={listeners}
                 attributes={attributes}
@@ -853,6 +856,8 @@ function SortableFormStep({ step, stepId, isEditing, editingStepText, setEditing
                     fontSize: 13,
                     fontWeight: 500,
                     color: "hsl(240, 15%, 15%)",
+                    wordBreak: "break-word",
+                    lineHeight: 1.2,
                 }}>
                     {step.text}
                 </Typography>

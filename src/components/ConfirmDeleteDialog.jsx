@@ -8,9 +8,10 @@ export default function ConfirmDeleteDialog({
     confirmLabel = "Delete",
     loading = false,
     error = null,
+    className,
 }) {
     return (
-        <Dialog className="confirm-delete-dialog__dialog"
+        <Dialog className={`confirm-delete-dialog__dialog${className ? ` ${className}` : ""}`}
             open={open}
             onClose={loading ? undefined : onClose}
             slotProps={{

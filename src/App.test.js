@@ -27,7 +27,7 @@ jest.mock("react-router-dom", () => ({
 test("renders goal tracker dashboard", async () => {
   render(
     <Provider store={store}>
-      <App />
+      <App className="app-test__app" />
     </Provider>
   );
   expect(screen.getAllByText(/Dashboard/i).length).toBeGreaterThanOrEqual(1);

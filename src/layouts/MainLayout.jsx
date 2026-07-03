@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
-    Box, Button, CircularProgress, Dialog, Drawer, IconButton,
+    Box, Button, Dialog, Drawer, IconButton,
     List, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -20,10 +19,19 @@ import ProgressSummary from "../components/ProgressSummary";
 import Stack from "../components/Stack";
 import { useGoalActions } from "../hooks/useGoalActions";
 import RoundedGoalIcon from "../components/RoundedGoalIcon";
+import DashboardSkeleton from "../components/DashboardSkeleton";
 
 const SIDEBAR_WIDTH = 260;
 
-function Sidebar({ categories, onClose }) {
+function getGreeting() {
+    const hour = new Date().getHours();
+    if (hour >= 4 && hour < 12) return "Good Morning";
+    if (hour >= 12 && hour < 17) return "Good Afternoon";
+    if (hour >= 17 && hour < 24) return "Good Evening";
+    return "Welcome";
+}
+
+function Sidebar({ categories, onClose, className }) {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -68,10 +76,9 @@ function Sidebar({ categories, onClose }) {
 
     const handleConfirmLogout = () => {
         dispatch(logout());
-        toast.success("Signed out successfully");
-        navigate("/login");
         setLogoutDialogOpen(false);
         onClose?.();
+        window.location.href = "/login";
     };
 
     const handleCancelLogout = () => {
@@ -79,7 +86,7 @@ function Sidebar({ categories, onClose }) {
     };
 
     return (
-        <><Box className="sidebar"
+        <><Box className={`sidebar${className ? ` ${className}` : ""}`}
             sx={{
                 width: SIDEBAR_WIDTH,
                 height: "100dvh",
@@ -515,6 +522,7 @@ function MainLayout() {
     const goals = useSelector((state) => state.goals.items);
     const categories = useSelector((state) => state.config.categories);
     const loading = useSelector((state) => state.goals.loading);
+    const user = useSelector((state) => state.auth.user);
     const { handleOpenCreate } = useGoalActions();
 
     useEffect(() => {
@@ -547,6 +555,7 @@ function MainLayout() {
 
     const sidebar = (
         <Sidebar
+            className="main-layout__sidebar"
             categories={categories}
             onClose={() => setMobileOpen(false)}
         />
@@ -606,18 +615,18 @@ function MainLayout() {
                             </IconButton>
                         )}
                         <Box className="main-layout__title" sx={{ flex: 1 }}>
-                            <Typography className="main-layout__page-title"
+                            <Typography className="main-layout__greeting"
                                 component="h1"
                                 sx={{
                                     fontFamily: "'Sora', sans-serif",
-                                    fontSize: { xs: 22, sm: 26 },
+                                    fontSize: { xs: 18, sm: 24 },
                                     fontWeight: 800,
                                     color: "hsl(240, 15%, 10%)",
                                     lineHeight: 1.15,
                                     letterSpacing: "-0.03em",
                                 }}
                             >
-                                {location.pathname === "/list" ? "All Goals" : "Dashboard"}
+                                {getGreeting()}, {user?.name?.split(" ")[0] || "there"}!
                             </Typography>
                             <Typography className="main-layout__subtitle" sx={{
                                 mt: 0.25,
@@ -710,19 +719,10 @@ function MainLayout() {
                         <Outlet />
                     ) : (
                         <Stack className="main-layout__stack" spacing={2.5}>
-                            <ProgressSummary stats={stats} goals={goals} categories={categories} />
+                            <ProgressSummary className="main-layout__progress-summary" stats={stats} goals={goals} categories={categories} />
 
                             {loading ? (
-                                <Box className="main-layout__loading" sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    py: 10,
-                                }}>
-                                    <CircularProgress className="main-layout__spinner"
-                                        size={36}
-                                        sx={{ color: "#7c3aed" }}
-                                    />
-                                </Box>
+                                <DashboardSkeleton className="main-layout__dashboard-skeleton" />
                             ) : goals.length === 0 ? (
                                 <Box className="main-layout__empty"
                                     sx={{
