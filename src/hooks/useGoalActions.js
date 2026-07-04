@@ -109,6 +109,23 @@ export function useGoalActions() {
         );
     }, [dispatch]);
 
+    const handleCompleteGoal = useCallback((goal) => {
+        if (goal.completed || goal.status === "completed") return;
+        const steps = goal.steps || [];
+        stepSnapshots.set(goal.id, steps.map((s) => ({ ...s })));
+        const nextSteps = steps.map((step) => ({ ...step, done: true }));
+        const nextGoal = { ...goal, steps: nextSteps, completed: true, status: "completed" };
+
+        toast.promise(
+            dispatch(updateGoal(nextGoal)).unwrap(),
+            {
+                pending: "Updating...",
+                success: "Goal completed!",
+                error: "Failed to update goal"
+            }
+        );
+    }, [dispatch]);
+
     const handleToggleStep = useCallback((goal, stepId) => {
         const nextGoal = {
             ...goal,
@@ -132,6 +149,7 @@ export function useGoalActions() {
         deleteDialog,
         handleToggleGoal,
         handleToggleStep,
-        handlePauseToggle
+        handlePauseToggle,
+        handleCompleteGoal,
     };
 }

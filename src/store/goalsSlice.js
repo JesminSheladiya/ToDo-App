@@ -125,6 +125,10 @@ const goalsSlice = createSlice({
                 if (index !== -1) {
                     state.items[index] = action.payload;
                 }
+                const fIndex = state.filteredItems.findIndex((g) => g.id === action.payload.id);
+                if (fIndex !== -1) {
+                    state.filteredItems[fIndex] = action.payload;
+                }
                 state.saving = false;
                 state.updating = state.updating.filter((id) => id !== action.payload.id);
             })
@@ -140,6 +144,7 @@ const goalsSlice = createSlice({
             })
             .addCase(deleteGoal.fulfilled, (state, action) => {
                 state.items = state.items.filter((g) => g.id !== action.payload);
+                state.filteredItems = state.filteredItems.filter((g) => g.id !== action.payload);
                 state.deleting = state.deleting.filter((id) => id !== action.payload);
             })
             .addCase(deleteGoal.rejected, (state, action) => {
