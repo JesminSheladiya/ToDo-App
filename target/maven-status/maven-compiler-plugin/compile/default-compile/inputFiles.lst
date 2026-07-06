@@ -11,6 +11,7 @@
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/AuthResponse.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/CategoryDto.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/ForgotPasswordRequest.java
+/Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/PaginatedResponse.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/RegisterRequest.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/ReorderDto.java
 /Users/fenmac2/Jesmin/ToDo Project/ToDo App/src/main/java/com/example/todoapp/dto/ResetPasswordRequest.java

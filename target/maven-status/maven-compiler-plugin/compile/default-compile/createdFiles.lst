@@ -13,6 +13,7 @@ com/example/todoapp/controller/TaskController.class
 com/example/todoapp/entity/TaskStep.class
 com/example/todoapp/TodoBackendApplication.class
 com/example/todoapp/service/UserService$OtpData.class
+com/example/todoapp/dto/PaginatedResponse.class
 com/example/todoapp/controller/AuthController.class
 com/example/todoapp/exception/ValidationException.class
 com/example/todoapp/dto/ReorderDto$StepOrder.class
