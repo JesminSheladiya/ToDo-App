@@ -1,5 +1,6 @@
 package com.example.todoapp.service;
 
+import com.example.todoapp.dto.PaginatedResponse;
 import com.example.todoapp.dto.ReorderDto;
 import com.example.todoapp.entity.Task;
 import com.example.todoapp.entity.TaskStep;
@@ -24,7 +25,7 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<Task> getAllTasks(Long userId, String search, String category, String status, String sortBy, String sortOrder) {
+    public PaginatedResponse<Task> getAllTasks(Long userId, String search, String category, String status, String sortBy, String sortOrder, int page, int size) {
         Stream<Task> stream = taskRepository.findByUserIdOrderByTaskOrderAsc(userId).stream();
 
         if (search != null && !search.isBlank()) {
@@ -37,7 +38,18 @@ public class TaskService {
             stream = stream.filter(t -> status.equals(t.getStatus()));
         }
 
-        return stream.sorted(getComparator(sortBy, sortOrder)).collect(Collectors.toList());
+        List<Task> allFiltered = stream.sorted(getComparator(sortBy, sortOrder)).collect(Collectors.toList());
+
+        int totalElements = allFiltered.size();
+        int totalPages = size > 0 ? (int) Math.ceil((double) totalElements / size) : 0;
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, totalElements);
+
+        List<Task> pageContent = (fromIndex < totalElements)
+                ? allFiltered.subList(fromIndex, toIndex)
+                : Collections.emptyList();
+
+        return new PaginatedResponse<>(pageContent, totalPages, totalElements, page, size);
     }
 
     private Comparator<Task> getComparator(String sortBy, String sortOrder) {
