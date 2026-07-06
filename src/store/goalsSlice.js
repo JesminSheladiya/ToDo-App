@@ -2,19 +2,22 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api/api";
 
 export const fetchGoals = createAsyncThunk("goals/fetchGoals", async () => {
-    const response = await api.get("/tasks");
-    return Array.isArray(response?.data) ? response.data : [];
+    const response = await api.get("/tasks", { params: { size: 10000 } });
+    const data = response?.data;
+    return data?.content || (Array.isArray(data) ? data : []);
 });
 
-export const fetchFilteredGoals = createAsyncThunk("goals/fetchFilteredGoals", async (filters) => {
+export const fetchFilteredGoals = createAsyncThunk("goals/fetchFilteredGoals", async ({ filters, page, pageSize }) => {
     const params = {};
     if (filters?.search) params.search = filters.search;
     if (filters?.category) params.category = filters.category;
     if (filters?.status) params.status = filters.status;
     if (filters?.sortBy) params.sortBy = filters.sortBy;
     if (filters?.sortOrder) params.sortOrder = filters.sortOrder;
+    if (page !== undefined && page !== null) params.page = page;
+    if (pageSize !== undefined && pageSize !== null) params.size = pageSize;
     const response = await api.get("/tasks", { params });
-    return Array.isArray(response?.data) ? response.data : [];
+    return response?.data || { content: [], totalPages: 0, totalElements: 0, currentPage: 0, pageSize: 10 };
 });
 
 export const createGoal = createAsyncThunk("goals/createGoal", async (goalData) => {
@@ -44,6 +47,12 @@ const goalsSlice = createSlice({
         loading: true,
         filteredItems: [],
         filteredLoading: false,
+        pagination: {
+            page: 0,
+            pageSize: 10,
+            totalPages: 0,
+            totalElements: 0,
+        },
         saving: false,
         updating: [],
         deleting: []
@@ -97,7 +106,13 @@ const goalsSlice = createSlice({
                 state.filteredLoading = true;
             })
             .addCase(fetchFilteredGoals.fulfilled, (state, action) => {
-                state.filteredItems = action.payload;
+                state.filteredItems = action.payload.content || [];
+                state.pagination = {
+                    page: action.payload.currentPage ?? 0,
+                    pageSize: action.payload.pageSize ?? 20,
+                    totalPages: action.payload.totalPages ?? 0,
+                    totalElements: action.payload.totalElements ?? 0,
+                };
                 state.filteredLoading = false;
             })
             .addCase(fetchFilteredGoals.rejected, (state) => {

@@ -205,11 +205,26 @@ function GoalDetailPage() {
     }, [steps, goal, dispatch]);
 
     const handleToggleStep = useCallback((stepId) => {
+        const togglingStep = steps.find((s) => s.stepId === stepId);
         const newSteps = steps.map((s) =>
             s.stepId === stepId ? { ...s, done: !s.done } : s
         );
         setSteps(newSteps);
         setTogglingStepId(stepId);
+
+        if (togglingStep && !togglingStep.done && newSteps.every((s) => s.done)) {
+            setTimeout(() => {
+                const completedTab = tabRefs.current[2];
+                if (completedTab) {
+                    const rect = completedTab.getBoundingClientRect();
+                    const x = (rect.left + rect.width / 2) / window.innerWidth;
+                    const y = (rect.top + rect.height / 2) / window.innerHeight;
+                    confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
+                    confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
+                }
+            }, 350);
+        }
+
         if (goal) {
             dispatch(updateGoal({ ...goal, steps: newSteps }))
                 .finally(() => setTogglingStepId(null));

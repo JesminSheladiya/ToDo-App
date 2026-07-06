@@ -2,13 +2,19 @@ import { useCallback, useMemo, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { FaAngleDown } from "react-icons/fa6";
-import { HiOutlinePlusSm } from "react-icons/hi";
+import { HiOutlineEye, HiOutlinePlusSm } from "react-icons/hi";
 import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import SortableGoalRow from "./SortableGoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 
+const VISIBLE_LIMIT = 10;
+
 function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps, className }) {
+    const navigate = useNavigate();
     const [expanded, setExpanded] = useState(true);
+    const visibleGoals = goals.slice(0, VISIBLE_LIMIT);
+    const hasMore = goals.length > VISIBLE_LIMIT;
     const stats = useMemo(() => {
         const total = goals.length;
         const completed = goals.filter((g) => g.completed || g.status === "completed").length;
@@ -219,17 +225,21 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
 
             <Collapse className="category-section__goals" in={expanded} timeout={200}>
                 {goals.length > 0 && (
-                    <Box className="category-section__goals-list" sx={{ borderTop: "1px solid hsl(240, 10%, 90%)" }}>
+                    <Box className="category-section__goals-list" sx={{
+                        borderTop: "1px solid hsl(240, 10%, 90%)",
+                        position: "relative",
+                        overflow: "hidden",
+                    }}>
                         <DndContext
                             sensors={sensors}
                             collisionDetection={closestCenter}
                             onDragEnd={handleDragEnd}
                         >
                             <SortableContext
-                                items={goals.map((g) => String(g.id))}
+                                items={visibleGoals.map((g) => String(g.id))}
                                 strategy={verticalListSortingStrategy}
                             >
-                                {goals.map((goal, index) => (
+                                {visibleGoals.map((goal, index) => (
                                     <SortableGoalRow
                                         className="category-section__sortable-goal-row"
                                         key={goal.id}
@@ -242,11 +252,49 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
                                         onToggleStep={onToggleStep}
                                         onPauseToggle={onPauseToggle}
                                         onReorderSteps={onReorderSteps}
-                                        isLast={index === goals.length - 1}
+                                        isLast={index === visibleGoals.length - 1 && !hasMore}
                                     />
                                 ))}
                             </SortableContext>
                         </DndContext>
+
+                        {hasMore && (
+                            <Box className="category-section__more" sx={{
+                                background: "linear-gradient(to top, #ffffff 50%, transparent 100%)",
+                                mt: -9,
+                                pt: 8.5,
+                                pb: 1.5,
+                                px: { xs: 2, sm: 2.5 },
+                                textAlign: "center",
+                                position: "relative",
+                                zIndex: 1,
+                            }}>
+                                <Button
+                                    className="category-section__view-more"
+                                    variant="text"
+                                    size="small"
+                                    onClick={() => navigate(`/list?category=${category.key}`)}
+                                    startIcon={<HiOutlineEye />}
+                                    sx={{
+                                        fontSize: 14,
+                                        fontWeight: 600,
+                                        fontFamily: "'Sora', sans-serif",
+                                        color: "#fff",
+                                        borderRadius: "10px",
+                                        px: 2,
+                                        py: 0.8,
+                                        textTransform: "none",
+                                        bgcolor: category.text,
+                                        "&:hover": {
+                                            bgcolor: category.text,
+                                            opacity: 0.85,
+                                        },
+                                    }}
+                                >
+                                    View More {category.label} Tasks
+                                </Button>
+                            </Box>
+                        )}
                     </Box>
                 )}
             </Collapse>

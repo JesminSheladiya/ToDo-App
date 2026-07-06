@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from "react";
 import confetti from "canvas-confetti";
-import { Box, ClickAwayListener, IconButton, InputAdornment, Popper, Skeleton, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, ClickAwayListener, IconButton, InputAdornment, Pagination, Popper, Skeleton, TextField, Tooltip, Typography } from "@mui/material";
 import { PiEyeBold, PiMagnifyingGlassBold, PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
@@ -10,7 +10,7 @@ import { FiTrash } from "react-icons/fi";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import Stack from "./Stack";
 
-function SelectDropdown({ value, options, onChange, sx, className }) {
+function SelectDropdown({ value, options, onChange, sx, triggerSx, className }) {
     const [open, setOpen] = useState(false);
     const anchorRef = useRef(null);
     const selected = options.find((o) => o.value === value);
@@ -37,6 +37,7 @@ function SelectDropdown({ value, options, onChange, sx, className }) {
                         minHeight: 40,
                         minWidth: 130,
                         "&:hover": { borderColor: "#7c3aed" },
+                        ...triggerSx,
                     }}
                 >
                     <Box sx={{ flex: 1 }} className="list-view__select-label">{selected?.label || value}</Box>
@@ -84,7 +85,7 @@ function SelectDropdown({ value, options, onChange, sx, className }) {
     );
 }
 
-function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, loading, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle, className }) {
+function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, loading, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle, className, page = 0, pageSize = 20, totalPages = 0, totalElements = 0, onPageChange, onPageSizeChange }) {
     const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
 
@@ -574,6 +575,145 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                 </Box>
             )}
 
+            {!loading && onPageChange && (
+                <Box className="list-view__pagination" sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    alignItems: { xs: "stretch", sm: "center" },
+                    justifyContent: "space-between",
+                    gap: { xs: 1, sm: 2, md: 3 },
+                    px: { xs: 0.5, sm: 0 },
+                    py: 0.75,
+                }}>
+                    <Box className="list-view__pagination-start" sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: { xs: "space-between", sm: "flex-start" },
+                        gap: 1,
+                    }}>
+                        <Box className="list-view__pagination-size" sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                            <Typography sx={{ fontSize: 13, color: "hsl(240, 8%, 35%)", whiteSpace: "nowrap" }}>
+                                Rows:
+                            </Typography>
+                            <SelectDropdown
+                                value={pageSize}
+                                options={[
+                                    { value: 10, label: "10" },
+                                    { value: 20, label: "20" },
+                                    { value: 40, label: "40" },
+                                    { value: 80, label: "80" },
+                                    { value: 100, label: "100" },
+                                ]}
+                                onChange={(val) => onPageSizeChange?.(val)}
+                                className="list-view__pagination-select"
+                                triggerSx={{ minHeight: 30, py: 0.25, minWidth: 56 }}
+                            />
+                        </Box>
+
+                        <Typography className="list-view__pagination-info" sx={{
+                            fontSize: 12,
+                            fontWeight: 500,
+                            color: "hsl(240, 8%, 35%)",
+                            textAlign: "right",
+                            display: { xs: "block", sm: "none" },
+                        }}>
+                            {totalElements > 0
+                                ? `${page * pageSize + 1}–${Math.min((page + 1) * pageSize, totalElements)} of ${totalElements}`
+                                : "No results"
+                            }
+                        </Typography>
+                    </Box>
+
+                    <Box className="list-view__pagination-end" sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: { xs: "center", sm: "flex-end" },
+                        gap: 3,
+                        rowGap: 1,
+                        flexWrap: "wrap",
+                    }}>
+                        <Typography className="list-view__pagination-info" sx={{
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "hsl(240, 8%, 35%)",
+                            display: { xs: "none", sm: "block" },
+                        }}>
+                            {totalElements > 0
+                                ? `Showing ${page * pageSize + 1}–${Math.min((page + 1) * pageSize, totalElements)} of ${totalElements}`
+                                : "No results"
+                            }
+                        </Typography>
+
+                        <Pagination
+                            className="list-view__pagination-buttons"
+                            page={totalPages > 0 ? page + 1 : 0}
+                            count={totalPages}
+                            onChange={(_, p) => onPageChange(p - 1)}
+                            size="small"
+                            shape="rounded"
+                            siblingCount={0}
+                            boundaryCount={1}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    color: "hsl(240, 8%, 35%)",
+                                    minWidth: { xs: 22, sm: 25 },
+                                    height: { xs: 22, sm: 25 },
+                                    borderRadius: "6px",
+                                    "&.Mui-selected": {
+                                        bgcolor: "#7c3aed",
+                                        color: "#fff",
+                                        "&:hover": {
+                                            bgcolor: "#6d28d9",
+                                        },
+                                    },
+                                    "&.MuiPaginationItem-ellipsis": {
+                                        color: "hsl(240, 8%, 60%)",
+                                    },
+                                },
+                            }}
+                        />
+
+                        {totalPages > 10 && (
+                            <Box className="list-view__goto" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                <Typography sx={{ fontSize: 12, color: "hsl(240, 8%, 35%)", whiteSpace: "nowrap" }}>
+                                    Page No:
+                                </Typography>
+                                <TextField
+                                    size="small"
+                                    type="number"
+                                    slotProps={{
+                                        htmlInput: { min: 1, max: totalPages, style: { padding: "2px 4px", fontSize: 12 } },
+                                    }}
+                                    sx={{
+                                        minWidth: 36,
+                                        minHeight: 22,
+                                        "& .MuiOutlinedInput-root": {
+                                            borderRadius: "6px",
+                                            "& .MuiOutlinedInput-notchedOutline": {
+                                                borderColor: "hsl(240, 10%, 88%)",
+                                            },
+                                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                                                borderColor: "#7c3aed",
+                                            },
+                                        },
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            const val = parseInt(e.target.value);
+                                            if (val >= 1 && val <= totalPages) {
+                                                onPageChange(val - 1);
+                                            }
+                                            e.target.value = "";
+                                        }
+                                    }}
+                                />
+                            </Box>
+                        )}
+                    </Box>
+                </Box>
+            )}
 
         </Stack>
     );

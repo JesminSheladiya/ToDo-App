@@ -12,11 +12,14 @@ function ListPage() {
     const goals = useSelector((state) => state.goals.filteredItems);
     const allGoals = useSelector((state) => state.goals.items);
     const loading = useSelector((state) => state.goals.filteredLoading);
+    const pagination = useSelector((state) => state.goals.pagination);
     const categories = useSelector((state) => state.config.categories);
 
     const query = searchParams.get("search") || "";
     const categoryFilter = searchParams.get("category") || "all";
     const statusFilter = searchParams.get("status") || "all";
+    const page = parseInt(searchParams.get("page") || "0");
+    const pageSize = parseInt(searchParams.get("size") || "10");
 
     const [inputValue, setInputValue] = useState(query);
     const debounceRef = useRef(null);
@@ -26,8 +29,12 @@ function ListPage() {
         if (query) filters.search = query;
         if (categoryFilter && categoryFilter !== "all") filters.category = categoryFilter;
         if (statusFilter && statusFilter !== "all") filters.status = statusFilter;
-        dispatch(fetchFilteredGoals(Object.keys(filters).length > 0 ? filters : undefined));
-    }, [query, categoryFilter, statusFilter, dispatch]);
+        dispatch(fetchFilteredGoals({
+            filters: Object.keys(filters).length > 0 ? filters : undefined,
+            page,
+            pageSize
+        }));
+    }, [query, categoryFilter, statusFilter, page, pageSize, dispatch]);
 
     useEffect(() => {
         setInputValue(query);
@@ -41,6 +48,7 @@ function ListPage() {
                 const next = new URLSearchParams(prev);
                 if (value) next.set("search", value);
                 else next.delete("search");
+                next.delete("page");
                 return next;
             }, { replace: true });
         }, 350);
@@ -51,6 +59,24 @@ function ListPage() {
             const next = new URLSearchParams(prev);
             if (value && value !== "all") next.set(key, value);
             else next.delete(key);
+            next.delete("page");
+            return next;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    const handlePageChange = useCallback((newPage) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set("page", String(newPage));
+            return next;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    const handlePageSizeChange = useCallback((newSize) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set("size", String(newSize));
+            next.set("page", "0");
             return next;
         }, { replace: true });
     }, [setSearchParams]);
@@ -85,6 +111,12 @@ function ListPage() {
                 onDelete={handleDelete}
                 onToggleGoal={handleToggleGoal}
                 onPauseToggle={handlePauseToggle}
+                page={pagination.page}
+                pageSize={pagination.pageSize}
+                totalPages={pagination.totalPages}
+                totalElements={pagination.totalElements}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
             />
             <ConfirmDeleteDialog
                 className="list-page__confirm-delete-dialog"
