@@ -4,30 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="Account created date, Delete Account">
+    <list default="true" id="0fc1ebe4-e515-42ac-b963-f7516f94a724" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/config/WebConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/controller/TaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/dto/AuthResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/exception/GlobalExceptionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/todoapp/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/SecurityConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/WebConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/config/WebConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/AuthController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse$AuthResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse$AuthResponseBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/dto/AuthResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User$UserBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/exception/GlobalExceptionHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/repository/TaskRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/repository/TaskRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService$OtpData.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService$OtpData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/controller/TaskController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/todoapp/service/TaskService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,23 +44,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.8585668733891785" />
-      <entry key="MS500" value="2.0603229045620273" />
-      <entry key="S2" value="3.2931694073345246" />
-      <entry key="S5" value="5.350560227375311" />
-      <entry key="S10" value="7.704457166914031" />
-      <entry key="S30" value="14.79497445848073" />
-      <entry key="S60" value="21.691136830849974" />
-      <entry key="M2" value="28.84819461877776" />
-      <entry key="M5" value="36.084047594139676" />
-      <entry key="M10" value="39.794665757265975" />
-      <entry key="M15" value="41.65411091732412" />
-      <entry key="M30" value="44.40513199140192" />
-      <entry key="H1" value="46.62145931033094" />
-      <entry key="H2" value="48.79110020458174" />
-      <entry key="H4" value="50.93365358556206" />
-      <entry key="D1" value="54.10843031142619" />
-      <entry key="W1" value="54.86582310568507" />
+      <entry key="MS100" value="1.0312750225497436" />
+      <entry key="MS500" value="1.6655860720287448" />
+      <entry key="S2" value="3.7011279930329484" />
+      <entry key="S5" value="6.152067468013556" />
+      <entry key="S10" value="7.943258951274903" />
+      <entry key="S30" value="9.778295069216306" />
+      <entry key="S60" value="10.358217330785035" />
+      <entry key="M2" value="10.670868527228757" />
+      <entry key="M5" value="10.866300350011057" />
+      <entry key="M10" value="10.932803016056896" />
+      <entry key="M15" value="10.955127655905832" />
+      <entry key="M30" value="10.989913176039497" />
+      <entry key="H1" value="11.767510496030521" />
+      <entry key="H2" value="17.300302948214423" />
+      <entry key="H4" value="29.30806030533677" />
+      <entry key="D1" value="56.62587206635802" />
+      <entry key="W1" value="64.54548851410394" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -96,23 +82,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9794844270814713" />
-      <entry key="MS500" value="1.2298321297812653" />
-      <entry key="S2" value="2.9134143273885753" />
-      <entry key="S5" value="5.174407783104817" />
-      <entry key="S10" value="7.6109727009648385" />
-      <entry key="S30" value="14.761112984032431" />
-      <entry key="S60" value="21.673230191917423" />
-      <entry key="M2" value="28.8388068257937" />
-      <entry key="M5" value="36.080130907138226" />
-      <entry key="M10" value="39.792652920659116" />
-      <entry key="M15" value="41.65274211832486" />
-      <entry key="M30" value="44.40442211537433" />
-      <entry key="H1" value="46.621089475542924" />
-      <entry key="H2" value="48.79090303710539" />
-      <entry key="H4" value="50.933547265091725" />
-      <entry key="D1" value="54.108410477111384" />
-      <entry key="W1" value="54.86582019761779" />
+      <entry key="MS100" value="1.0030744190058036" />
+      <entry key="MS500" value="1.6560946508064605" />
+      <entry key="S2" value="3.6957101899185023" />
+      <entry key="S5" value="6.148476686466257" />
+      <entry key="S10" value="7.940933983973398" />
+      <entry key="S30" value="9.777334874499003" />
+      <entry key="S60" value="10.357707507926339" />
+      <entry key="M2" value="10.670605558823231" />
+      <entry key="M5" value="10.866193142007647" />
+      <entry key="M10" value="10.932749067725199" />
+      <entry key="M15" value="10.95509161315589" />
+      <entry key="M30" value="10.989894917960433" />
+      <entry key="H1" value="11.767495278655641" />
+      <entry key="H2" value="17.30027294333199" />
+      <entry key="H4" value="29.308019820908935" />
+      <entry key="D1" value="56.62585496424698" />
+      <entry key="W1" value="64.54548562214988" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -205,7 +191,23 @@
       <option name="project" value="LOCAL" />
       <updated>1782737666081</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="last login, searching &amp; filtering tasks. task complete date store in DB">
+      <option name="closed" value="true" />
+      <created>1783082283335</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1783082283335</updated>
+    </task>
+    <task id="LOCAL-00008" summary="last login, searching &amp; filtering tasks. task complete date store in DB">
+      <option name="closed" value="true" />
+      <created>1783082296498</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1783082296498</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -217,7 +219,8 @@
     <MESSAGE value="user profile add" />
     <MESSAGE value="add: profile Photo Upload, DOB." />
     <MESSAGE value="Account created date, Delete Account" />
-    <option name="LAST_COMMIT_MESSAGE" value="Account created date, Delete Account" />
+    <MESSAGE value="last login, searching &amp; filtering tasks. task complete date store in DB" />
+    <option name="LAST_COMMIT_MESSAGE" value="last login, searching &amp; filtering tasks. task complete date store in DB" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

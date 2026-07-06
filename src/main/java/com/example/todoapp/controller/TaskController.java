@@ -1,5 +1,6 @@
 package com.example.todoapp.controller;
 
+import com.example.todoapp.dto.PaginatedResponse;
 import com.example.todoapp.dto.ReorderDto;
 import com.example.todoapp.entity.Task;
 import com.example.todoapp.entity.User;
@@ -11,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -35,13 +34,15 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getTasks(
+    public PaginatedResponse<Task> getTasks(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status,
             @RequestParam(required = false, defaultValue = "taskOrder") String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String sortOrder) {
-        return taskService.getAllTasks(getCurrentUserId(), search, category, status, sortBy, sortOrder);
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size) {
+        return taskService.getAllTasks(getCurrentUserId(), search, category, status, sortBy, sortOrder, page, size);
     }
 
     @PostMapping
