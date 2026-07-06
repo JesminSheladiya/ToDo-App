@@ -1,0 +1,722 @@
+import { useRef, useState, useCallback } from "react";
+import confetti from "canvas-confetti";
+import { Box, ClickAwayListener, IconButton, InputAdornment, Pagination, Popper, Skeleton, TextField, Tooltip, Typography } from "@mui/material";
+import { PiEyeBold, PiMagnifyingGlassBold, PiDotsThreeVerticalBold } from "react-icons/pi";
+import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
+import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
+import { IoChevronDownOutline } from "react-icons/io5";
+import { TbPencil } from "react-icons/tb";
+import { FiTrash } from "react-icons/fi";
+import RoundedGoalIcon from "./RoundedGoalIcon";
+import Stack from "./Stack";
+
+function SelectDropdown({ value, options, onChange, sx, triggerSx, className }) {
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+    const selected = options.find((o) => o.value === value);
+
+    return (
+        <ClickAwayListener className={`list-view__select${className ? ` ${className}` : ""}`} onClickAway={() => setOpen(false)}>
+            <Box ref={anchorRef} sx={{ position: "relative", ...sx }} className="list-view__select-trigger">
+                <Box
+                    onClick={() => setOpen((v) => !v)}
+                    className="list-view__select-value"
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.75,
+                        px: 1.5,
+                        py: 0.625,
+                        borderRadius: "8px",
+                        bgcolor: "#ffffff",
+                        border: "1px solid hsl(240, 10%, 88%)",
+                        cursor: "pointer",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "hsl(240, 15%, 10%)",
+                        minHeight: 40,
+                        minWidth: 130,
+                        "&:hover": { borderColor: "#7c3aed" },
+                        ...triggerSx,
+                    }}
+                >
+                    <Box sx={{ flex: 1 }} className="list-view__select-label">{selected?.label || value}</Box>
+                    <IoChevronDownOutline size={14} />
+                </Box>
+                <Popper
+                    open={open}
+                    anchorEl={anchorRef.current}
+                    placement="bottom-start"
+                    className="list-view__select-popper"
+                    sx={{ zIndex: 1400 }}
+                >
+                    <Box className="list-view__select-menu" sx={{
+                        mt: 0.5,
+                        bgcolor: "#ffffff",
+                        borderRadius: "10px",
+                        border: "1px solid hsl(240, 10%, 90%)",
+                        boxShadow: "0 4px 16px rgb(0 0 0 / .1)",
+                        minWidth: anchorRef.current?.offsetWidth || 140,
+                        overflow: "hidden",
+                    }}>
+                        {options.map((opt, i) => (
+                            <Box
+                                key={opt.value}
+                                onClick={() => { onChange(opt.value); setOpen(false); }}
+                                className="list-view__select-item"
+                                sx={{
+                                    px: 1.5,
+                                    py: 1,
+                                    fontSize: 13,
+                                    fontWeight: opt.value === value ? 700 : 500,
+                                    color: opt.value === value ? "#7c3aed" : "hsl(240, 15%, 10%)",
+                                    cursor: "pointer",
+                                    borderBottom: i < options.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
+                                    "&:hover": { bgcolor: "hsl(240, 20%, 97%)" },
+                                }}
+                            >
+                                {opt.label}
+                            </Box>
+                        ))}
+                    </Box>
+                </Popper>
+            </Box>
+        </ClickAwayListener>
+    );
+}
+
+function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, loading, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle, className, page = 0, pageSize = 20, totalPages = 0, totalElements = 0, onPageChange, onPageSizeChange }) {
+    const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
+    const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+
+    const fireConfetti = useCallback((element, categoryColor) => {
+        if (!element) return;
+        const rect = element.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+        const colors = ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"];
+        confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x, y }, colors, disableForReducedMotion: true });
+        confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors, disableForReducedMotion: true });
+    }, []);
+
+    const goalsWithoutCategory = allGoals.filter((g) => {
+        const matchesQuery = g.title.toLowerCase().includes(query.toLowerCase());
+        const matchesStatus = statusFilter === "all" || g.status === statusFilter;
+        return matchesQuery && matchesStatus;
+    });
+    const goalsWithoutStatus = allGoals.filter((g) => {
+        const matchesQuery = g.title.toLowerCase().includes(query.toLowerCase());
+        const matchesCategory = categoryFilter === "all" || g.category === categoryFilter;
+        return matchesQuery && matchesCategory;
+    });
+    const categoryCounts = categories.reduce((acc, cat) => {
+        acc[cat.key] = goalsWithoutCategory.filter((g) => g.category === cat.key).length;
+        return acc;
+    }, {});
+    const statusCounts = {
+        active: goalsWithoutStatus.filter((g) => g.status === "active" && !g.completed).length,
+        completed: goalsWithoutStatus.filter((g) => g.completed || g.status === "completed").length,
+        paused: goalsWithoutStatus.filter((g) => g.status === "paused").length,
+    };
+    return (
+        <Stack spacing={2} className={`list-view${className ? ` ${className}` : ""}`}>
+            <Box className="list-view__toolbar" sx={{
+                display: "flex",
+                gap: 1,
+                flexWrap: "wrap",
+            }}>
+                <TextField
+                    size="small"
+                    value={query}
+                    onChange={(e) => onQueryChange(e.target.value)}
+                    placeholder="Search goals..."
+                    className="list-view__search"
+                    sx={{
+                        flex: { xs: "1 1 100%", sm: "1 1 auto" },
+                        minWidth: { sm: 220 },
+                        "& .MuiOutlinedInput-root": {
+                            bgcolor: "#ffffff",
+                            borderRadius: "8px",
+                            boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "hsl(240, 10%, 88%)",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#7c3aed",
+                            },
+                            "&.Mui-focused": {
+                                boxShadow: "0 0 0 3px hsl(262, 83%, 95%)",
+                            },
+                        },
+                    }}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start" className="list-view__search-adornment">
+                                <PiMagnifyingGlassBold sx={{ fontSize: 18, color: "hsl(240, 8%, 50%)" }} />
+                            </InputAdornment>
+                        )
+                    }}
+                />
+                <SelectDropdown
+                    value={categoryFilter}
+                    options={[
+                        { value: "all", label: `All Categories (${goalsWithoutCategory.length})` },
+                        ...categories.map((cat) => ({ value: cat.key, label: `${cat.label} (${categoryCounts[cat.key]})` })),
+                    ]}
+                    onChange={onCategoryFilterChange}
+                    sx={{ flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" } }}
+                />
+                <SelectDropdown
+                    value={statusFilter}
+                    options={[
+                        { value: "all", label: `All Statuses (${goalsWithoutStatus.length})` },
+                        { value: "active", label: `Active (${statusCounts.active})` },
+                        { value: "completed", label: `Completed (${statusCounts.completed})` },
+                        { value: "paused", label: `Paused (${statusCounts.paused})` },
+                    ]}
+                    onChange={onStatusFilterChange}
+                    sx={{ flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" } }}
+                />
+            </Box>
+
+            {loading ? (
+                <Box className="list-view__skeleton" sx={{
+                    bgcolor: "#ffffff",
+                    borderRadius: "16px",
+                    border: "1px solid hsl(240, 10%, 90%)",
+                    overflow: "hidden",
+                }}>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <Box key={i} className="list-view__skeleton-row" sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                            px: { xs: 2, sm: 2.5 },
+                            py: 1.5,
+                            borderBottom: i < 5 ? "1px solid hsl(240, 10%, 93%)" : "none",
+                        }}>
+                            <Skeleton className="list-view__skeleton-circle" variant="circular" width={16} height={16} />
+                            <Skeleton className="list-view__skeleton-icon" variant="rounded" width={28} height={28} sx={{ borderRadius: "8px" }} />
+                            <Box className="list-view__skeleton-info" sx={{ flex: 1, minWidth: 0 }}>
+                                <Skeleton className="list-view__skeleton-text" variant="text" width="55%" height={16} />
+                            </Box>
+                            <Skeleton className="list-view__skeleton-badge" variant="rounded" width={72} height={22} sx={{ borderRadius: "8px" }} />
+                            <Skeleton className="list-view__skeleton-action" variant="rounded" width={32} height={32} sx={{ borderRadius: "8px" }} />
+                            <Skeleton className="list-view__skeleton-action" variant="rounded" width={32} height={32} sx={{ borderRadius: "8px" }} />
+                            <Skeleton className="list-view__skeleton-action" variant="rounded" width={32} height={32} sx={{ borderRadius: "8px" }} />
+                        </Box>
+                    ))}
+                </Box>
+            ) : goals.length === 0 ? (
+                <Box className="list-view__empty" sx={{
+                    bgcolor: "#ffffff",
+                    borderRadius: "16px",
+                    border: "1px dashed hsl(240, 10%, 85%)",
+                    p: 5,
+                    textAlign: "center",
+                    animation: "fadeInUp 300ms ease-out forwards",
+                }}>
+                    <Typography className="list-view__empty-icon" sx={{
+                        fontSize: 40,
+                        mb: 1,
+                        opacity: 0.7,
+                    }}>
+                        <PiMagnifyingGlassBold sx={{ fontSize: 24, color: "hsl(240, 8%, 50%)" }} />
+                    </Typography>
+                    <Typography className="list-view__empty-title" sx={{
+                        fontSize: 15,
+                        fontWeight: 700,
+                        color: "hsl(240, 15%, 10%)",
+                        mb: 0.5,
+                    }}>
+                        No goals found
+                    </Typography>
+                    <Typography className="list-view__empty-text" sx={{
+                        fontSize: 13,
+                        color: "hsl(240, 8%, 50%)",
+                    }}>
+                        Try adjusting your search or filters
+                    </Typography>
+                </Box>
+            ) : (
+                <Box className="list-view__goals" sx={{
+                    bgcolor: "#ffffff",
+                    borderRadius: "16px",
+                    border: "1px solid hsl(240, 10%, 90%)",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 3px rgb(0 0 0 / .04)",
+                    animation: "fadeInUp 300ms ease-out forwards",
+                    position: "relative",
+                    "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: 2,
+                        background: "linear-gradient(180deg, hsl(var(--short-term)), hsl(var(--long-term)), hsl(var(--life-goal)))",
+                        borderRadius: "16px 0 0 16px",
+                    },
+                }}>
+                    {goals.map((goal, index) => {
+                        const category = categories.find((c) => c.key === goal.category) || categories[0];
+                        const completed = goal.status === "completed" || goal.completed;
+                        const paused = goal.status === "paused";
+
+                        return (
+                            <Box
+                                key={goal.id}
+                                className="list-view__goal-row"
+                                sx={{
+                                    transition: "background-color 150ms ease",
+                                    bgcolor: paused ? "hsl(39, 90%, 97%)" : "transparent",
+                                    "&:hover": {
+                                        bgcolor: paused ? "hsl(39, 90%, 95%)" : "hsl(240, 20%, 98%)",
+                                    },
+                                    borderBottom: index < goals.length - 1 ? "1px solid hsl(240, 10%, 93%)" : "none",
+                                }}
+                            >
+                                <Box className="list-view__goal-content" sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 0.75,
+                                    px: { xs: 2, sm: 2.5 },
+                                    py: 1.25,
+                                    minHeight: 52,
+                                }}>
+                                    <IconButton
+                                        onClick={(e) => {
+                                            if (!completed && !paused) fireConfetti(e.currentTarget, category.text);
+                                            onToggleGoal(goal);
+                                        }}
+                                        size="small"
+                                        className="list-view__toggle-btn"
+                                        sx={{
+                                            display: { xs: "none", sm: "inline-flex" },
+                                            p: 0.25,
+                                            color: completed ? category.text : "hsl(240, 8%, 50%)",
+                                            opacity: paused ? 0.35 : 1,
+                                            cursor: paused ? "not-allowed" : "pointer",
+                                            transition: "all 150ms ease",
+                                            "&:hover": { transform: paused ? "none" : "scale(1.1)" },
+                                            "&:active": { transform: paused ? "none" : "scale(0.95)" },
+                                        }}
+                                    >
+                                        {completed ? (
+                                            <FaCircleCheck size={16} />
+                                        ) : (
+                                            <FaRegCircle size={16} />
+                                        )}
+                                    </IconButton>
+
+                                    <RoundedGoalIcon
+                                        className="list-view__goal-icon"
+                                        iconKey={goal.emoji}
+                                        fallbackKey={category.iconKey}
+                                        sx={{ color: category.text, fontSize: 18, flexShrink: 0 }}
+                                    />
+
+                                    <Box className="list-view__goal-info" sx={{ flex: 1, minWidth: 0 }}>
+                                        <Typography
+                                            className="list-view__goal-title"
+                                            sx={{
+                                                fontSize: 14,
+                                                fontWeight: 700,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                color: completed ? "hsl(240, 8%, 50%)" : paused ? "hsl(39, 90%, 40%)" : "hsl(240, 15%, 10%)",
+                                                textDecoration: completed ? "line-through" : "none",
+                                                opacity: completed ? 0.6 : paused ? 0.75 : 1,
+                                                fontStyle: paused ? "italic" : "normal",
+                                            }}
+                                        >
+                                            {goal.title}
+                                        </Typography>
+                                        {paused && (
+                                            <Typography className="list-view__paused-badge" sx={{
+                                                fontSize: 11,
+                                                fontWeight: 600,
+                                                color: "hsl(39, 90%, 45%)",
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                gap: 0.50,
+                                                mt: 0.25,
+                                            }}>
+                                                <BsFillPauseFill size={14} /> Paused
+                                            </Typography>
+                                        )}
+                                    </Box>
+
+                                    {category && (
+                                        <Box className="list-view__category-badge" sx={{
+                                            px: 1.25,
+                                            py: 0.375,
+                                            borderRadius: "8px",
+                                            background: category.gradient,
+                                            color: "#fff",
+                                            fontWeight: 700,
+                                            fontSize: 11,
+                                            display: { xs: "none", sm: "inline-flex" },
+                                            whiteSpace: "nowrap",
+                                        }}>
+                                            {category.label}
+                                        </Box>
+                                    )}
+
+                                    <Tooltip className="list-view__detail-tooltip" title="View Details" arrow>
+                                        <IconButton
+                                            onClick={() => onViewDetails?.(goal)}
+                                            size="small"
+                                            className="list-view__detail-btn"
+                                            sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: "#7c3aed",
+                                                "&:hover": {
+                                                    bgcolor: "hsl(262, 83%, 96%)",
+                                                },
+                                            }}
+                                        >
+                                            <PiEyeBold size={18} />
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    <Tooltip className="list-view__pause-tooltip" title={completed ? "Cannot pause completed" : paused ? "Resume" : "Pause"} arrow>
+                                        <IconButton
+                                            onClick={() => onPauseToggle(goal)}
+                                            size="small"
+                                            className="list-view__pause-btn"
+                                            sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: paused ? "hsl(39, 90%, 45%)" : "#d97706",
+                                                opacity: completed ? 0.35 : 1,
+                                                cursor: completed ? "not-allowed" : "pointer",
+                                                "&:hover": {
+                                                    bgcolor: completed ? "hsl(240, 20%, 97%)" : "hsl(39, 90%, 95%)"
+                                                },
+                                            }}
+                                        >
+                                            {paused ? <BsFillPlayFill size={18} /> : <BsFillPauseFill size={18} />}
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip className="list-view__edit-tooltip" title="Edit" arrow>
+                                        <IconButton
+                                            onClick={() => onEdit(goal)}
+                                            size="small"
+                                            className="list-view__edit-btn"
+                                            sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: "#7c3aed",
+                                                "&:hover": {
+                                                    color: "#7c3aed",
+                                                    bgcolor: "hsl(262, 83%, 96%)",
+                                                },
+                                            }}
+                                        >
+                                            <TbPencil size={18} />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip className="list-view__delete-tooltip" title="Delete" arrow>
+                                        <IconButton
+                                            onClick={() => onDelete(goal)}
+                                            size="small"
+                                            className="list-view__delete-btn"
+                                            sx={{
+                                                display: { xs: "none", sm: "inline-flex" },
+                                                p: 0.6,
+                                                bgcolor: "hsl(240, 20%, 97%)",
+                                                color: "#dc2626",
+                                                "&:hover": {
+                                                    color: "#dc2626",
+                                                    bgcolor: "hsl(0, 84%, 96%)",
+                                                },
+                                            }}
+                                        >
+                                            <FiTrash size={18} />
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    <Box className="list-view__mobile-wrapper" sx={{ display: { xs: "inline-flex", sm: "none" } }}>
+                                        <IconButton
+                                            onClick={(e) => { setMobileMenuAnchor(e.currentTarget); setMobileMenuGoal(goal.id); }}
+                                            size="small"
+                                            className="list-view__mobile-trigger"
+                                            sx={{ p: 0.6, bgcolor: "hsl(240, 20%, 97%)", color: "hsl(240, 8%, 50%)" }}
+                                        >
+                                            <PiDotsThreeVerticalBold size={20} />
+                                        </IconButton>
+                                        <Popper
+                                            open={mobileMenuGoal === goal.id}
+                                            anchorEl={mobileMenuAnchor}
+                                            placement="bottom-end"
+                                            className="list-view__mobile-popper"
+                                            sx={{ zIndex: 1400 }}
+                                        >
+                                            <ClickAwayListener className="list-view__mobile-clickaway" onClickAway={() => { setMobileMenuGoal(null); setMobileMenuAnchor(null); }}>
+                                                <Box className="list-view__mobile-menu" sx={{
+                                                    mt: 0.5,
+                                                    bgcolor: "#fff",
+                                                    borderRadius: "10px",
+                                                    border: "1px solid hsl(240, 10%, 90%)",
+                                                    boxShadow: "0 4px 16px rgb(0 0 0 / 10%)",
+                                                    minWidth: 140,
+                                                    overflow: "hidden",
+                                                }}>
+                                                    <Box
+                                                        onClick={() => { onViewDetails?.(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        className="list-view__dropdown-item"
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)", cursor: "pointer",
+                                                            display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": { bgcolor: "hsl(240, 100%, 98%)", color: "#7c3aed" },
+                                                        }}
+                                                    >
+                                                        <PiEyeBold size={16} color="#7c3aed" />
+                                                        View Details
+                                                    </Box>
+                                                    <Box
+                                                        onClick={() => { if (goal.status !== "paused") { if (!completed) confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true }); onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
+                                                        className="list-view__dropdown-item"
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: goal.status === "paused" ? "not-allowed" : "pointer",
+                                                            opacity: goal.status === "paused" ? 0.35 : 1,
+                                                            display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: goal.status === "paused" ? "inherit" : category.soft,
+                                                                color: goal.status === "paused" ? "inherit" : category.text,
+                                                            },
+                                                        }}
+                                                    >
+                                                        {(goal.status === "completed" || goal.completed)
+                                                            ? <FaCircleCheck size={16} color={category.text} />
+                                                            : <FaRegCircle size={16} color={category.text} />
+                                                        }
+                                                        {(goal.status === "completed" || goal.completed) ? "Incomplete" : "Complete"}
+                                                    </Box>
+                                                    <Box
+                                                        onClick={() => { if (!(goal.completed || goal.status === "completed")) { onPauseToggle(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
+                                                        className="list-view__dropdown-item"
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: (goal.status === "completed" || goal.completed) ? "not-allowed" : "pointer",
+                                                            opacity: (goal.status === "completed" || goal.completed) ? 0.35 : 1,
+                                                            display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: (goal.status === "completed" || goal.completed) ? "inherit" : "hsla(38, 100%, 95%, 1)",
+                                                                color: (goal.status === "completed" || goal.completed) ? "inherit" : "hsl(39, 90%, 45%)",
+                                                            },
+                                                        }}
+                                                    >
+                                                        {goal.status === "paused"
+                                                            ? <BsFillPlayFill size={18} color="hsl(39, 90%, 45%)" />
+                                                            : <BsFillPauseFill size={18} color="#d97706" />
+                                                        }
+                                                        {goal.status === "paused" ? "Resume" : "Pause"}
+                                                    </Box>
+                                                    <Box
+                                                        onClick={() => { onEdit(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        className="list-view__dropdown-item"
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: "hsl(240, 100%, 98%)",
+                                                                color: "#7c3aed",
+                                                            },
+                                                        }}
+                                                    >
+                                                        <TbPencil size={18} color="#7c3aed" />
+                                                        Edit
+                                                    </Box>
+                                                    <Box
+                                                        onClick={() => { onDelete(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); }}
+                                                        className="list-view__dropdown-item"
+                                                        sx={{
+                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                            color: "hsl(240, 8%, 20%)",
+                                                            cursor: "pointer", display: "flex", alignItems: "center", gap: 1.5,
+                                                            transition: "0.3s all ease",
+                                                            "&:hover": {
+                                                                bgcolor: "hsl(0, 100%, 98%)",
+                                                                color: "#dc2626",
+                                                            },
+                                                        }}
+                                                    >
+                                                        <FiTrash size={16} color="#dc2626" />
+                                                        Delete
+                                                    </Box>
+                                                </Box>
+                                            </ClickAwayListener>
+                                        </Popper>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        );
+                    })}
+                </Box>
+            )}
+
+            {!loading && onPageChange && (
+                <Box className="list-view__pagination" sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    alignItems: { xs: "stretch", sm: "center" },
+                    justifyContent: "space-between",
+                    gap: { xs: 1, sm: 2, md: 3 },
+                    px: { xs: 0.5, sm: 0 },
+                    py: 0.75,
+                }}>
+                    <Box className="list-view__pagination-start" sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: { xs: "space-between", sm: "flex-start" },
+                        gap: 1,
+                    }}>
+                        <Box className="list-view__pagination-size" sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                            <Typography sx={{ fontSize: 13, color: "hsl(240, 8%, 35%)", whiteSpace: "nowrap" }}>
+                                Rows:
+                            </Typography>
+                            <SelectDropdown
+                                value={pageSize}
+                                options={[
+                                    { value: 10, label: "10" },
+                                    { value: 20, label: "20" },
+                                    { value: 40, label: "40" },
+                                    { value: 80, label: "80" },
+                                    { value: 100, label: "100" },
+                                ]}
+                                onChange={(val) => onPageSizeChange?.(val)}
+                                className="list-view__pagination-select"
+                                triggerSx={{ minHeight: 30, py: 0.25, minWidth: 56 }}
+                            />
+                        </Box>
+
+                        <Typography className="list-view__pagination-info" sx={{
+                            fontSize: 12,
+                            fontWeight: 500,
+                            color: "hsl(240, 8%, 35%)",
+                            textAlign: "right",
+                            display: { xs: "block", sm: "none" },
+                        }}>
+                            {totalElements > 0
+                                ? `${page * pageSize + 1}–${Math.min((page + 1) * pageSize, totalElements)} of ${totalElements}`
+                                : "No results"
+                            }
+                        </Typography>
+                    </Box>
+
+                    <Box className="list-view__pagination-end" sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: { xs: "center", sm: "flex-end" },
+                        gap: 3,
+                        rowGap: 1,
+                        flexWrap: "wrap",
+                    }}>
+                        <Typography className="list-view__pagination-info" sx={{
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "hsl(240, 8%, 35%)",
+                            display: { xs: "none", sm: "block" },
+                        }}>
+                            {totalElements > 0
+                                ? `Showing ${page * pageSize + 1}–${Math.min((page + 1) * pageSize, totalElements)} of ${totalElements}`
+                                : "No results"
+                            }
+                        </Typography>
+
+                        <Pagination
+                            className="list-view__pagination-buttons"
+                            page={totalPages > 0 ? page + 1 : 0}
+                            count={totalPages}
+                            onChange={(_, p) => onPageChange(p - 1)}
+                            size="small"
+                            shape="rounded"
+                            siblingCount={0}
+                            boundaryCount={1}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    color: "hsl(240, 8%, 35%)",
+                                    minWidth: { xs: 22, sm: 25 },
+                                    height: { xs: 22, sm: 25 },
+                                    borderRadius: "6px",
+                                    "&.Mui-selected": {
+                                        bgcolor: "#7c3aed",
+                                        color: "#fff",
+                                        "&:hover": {
+                                            bgcolor: "#6d28d9",
+                                        },
+                                    },
+                                    "&.MuiPaginationItem-ellipsis": {
+                                        color: "hsl(240, 8%, 60%)",
+                                    },
+                                },
+                            }}
+                        />
+
+                        {totalPages > 10 && (
+                            <Box className="list-view__goto" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                <Typography sx={{ fontSize: 12, color: "hsl(240, 8%, 35%)", whiteSpace: "nowrap" }}>
+                                    Page No:
+                                </Typography>
+                                <TextField
+                                    size="small"
+                                    type="number"
+                                    slotProps={{
+                                        htmlInput: { min: 1, max: totalPages, style: { padding: "2px 4px", fontSize: 12 } },
+                                    }}
+                                    sx={{
+                                        minWidth: 36,
+                                        minHeight: 22,
+                                        "& .MuiOutlinedInput-root": {
+                                            borderRadius: "6px",
+                                            "& .MuiOutlinedInput-notchedOutline": {
+                                                borderColor: "hsl(240, 10%, 88%)",
+                                            },
+                                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                                                borderColor: "#7c3aed",
+                                            },
+                                        },
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            const val = parseInt(e.target.value);
+                                            if (val >= 1 && val <= totalPages) {
+                                                onPageChange(val - 1);
+                                            }
+                                            e.target.value = "";
+                                        }
+                                    }}
+                                />
+                            </Box>
+                        )}
+                    </Box>
+                </Box>
+            )}
+
+        </Stack>
+    );
+}
+
+export default ListView;
