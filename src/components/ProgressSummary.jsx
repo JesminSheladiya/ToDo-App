@@ -1,20 +1,11 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
+import AnimatedCounter from "./AnimatedCounter";
 import Stack from "./Stack";
 
-function ProgressSummary({ stats, goals, categories, className }) {
-    const overallProgress = goals.length > 0
-        ? Math.round(
-            goals.reduce((sum, g) => {
-                const steps = g.steps || [];
-                if (steps.length === 0) return sum + (g.completed ? 1 : 0);
-                const done = steps.filter((s) => s.done).length;
-                return sum + done / steps.length;
-            }, 0) / goals.length * 100
-        )
+function ProgressSummary({ stats, goals, categories, categoryCounts = {}, totalSteps = 0, doneSteps = 0, loading = false, className }) {
+    const overallProgress = totalSteps > 0
+        ? Math.round((doneSteps / totalSteps) * 100)
         : 0;
-
-    const doneSteps = goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0);
-    const totalSteps = goals.reduce((s, g) => s + (g.steps?.length || 0), 0);
 
     const pausedCount = goals.filter((g) => g.status === "paused").length;
 
@@ -59,7 +50,7 @@ function ProgressSummary({ stats, goals, categories, className }) {
                             fontSize: 13,
                             fontFamily: "'Sora', sans-serif",
                         }}>
-                            {overallProgress}%
+                            <AnimatedCounter value={overallProgress} loading={loading} suffix="%" sx={{ color: "#fff", fontWeight: 800, fontSize: 13, fontFamily: "'Sora', sans-serif" }} />
                         </Box>
                     </Stack>
 
@@ -90,14 +81,14 @@ function ProgressSummary({ stats, goals, categories, className }) {
                                 color: "hsl(240, 8%, 10%)",
                                 fontWeight: 500,
                             }}>
-                                {stats.completed}/{stats.total} goals completed
+                                <AnimatedCounter value={stats.completed} loading={loading} sx={{ fontWeight: 700 }} />/<AnimatedCounter value={stats.total} loading={loading} sx={{ fontWeight: 700 }} /> goals completed
                             </Typography>
                             <Typography className="progress-summary__stat" sx={{
                                 fontSize: 12,
                                 color: "hsl(240, 8%, 10%)",
                                 fontWeight: 500,
                             }}>
-                                {doneSteps}/{totalSteps} steps done
+                                <AnimatedCounter value={doneSteps} loading={loading} sx={{ fontWeight: 700 }} />/<AnimatedCounter value={totalSteps} loading={loading} sx={{ fontWeight: 700 }} /> steps done
                             </Typography>
                         </Stack>
                     </Box>
@@ -108,7 +99,7 @@ function ProgressSummary({ stats, goals, categories, className }) {
                         gap: 0.75,
                     }}>
                         {categories.map((category) => {
-                            const count = goals.filter((goal) => goal.category === category.key).length;
+                            const count = categoryCounts[category.key] ?? goals.filter((goal) => goal.category === category.key).length;
                             return (
                                 <Box
                                     key={category.key}
@@ -144,7 +135,7 @@ function ProgressSummary({ stats, goals, categories, className }) {
                                         color: category.text,
                                         opacity: 0.8,
                                     }}>
-                                        {count}
+                                        <AnimatedCounter value={count} loading={loading} sx={{ fontSize: 12, fontWeight: 800, color: category.text }} />
                                     </Typography>
                                 </Box>
                             );
@@ -162,15 +153,13 @@ function ProgressSummary({ stats, goals, categories, className }) {
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography className="progress-summary__stat-value" sx={{
+                            <AnimatedCounter value={stats.total} loading={loading} sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
                                 color: "hsl(240, 15%, 10%)",
                                 lineHeight: 1.2,
-                            }}>
-                                {stats.total}
-                            </Typography>
+                            }} />
                             <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "hsl(240, 8%, 50%)",
@@ -188,15 +177,13 @@ function ProgressSummary({ stats, goals, categories, className }) {
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography className="progress-summary__stat-value" sx={{
+                            <AnimatedCounter value={stats.completed} loading={loading} sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
                                 color: "#16a34a",
                                 lineHeight: 1.2,
-                            }}>
-                                {stats.completed}
-                            </Typography>
+                            }} />
                             <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "#16a34a",
@@ -214,15 +201,13 @@ function ProgressSummary({ stats, goals, categories, className }) {
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography className="progress-summary__stat-value" sx={{
+                            <AnimatedCounter value={stats.inProgress - pausedCount} loading={loading} sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
                                 color: "#7c3aed",
                                 lineHeight: 1.2,
-                            }}>
-                                {stats.inProgress - pausedCount}
-                            </Typography>
+                            }} />
                             <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "#7c3aed",
@@ -240,15 +225,13 @@ function ProgressSummary({ stats, goals, categories, className }) {
                             py: 1.25,
                             textAlign: "center",
                         }}>
-                            <Typography className="progress-summary__stat-value" sx={{
+                            <AnimatedCounter value={pausedCount} loading={loading} sx={{
                                 fontFamily: "'Sora', sans-serif",
                                 fontWeight: 800,
                                 fontSize: 25,
                                 color: "#d97706",
                                 lineHeight: 1.2,
-                            }}>
-                                {pausedCount}
-                            </Typography>
+                            }} />
                             <Typography className="progress-summary__stat-label" sx={{
                                 fontSize: 10,
                                 color: "#d97706",

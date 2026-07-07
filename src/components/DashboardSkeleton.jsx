@@ -101,7 +101,6 @@ function CategoryCardSkeleton() {
 function DashboardSkeleton({ className }) {
     return (
         <Box className={`dashboard-skeleton__container${className ? ` ${className}` : ""}`} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-            <ProgressSummarySkeleton />
             <CategoryCardSkeleton />
             <CategoryCardSkeleton />
         </Box>

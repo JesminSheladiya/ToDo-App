@@ -10,6 +10,8 @@ function CategoriesPage() {
     const dispatch = useDispatch();
     const goals = useSelector((state) => state.goals.items);
     const categories = useSelector((state) => state.config.categories);
+    const categoryCounts = useSelector((state) => state.goals.categoryCounts);
+    const loading = useSelector((state) => state.goals.loading);
     const activeCategory = useSelector((state) => state.ui.activeCategory);
     const {
         handleOpenCreate,
@@ -55,6 +57,8 @@ function CategoriesPage() {
                         .filter((goal) => goal.category === category.key)
                         .sort((a, b) => (a.taskOrder ?? 0) - (b.taskOrder ?? 0))
                     }
+                    categoryCounts={categoryCounts}
+                    loading={loading}
                     onCreate={handleOpenCreate}
                     onViewDetails={handleOpenDetail}
                     onEdit={handleOpenEdit}

@@ -521,13 +521,21 @@ function MainLayout() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const goals = useSelector((state) => state.goals.items);
     const categories = useSelector((state) => state.config.categories);
+    const categoriesLoaded = useSelector((state) => state.config.categoriesLoaded);
+    const totalElements = useSelector((state) => state.goals.totalElements);
+    const categoryCounts = useSelector((state) => state.goals.categoryCounts);
+    const statusCounts = useSelector((state) => state.goals.statusCounts);
+    const storeTotalSteps = useSelector((state) => state.goals.totalSteps);
+    const storeDoneSteps = useSelector((state) => state.goals.doneSteps);
     const loading = useSelector((state) => state.goals.loading);
     const user = useSelector((state) => state.auth.user);
     const { handleOpenCreate } = useGoalActions();
 
     useEffect(() => {
-        dispatch(fetchGoals());
-    }, [dispatch]);
+        if (categoriesLoaded) {
+            dispatch(fetchGoals());
+        }
+    }, [dispatch, categoriesLoaded]);
 
     useEffect(() => {
         setMobileOpen(false);
@@ -538,20 +546,19 @@ function MainLayout() {
     const isAccount = location.pathname === "/account";
 
     const stats = useMemo(() => {
-        const total = goals.length;
-        const completed = goals.filter((goal) => goal.completed || goal.status === "completed").length;
-        const totalSteps = goals.reduce((sum, goal) => sum + (goal.steps?.length || 0), 0);
-        const doneSteps = goals.reduce(
-            (sum, goal) => sum + (goal.steps?.filter((step) => step.done).length || 0),
-            0
-        );
+        const total = totalElements;
+        const completed = statusCounts.completed;
+        const paused = statusCounts.paused;
+        const totalSteps = storeTotalSteps;
+        const doneSteps = storeDoneSteps;
         return {
             total,
             completed,
-            inProgress: total - completed,
+            inProgress: total - completed - paused,
+            paused,
             stepProgress: totalSteps > 0 ? Math.round((doneSteps / totalSteps) * 100) : 0
         };
-    }, [goals]);
+    }, [totalElements, statusCounts, storeTotalSteps, storeDoneSteps]);
 
     const sidebar = (
         <Sidebar
@@ -719,7 +726,7 @@ function MainLayout() {
                         <Outlet />
                     ) : (
                         <Stack className="main-layout__stack" spacing={2.5}>
-                            <ProgressSummary className="main-layout__progress-summary" stats={stats} goals={goals} categories={categories} />
+                            <ProgressSummary className="main-layout__progress-summary" stats={stats} goals={goals} categories={categories} categoryCounts={categoryCounts} totalSteps={storeTotalSteps} doneSteps={storeDoneSteps} loading={loading} />
 
                             {loading ? (
                                 <DashboardSkeleton className="main-layout__dashboard-skeleton" />

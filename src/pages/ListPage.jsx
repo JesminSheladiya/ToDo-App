@@ -5,12 +5,12 @@ import ListView from "../components/ListView";
 import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
 import { fetchFilteredGoals } from "../store/goalsSlice";
 import { useGoalActions } from "../hooks/useGoalActions";
+import api from "../api/api";
 
 function ListPage() {
     const dispatch = useDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
     const goals = useSelector((state) => state.goals.filteredItems);
-    const allGoals = useSelector((state) => state.goals.items);
     const loading = useSelector((state) => state.goals.filteredLoading);
     const pagination = useSelector((state) => state.goals.pagination);
     const categories = useSelector((state) => state.config.categories);
@@ -18,11 +18,45 @@ function ListPage() {
     const query = searchParams.get("search") || "";
     const categoryFilter = searchParams.get("category") || "all";
     const statusFilter = searchParams.get("status") || "all";
-    const page = parseInt(searchParams.get("page") || "0");
+    const page = Math.max(0, parseInt(searchParams.get("page") || "1") - 1);
     const pageSize = parseInt(searchParams.get("size") || "10");
 
     const [inputValue, setInputValue] = useState(query);
     const debounceRef = useRef(null);
+    const [liveCategoryCounts, setLiveCategoryCounts] = useState({});
+    const [liveStatusCounts, setLiveStatusCounts] = useState({});
+    const [countsLoading, setCountsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!categories || categories.length === 0) return;
+
+        setCountsLoading(true);
+        const params = { size: 10000 };
+        if (query) params.search = query;
+        if (categoryFilter && categoryFilter !== "all") params.category = categoryFilter;
+        if (statusFilter && statusFilter !== "all") params.status = statusFilter;
+
+        api.get("/tasks", { params }).then((res) => {
+            const data = res?.data;
+            const items = data?.content || (Array.isArray(data) ? data : []);
+
+            const catCounts = {};
+            categories.forEach((cat) => {
+                catCounts[cat.key] = items.filter((g) => g.category === cat.key).length;
+            });
+
+            const statCounts = {
+                active: items.filter((g) => g.status === "active" && !g.completed).length,
+                completed: items.filter((g) => g.completed || g.status === "completed").length,
+                paused: items.filter((g) => g.status === "paused").length,
+            };
+
+            setLiveCategoryCounts(catCounts);
+            setLiveStatusCounts(statCounts);
+        }).catch(() => {}).finally(() => {
+            setCountsLoading(false);
+        });
+    }, [query, categoryFilter, statusFilter, categories]);
 
     useEffect(() => {
         const filters = {};
@@ -67,7 +101,7 @@ function ListPage() {
     const handlePageChange = useCallback((newPage) => {
         setSearchParams((prev) => {
             const next = new URLSearchParams(prev);
-            next.set("page", String(newPage));
+            next.set("page", String(newPage + 1));
             return next;
         }, { replace: true });
     }, [setSearchParams]);
@@ -76,7 +110,7 @@ function ListPage() {
         setSearchParams((prev) => {
             const next = new URLSearchParams(prev);
             next.set("size", String(newSize));
-            next.set("page", "0");
+            next.set("page", "1");
             return next;
         }, { replace: true });
     }, [setSearchParams]);
@@ -97,9 +131,11 @@ function ListPage() {
             <ListView
                 className="list-page__list-view"
                 loading={loading}
+                countsLoading={countsLoading}
                 goals={goals}
-                allGoals={allGoals}
                 categories={categories}
+                storeCategoryCounts={liveCategoryCounts}
+                storeStatusCounts={liveStatusCounts}
                 query={inputValue}
                 categoryFilter={categoryFilter}
                 statusFilter={statusFilter}

@@ -8,6 +8,7 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import { TbPencil } from "react-icons/tb";
 import { FiTrash } from "react-icons/fi";
 import RoundedGoalIcon from "./RoundedGoalIcon";
+import AnimatedCounter from "./AnimatedCounter";
 import Stack from "./Stack";
 
 function SelectDropdown({ value, options, onChange, sx, triggerSx, className }) {
@@ -40,7 +41,7 @@ function SelectDropdown({ value, options, onChange, sx, triggerSx, className }) 
                         ...triggerSx,
                     }}
                 >
-                    <Box sx={{ flex: 1 }} className="list-view__select-label">{selected?.label || value}</Box>
+                    <Box sx={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} className="list-view__select-label">{selected?.label || value}</Box>
                     <IoChevronDownOutline size={14} />
                 </Box>
                 <Popper
@@ -85,7 +86,7 @@ function SelectDropdown({ value, options, onChange, sx, triggerSx, className }) 
     );
 }
 
-function ListView({ goals, allGoals = [], categories, query, categoryFilter, statusFilter, loading, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle, className, page = 0, pageSize = 20, totalPages = 0, totalElements = 0, onPageChange, onPageSizeChange }) {
+function ListView({ goals, categories, storeCategoryCounts = {}, storeStatusCounts = {}, countsLoading = false, query, categoryFilter, statusFilter, loading, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle, className, page = 0, pageSize = 20, totalPages = 0, totalElements = 0, onPageChange, onPageSizeChange }) {
     const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
 
@@ -99,24 +100,17 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
         confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors, disableForReducedMotion: true });
     }, []);
 
-    const goalsWithoutCategory = allGoals.filter((g) => {
-        const matchesQuery = g.title.toLowerCase().includes(query.toLowerCase());
-        const matchesStatus = statusFilter === "all" || g.status === statusFilter;
-        return matchesQuery && matchesStatus;
-    });
-    const goalsWithoutStatus = allGoals.filter((g) => {
-        const matchesQuery = g.title.toLowerCase().includes(query.toLowerCase());
-        const matchesCategory = categoryFilter === "all" || g.category === categoryFilter;
-        return matchesQuery && matchesCategory;
-    });
+    const totalGoalsCount = Object.values(storeCategoryCounts).reduce((a, b) => a + b, 0);
+    const activeCount = totalGoalsCount - (storeStatusCounts.completed || 0) - (storeStatusCounts.paused || 0);
+
     const categoryCounts = categories.reduce((acc, cat) => {
-        acc[cat.key] = goalsWithoutCategory.filter((g) => g.category === cat.key).length;
+        acc[cat.key] = storeCategoryCounts[cat.key] ?? 0;
         return acc;
     }, {});
     const statusCounts = {
-        active: goalsWithoutStatus.filter((g) => g.status === "active" && !g.completed).length,
-        completed: goalsWithoutStatus.filter((g) => g.completed || g.status === "completed").length,
-        paused: goalsWithoutStatus.filter((g) => g.status === "paused").length,
+        active: activeCount,
+        completed: storeStatusCounts.completed || 0,
+        paused: storeStatusCounts.paused || 0,
     };
     return (
         <Stack spacing={2} className={`list-view${className ? ` ${className}` : ""}`}>
@@ -160,8 +154,8 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                 <SelectDropdown
                     value={categoryFilter}
                     options={[
-                        { value: "all", label: `All Categories (${goalsWithoutCategory.length})` },
-                        ...categories.map((cat) => ({ value: cat.key, label: `${cat.label} (${categoryCounts[cat.key]})` })),
+                        { value: "all", label: <><span>All Categories (</span><AnimatedCounter value={totalGoalsCount} loading={countsLoading} sx={{ fontWeight: 800, fontSize: 13 }} /><span>)</span></> },
+                        ...categories.map((cat) => ({ value: cat.key, label: <><span>{cat.label} (</span><AnimatedCounter value={categoryCounts[cat.key]} loading={countsLoading} sx={{ fontWeight: 800, fontSize: 13 }} /><span>)</span></> })),
                     ]}
                     onChange={onCategoryFilterChange}
                     sx={{ flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" } }}
@@ -169,10 +163,10 @@ function ListView({ goals, allGoals = [], categories, query, categoryFilter, sta
                 <SelectDropdown
                     value={statusFilter}
                     options={[
-                        { value: "all", label: `All Statuses (${goalsWithoutStatus.length})` },
-                        { value: "active", label: `Active (${statusCounts.active})` },
-                        { value: "completed", label: `Completed (${statusCounts.completed})` },
-                        { value: "paused", label: `Paused (${statusCounts.paused})` },
+                        { value: "all", label: <><span>All Statuses (</span><AnimatedCounter value={totalGoalsCount} loading={countsLoading} sx={{ fontWeight: 800, fontSize: 13 }} /><span>)</span></> },
+                        { value: "active", label: <><span>Active (</span><AnimatedCounter value={statusCounts.active} loading={countsLoading} sx={{ fontWeight: 800, fontSize: 13 }} /><span>)</span></> },
+                        { value: "completed", label: <><span>Completed (</span><AnimatedCounter value={statusCounts.completed} loading={countsLoading} sx={{ fontWeight: 800, fontSize: 13 }} /><span>)</span></> },
+                        { value: "paused", label: <><span>Paused (</span><AnimatedCounter value={statusCounts.paused} loading={countsLoading} sx={{ fontWeight: 800, fontSize: 13 }} /><span>)</span></> },
                     ]}
                     onChange={onStatusFilterChange}
                     sx={{ flex: { xs: "1 1 calc(50% - 4px)", sm: "0 1 auto" } }}

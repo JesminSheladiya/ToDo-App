@@ -1,10 +1,76 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api/api";
 
-export const fetchGoals = createAsyncThunk("goals/fetchGoals", async () => {
-    const response = await api.get("/tasks", { params: { size: 10000 } });
-    const data = response?.data;
-    return data?.content || (Array.isArray(data) ? data : []);
+export const fetchGoals = createAsyncThunk("goals/fetchGoals", async (_, { getState }) => {
+    const categories = getState().config.categories;
+
+    const countByStatus = async (status) => {
+        try {
+            const res = await api.get("/tasks", { params: { status, size: 1 } });
+            return res?.data?.totalElements ?? 0;
+        } catch {
+            return 0;
+        }
+    };
+
+    if (!categories || categories.length === 0) {
+        const response = await api.get("/tasks", { params: { size: 10 } });
+        const data = response?.data;
+        return {
+            goals: data?.content || (Array.isArray(data) ? data : []),
+            categoryCounts: {},
+            totalElements: data?.totalElements ?? 0,
+            statusCounts: { completed: 0, paused: 0 },
+            totalSteps: 0,
+            doneSteps: 0,
+        };
+    }
+
+    const [categoryResults, completedCount, pausedCount, allTasksRes] = await Promise.all([
+        Promise.all(
+            categories.map((cat) =>
+                api.get("/tasks", { params: { category: cat.key, size: 10 } })
+                    .then((res) => {
+                        const data = res?.data;
+                        return {
+                            category: cat.key,
+                            goals: data?.content || (Array.isArray(data) ? data : []),
+                            totalElements: data?.totalElements ?? 0,
+                        };
+                    })
+                    .catch(() => ({ category: cat.key, goals: [], totalElements: 0 }))
+            )
+        ),
+        countByStatus("completed"),
+        countByStatus("paused"),
+        api.get("/tasks", { params: { size: 10000 } }).then((res) => res?.data?.content || []).catch(() => []),
+    ]);
+
+    const categoryCounts = {};
+    let totalElements = 0;
+    const goals = [];
+    categoryResults.forEach((r) => {
+        categoryCounts[r.category] = r.totalElements;
+        totalElements += r.totalElements;
+        goals.push(...r.goals);
+    });
+
+    let totalSteps = 0;
+    let doneSteps = 0;
+    allTasksRes.forEach((g) => {
+        const steps = g.steps || [];
+        totalSteps += steps.length;
+        doneSteps += steps.filter((s) => s.done).length;
+    });
+
+    return {
+        goals,
+        categoryCounts,
+        totalElements,
+        statusCounts: { completed: completedCount, paused: pausedCount },
+        totalSteps,
+        doneSteps,
+    };
 });
 
 export const fetchFilteredGoals = createAsyncThunk("goals/fetchFilteredGoals", async ({ filters, page, pageSize }) => {
@@ -45,6 +111,11 @@ const goalsSlice = createSlice({
     initialState: {
         items: [],
         loading: true,
+        categoryCounts: {},
+        totalElements: 0,
+        statusCounts: { completed: 0, paused: 0 },
+        totalSteps: 0,
+        doneSteps: 0,
         filteredItems: [],
         filteredLoading: false,
         pagination: {
@@ -96,7 +167,12 @@ const goalsSlice = createSlice({
                 state.loading = true;
             })
             .addCase(fetchGoals.fulfilled, (state, action) => {
-                state.items = action.payload;
+                state.items = action.payload.goals;
+                state.categoryCounts = action.payload.categoryCounts;
+                state.totalElements = action.payload.totalElements;
+                state.statusCounts = action.payload.statusCounts;
+                state.totalSteps = action.payload.totalSteps;
+                state.doneSteps = action.payload.doneSteps;
                 state.loading = false;
             })
             .addCase(fetchGoals.rejected, (state) => {

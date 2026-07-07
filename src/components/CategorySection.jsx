@@ -5,18 +5,20 @@ import { FaAngleDown } from "react-icons/fa6";
 import { HiOutlineEye, HiOutlinePlusSm } from "react-icons/hi";
 import { Box, Button, Collapse, IconButton, LinearProgress, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import AnimatedCounter from "./AnimatedCounter";
 import SortableGoalRow from "./SortableGoalRow";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 
 const VISIBLE_LIMIT = 10;
 
-function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps, className }) {
+function CategorySection({ category, goals, categoryCounts = {}, loading = false, onCreate, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onPauseToggle, onReorderGoals, onReorderSteps, className }) {
     const navigate = useNavigate();
     const [expanded, setExpanded] = useState(true);
     const visibleGoals = goals.slice(0, VISIBLE_LIMIT);
-    const hasMore = goals.length > VISIBLE_LIMIT;
+    const actualTotal = categoryCounts[category.key] ?? goals.length;
+    const hasMore = actualTotal > VISIBLE_LIMIT;
     const stats = useMemo(() => {
-        const total = goals.length;
+        const total = categoryCounts[category.key] ?? goals.length;
         const completed = goals.filter((g) => g.completed || g.status === "completed").length;
         const totalSteps = goals.reduce((s, g) => s + (g.steps?.length || 0), 0);
         const doneSteps = goals.reduce((s, g) => s + (g.steps?.filter((st) => st.done).length || 0), 0);
@@ -37,7 +39,7 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
             doneSteps,
             stepProgress
         };
-    }, [goals]);
+    }, [goals, categoryCounts, category.key]);
 
     const pointerSensor = useSensor(PointerSensor, {
         activationConstraint: { distance: 5 },
@@ -149,7 +151,7 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
                         flexShrink: 0,
                     }} />
                     <Typography className="category-section__count" sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
-                        {stats.completed}/{stats.total}
+                        <AnimatedCounter value={stats.completed} loading={loading} sx={{ fontSize: 13, fontWeight: 700, color: category.text }} />/<AnimatedCounter value={stats.total} loading={loading} sx={{ fontSize: 13, fontWeight: 700, color: category.text }} />
                     </Typography>
                 </Box>
 
@@ -179,7 +181,7 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
                                 minWidth: 28,
                                 textAlign: "right",
                             }}>
-                                {stats.stepProgress}%
+                                <AnimatedCounter value={stats.stepProgress} loading={loading} suffix="%" sx={{ fontSize: 12, fontWeight: 600, color: "hsl(240, 8%, 50%)" }} />
                             </Typography>
                         </Box>
                     )}
@@ -204,11 +206,11 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
                             flexShrink: 0,
                         }} />
                         <Typography className="category-section__count" sx={{ fontSize: 13, fontWeight: 700, color: category.text }}>
-                            {stats.completed}/{stats.total}
+                            <AnimatedCounter value={stats.completed} loading={loading} sx={{ fontSize: 13, fontWeight: 700, color: category.text }} />/<AnimatedCounter value={stats.total} loading={loading} sx={{ fontSize: 13, fontWeight: 700, color: category.text }} />
                         </Typography>
                     </Box>
 
-                    {goals.length > 0 && (
+                    {actualTotal > 0 && (
                         <IconButton className="category-section__expand"
                             size="small"
                             sx={{
@@ -224,7 +226,7 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
             </Box>
 
             <Collapse className="category-section__goals" in={expanded} timeout={200}>
-                {goals.length > 0 && (
+                {actualTotal > 0 && (
                     <Box className="category-section__goals-list" sx={{
                         borderTop: "1px solid hsl(240, 10%, 90%)",
                         position: "relative",
@@ -291,7 +293,7 @@ function CategorySection({ category, goals, onCreate, onViewDetails, onEdit, onD
                                         },
                                     }}
                                 >
-                                    View More {category.label} Tasks
+                                    View All {category.label} Tasks
                                 </Button>
                             </Box>
                         )}
