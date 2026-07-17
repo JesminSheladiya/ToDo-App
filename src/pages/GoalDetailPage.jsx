@@ -6,7 +6,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-    Box, Button, Chip, CircularProgress, IconButton, LinearProgress, Typography
+    Box, Button, Chip, CircularProgress, IconButton, LinearProgress, Tooltip, Typography
 } from "@mui/material";
 import { toast } from "react-toastify";
 import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
@@ -23,7 +23,7 @@ import { useGoalActions } from "../hooks/useGoalActions";
 import { updateGoal } from "../store/goalsSlice";
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 
-function SortableDetailStep({ step, category, onToggle, index, loading, disabled, className, bulkMode, isSelected, onSelect }) {
+function SortableDetailStep({ step, category, onToggle, index, loading, disabled, className, bulkMode, isSelected, onSelect, isPaused }) {
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -86,16 +86,18 @@ function SortableDetailStep({ step, category, onToggle, index, loading, disabled
                         <PiDotsSixVerticalBold size={16} />
                     </Box>
                 )}
-                <Box className="detail-subtask__toggle" onClick={() => !disabled && !bulkMode && onToggle(step.stepId)}
-                    sx={{ display: "flex", cursor: disabled || bulkMode ? "default" : "pointer", lineHeight: 0, flexShrink: 0, opacity: bulkMode ? 0.35 : 1 }}>
-                    {loading ? (
-                        <CircularProgress className="detail-subtask__spinner" size={14} sx={{ color: "hsl(240, 10%, 60%)" }} />
-                    ) : step.done ? (
-                        <FaCircleCheck size={16} color={category.text} />
-                    ) : (
-                        <FaRegCircle size={16} color="hsl(240, 10%, 60%)" />
-                    )}
-                </Box>
+                <Tooltip title="Goal is paused" disableHoverListener={!isPaused} arrow placement="top">
+                    <Box className="detail-subtask__toggle" onClick={() => !disabled && !bulkMode && onToggle(step.stepId)}
+                        sx={{ display: "flex", cursor: disabled || bulkMode ? "default" : "pointer", lineHeight: 0, flexShrink: 0, opacity: disabled || bulkMode ? 0.35 : 1 }}>
+                        {loading ? (
+                            <CircularProgress className="detail-subtask__spinner" size={14} sx={{ color: "hsl(240, 10%, 60%)" }} />
+                        ) : step.done ? (
+                            <FaCircleCheck size={16} color={category.text} />
+                        ) : (
+                            <FaRegCircle size={16} color="hsl(240, 10%, 60%)" />
+                        )}
+                    </Box>
+                </Tooltip>
                 <Typography className="detail-subtask-text" sx={{
                     flex: 1, fontSize: 14, fontWeight: 500,
                     color: isSelected ? category.text : step.done ? "hsl(240, 8%, 45%)" : "hsl(240, 15%, 10%)",
@@ -154,6 +156,7 @@ function GoalDetailPage() {
 
     const progress = goal ? getStepProgress({ ...goal, steps }) : 0;
     const hasSteps = steps.length > 0;
+    const paused = goal?.status === "paused";
 
     const tabRefs = useRef([]);
     const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, bg: "hsl(142, 71%, 95%)", border: "hsl(142, 71%, 80%)" });
@@ -205,6 +208,7 @@ function GoalDetailPage() {
     }, [steps, goal, dispatch]);
 
     const handleToggleStep = useCallback((stepId) => {
+        if (paused) return;
         const togglingStep = steps.find((s) => s.stepId === stepId);
         const newSteps = steps.map((s) =>
             s.stepId === stepId ? { ...s, done: !s.done } : s
@@ -212,37 +216,38 @@ function GoalDetailPage() {
         setSteps(newSteps);
         setTogglingStepId(stepId);
 
-        if (togglingStep && !togglingStep.done && newSteps.every((s) => s.done)) {
-            setTimeout(() => {
-                const completedTab = tabRefs.current[2];
-                if (completedTab) {
-                    const rect = completedTab.getBoundingClientRect();
-                    const x = (rect.left + rect.width / 2) / window.innerWidth;
-                    const y = (rect.top + rect.height / 2) / window.innerHeight;
-                    confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
-                    confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
-                }
-            }, 350);
-        }
-
         if (goal) {
             dispatch(updateGoal({ ...goal, steps: newSteps }))
+                .then(() => {
+                    if (togglingStep && !togglingStep.done && newSteps.every((s) => s.done)) {
+                        setTimeout(() => {
+                            const completedTab = tabRefs.current[2];
+                            if (completedTab) {
+                                const rect = completedTab.getBoundingClientRect();
+                                const x = (rect.left + rect.width / 2) / window.innerWidth;
+                                const y = (rect.top + rect.height / 2) / window.innerHeight;
+                                confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
+                                confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
+                            }
+                        }, 350);
+                    }
+                })
                 .finally(() => setTogglingStepId(null));
         }
-    }, [steps, goal, dispatch]);
+    }, [steps, goal, paused, dispatch]);
 
-    const handleStatusChange = useCallback((newStatus) => {
+    const handleStatusChange = useCallback(async (newStatus) => {
         if (!goal) return;
         const current = goal.completed || goal.status === "completed" ? "completed" : goal.status === "paused" ? "paused" : "active";
-        if (newStatus === current) return;
+        if (newStatus === current) return Promise.resolve();
 
         if (newStatus === "active") {
-            if (current === "paused") handlePauseToggle(goal);
-            else if (current === "completed") handleToggleGoal(goal);
+            if (current === "paused") return handlePauseToggle(goal);
+            else if (current === "completed") return handleToggleGoal(goal);
         } else if (newStatus === "paused") {
-            if (current === "active") handlePauseToggle(goal);
+            if (current === "active") return handlePauseToggle(goal);
         } else if (newStatus === "completed") {
-            handleCompleteGoal(goal);
+            return handleCompleteGoal(goal);
         }
     }, [goal, handleToggleGoal, handlePauseToggle, handleCompleteGoal]);
 
@@ -427,9 +432,10 @@ function GoalDetailPage() {
                                                 key={key}
                                                 ref={(el) => { tabRefs.current[idx] = el; }}
                                                 className={`goal-detail-page__status-option${isActive ? " goal-detail-page__status-option--active" : ""}`}
-                                                onClick={() => {
+                                                onClick={async () => {
                                                     if (isDisabled) return;
                                                     if (key === "completed" && !isCompleted) {
+                                                        await handleStatusChange(key);
                                                         const el = tabRefs.current[idx];
                                                         if (el) {
                                                             const rect = el.getBoundingClientRect();
@@ -438,8 +444,9 @@ function GoalDetailPage() {
                                                             confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
                                                             confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
                                                         }
+                                                    } else {
+                                                        handleStatusChange(key);
                                                     }
-                                                    handleStatusChange(key);
                                                 }}
                                                 sx={{
                                                     height: 24, minWidth: 24,
@@ -620,7 +627,8 @@ function GoalDetailPage() {
                                                     onToggle={handleToggleStep}
                                                     index={idx}
                                                     loading={togglingStepId === step.stepId}
-                                                    disabled={!!togglingStepId}
+                                                    disabled={!!togglingStepId || paused}
+                                                    isPaused={paused}
                                                     bulkMode={bulkMode}
                                                     isSelected={selectedStepIds.has(step.stepId)}
                                                     onSelect={handleSelectStep}

@@ -10,13 +10,15 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import { TbPencil } from "react-icons/tb";
 import { FiTrash } from "react-icons/fi";
 import {
-    Box, Checkbox, ClickAwayListener, Collapse, IconButton, LinearProgress, Popper, Tooltip, Typography
+    Box, Checkbox, CircularProgress, ClickAwayListener, Collapse, IconButton, LinearProgress, Popper, Tooltip, Typography
 } from "@mui/material";
 import { getStepProgress } from "../utils/goals";
 import RoundedGoalIcon from "./RoundedGoalIcon";
 import DragHandle from "./DragHandle";
 
-function SortableStep({ step, category, onToggleStep, goal, index, className, onAllStepsComplete }) {
+function SortableStep({ step, category, onToggleStep, goal, index, togglingId, setTogglingId, className, onAllStepsComplete, paused }) {
+    const isThisUpdating = togglingId === step.stepId;
+    const isAnyUpdating = togglingId !== null || paused;
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -47,31 +49,47 @@ function SortableStep({ step, category, onToggleStep, goal, index, className, on
                         size={22}
                     />
                 </Box>
-                <IconButton
-                    className="sortable-step__toggle"
-                    onClick={(e) => {
-                        if (!step.done && goal.steps.every((s) => s.done || s.stepId === step.stepId)) {
-                            onAllStepsComplete?.(e.currentTarget);
-                        }
-                        onToggleStep(goal, step.stepId);
-                    }}
-                    size="small"
-                    disableRipple
-                    sx={{
-                        p: 0.25,
-                        mt: "5px",
-                        fontSize: 14,
-                        flexShrink: 0,
-                        color: step.done ? category.text : "hsl(240, 10%, 60%)",
-                        "&:hover": { bgcolor: "transparent" },
-                    }}
-                >
-                    {step.done ? (
-                        <FaCircleCheck />
-                    ) : (
-                        <FaRegCircle />
-                    )}
-                </IconButton>
+                <Tooltip title="Goal is paused" disableHoverListener={!paused} arrow placement="top">
+                    <Box component="span" sx={{ display: "inline-flex" }}>
+                        <IconButton
+                            className="sortable-step__toggle"
+                            onClick={async () => {
+                                if (isAnyUpdating) return;
+                                const wasLastIncomplete = !step.done && goal.steps.every((s) => s.done || s.stepId === step.stepId);
+                                setTogglingId(step.stepId);
+                                try {
+                                    await onToggleStep(goal, step.stepId);
+                                    if (wasLastIncomplete) {
+                                        onAllStepsComplete?.();
+                                    }
+                                } catch {
+                                    // update failed
+                                } finally {
+                                    setTogglingId(null);
+                                }
+                            }}
+                            size="small"
+                            disableRipple
+                            disabled={isAnyUpdating}
+                            sx={{
+                                p: 0.25,
+                                mt: "5px",
+                                fontSize: 14,
+                                flexShrink: 0,
+                                color: step.done ? category.text : "hsl(240, 10%, 60%)",
+                                "&:hover": { bgcolor: "transparent" },
+                            }}
+                        >
+                            {isThisUpdating ? (
+                                <CircularProgress size={14} sx={{ color: category.text }} />
+                            ) : step.done ? (
+                                <FaCircleCheck />
+                            ) : (
+                                <FaRegCircle />
+                            )}
+                        </IconButton>
+                    </Box>
+                </Tooltip>
                 <Typography className="sortable-step__text" sx={{
                     flex: 1,
                     fontSize: 13,
@@ -96,6 +114,7 @@ function SortableStep({ step, category, onToggleStep, goal, index, className, on
 }
 
 function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal, onToggleStep, onReorderSteps, onPauseToggle, isLast }) {
+    const [togglingId, setTogglingId] = useState(null);
     const {
         attributes, listeners, setNodeRef, setActivatorNodeRef,
         transform, transition, isDragging
@@ -121,10 +140,17 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
         confetti({ particleCount: 30, spread: 90, startVelocity: 15, origin: { x, y }, colors, disableForReducedMotion: true });
     }, []);
 
-    const handleCheckboxComplete = useCallback(() => {
+    const handleCheckboxComplete = useCallback(async () => {
         const wasCompleted = goal.completed || goal.status === "completed";
-        if (!wasCompleted) fireConfetti();
-        onToggleGoal(goal);
+        setTogglingId("goal");
+        try {
+            await onToggleGoal(goal);
+            if (!wasCompleted) fireConfetti();
+        } catch {
+            // update failed — confetti skipped
+        } finally {
+            setTogglingId(null);
+        }
     }, [goal, onToggleGoal, fireConfetti]);
 
     const progress = getStepProgress(goal);
@@ -183,42 +209,48 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
                         attributes={attributes}
                     />
 
-                    <Checkbox
-                        ref={setCheckboxRef}
-                        className="goal-row__checkbox"
-                        checked={completed}
-                        onChange={handleCheckboxComplete}
-                        disableRipple
-                        disabled={paused}
-                        sx={{
-                            display: { xs: "none", sm: "inline-flex" },
-                            p: 0,
-                            width: 22,
-                            height: 22,
-                            color: paused ? "hsl(240, 10%, 78%)" : "hsl(240, 8%, 50%)",
-                            "&.Mui-checked": {
-                                color: category.text,
-                            },
-                            "&.Mui-disabled": {
-                                opacity: 0.35,
-                                cursor: "not-allowed",
-                                "&.Mui-checked": {
-                                    color: "hsl(240, 10%, 78%)",
-                                },
-                            },
-                            "& .MuiSvgIcon-root": {
-                                fontSize: 22,
-                            },
-                            "&:hover": {
-                                bgcolor: "transparent",
-                            },
-                            "&.Mui-checked:hover": {
-                                bgcolor: "transparent",
-                            },
-                        }}
-                        icon={<FaRegCircle sx={{ fontSize: 22 }} />}
-                        checkedIcon={<FaCircleCheck sx={{ fontSize: 22 }} />}
-                    />
+                    <Tooltip title="Goal is paused" disableHoverListener={!paused} arrow placement="top">
+                        <Box ref={setCheckboxRef} sx={{ display: { xs: "none", sm: "inline-flex" }, alignItems: "center", justifyContent: "center", width: 22, height: 22 }}>
+                            {togglingId === "goal" ? (
+                                <CircularProgress size={20} sx={{ color: category.text }} />
+                            ) : (
+                                <Checkbox
+                                    className="goal-row__checkbox"
+                                    checked={completed}
+                                    onChange={handleCheckboxComplete}
+                                    disableRipple
+                                    disabled={paused || togglingId !== null}
+                                    sx={{
+                                        p: 0,
+                                        width: 22,
+                                        height: 22,
+                                        color: paused ? "hsl(240, 10%, 78%)" : "hsl(240, 8%, 50%)",
+                                        "&.Mui-checked": {
+                                            color: category.text,
+                                        },
+                                        "&.Mui-disabled": {
+                                            opacity: 0.35,
+                                            cursor: "not-allowed",
+                                            "&.Mui-checked": {
+                                                color: "hsl(240, 10%, 78%)",
+                                            },
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            fontSize: 22,
+                                        },
+                                        "&:hover": {
+                                            bgcolor: "transparent",
+                                        },
+                                        "&.Mui-checked:hover": {
+                                            bgcolor: "transparent",
+                                        },
+                                    }}
+                                    icon={<FaRegCircle sx={{ fontSize: 22 }} />}
+                                    checkedIcon={<FaCircleCheck sx={{ fontSize: 22 }} />}
+                                />
+                        )}
+                        </Box>
+                        </Tooltip>
 
                     <RoundedGoalIcon
                         className="goal-row__icon"
@@ -442,47 +474,60 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
                                         </Box>
 
                                         {/* Complete */}
-                                        <Box
-                                            className="goal-row__menu-item goal-row__menu-complete"
-                                            onClick={() => {
-                                                if (!paused) {
-                                                    if (!completed) confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
-                                                    onToggleGoal(goal);
-                                                    setMobileMenuOpen(false);
-                                                }
-                                            }}
-                                            sx={{
-                                                px: 1.5,
-                                                py: 1,
-                                                fontSize: 13,
-                                                fontWeight: 500,
-                                                color: "hsl(240, 8%, 20%)",
-                                                cursor: paused ? "not-allowed" : "pointer",
-                                                opacity: paused ? 0.35 : 1,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: 1.5,
-                                                borderBottom: "1px solid hsl(240, 10%, 93%)",
-                                                transition: "0.3s all ease",
-                                                "&:hover": {
-                                                    bgcolor: paused ? "inherit" : category.soft,
-                                                    color: paused ? "inherit" : category.text,
-                                                },
-                                            }}
-                                        >
-                                            {completed ? (
-                                                <FaCircleCheck
-                                                    size={16}
-                                                    color={category.text}
-                                                />
-                                            ) : (
-                                                <FaRegCircle
-                                                    size={16}
-                                                    color={category.text}
-                                                />
-                                            )}
-                                            {completed ? "Incomplete" : "Complete"}
-                                        </Box>
+                                        <Tooltip title="Goal is paused" disableHoverListener={!paused} arrow placement="top">
+                                            <Box
+                                                className="goal-row__menu-item goal-row__menu-complete"
+                                                onClick={async () => {
+                                                    if (!paused && togglingId === null) {
+                                                        setTogglingId("goal");
+                                                        try {
+                                                            await onToggleGoal(goal);
+                                                            if (!completed) {
+                                                                confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
+                                                            }
+                                                            setMobileMenuOpen(false);
+                                                        } catch {
+                                                            // update failed
+                                                        } finally {
+                                                            setTogglingId(null);
+                                                        }
+                                                    }
+                                                }}
+                                                sx={{
+                                                    px: 1.5,
+                                                    py: 1,
+                                                    fontSize: 13,
+                                                    fontWeight: 500,
+                                                    color: "hsl(240, 8%, 20%)",
+                                                    cursor: (paused || togglingId !== null) ? "not-allowed" : "pointer",
+                                                    opacity: (paused || togglingId !== null) ? 0.35 : 1,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: 1.5,
+                                                    borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                    transition: "0.3s all ease",
+                                                    "&:hover": {
+                                                        bgcolor: (paused || togglingId !== null) ? "inherit" : category.soft,
+                                                        color: (paused || togglingId !== null) ? "inherit" : category.text,
+                                                    },
+                                                }}
+                                            >
+                                                {togglingId === "goal" ? (
+                                                    <CircularProgress size={16} sx={{ color: category.text }} />
+                                                ) : completed ? (
+                                                    <FaCircleCheck
+                                                        size={16}
+                                                        color={category.text}
+                                                    />
+                                                ) : (
+                                                    <FaRegCircle
+                                                        size={16}
+                                                        color={category.text}
+                                                    />
+                                                )}
+                                                {completed ? "Incomplete" : "Complete"}
+                                            </Box>
+                                        </Tooltip>
 
                                         {/* Pause */}
                                         <Box
@@ -621,7 +666,10 @@ function GoalRow({ goal, category, onViewDetails, onEdit, onDelete, onToggleGoal
                                             onToggleStep={onToggleStep}
                                             goal={goal}
                                             index={idx}
+                                            togglingId={togglingId}
+                                            setTogglingId={setTogglingId}
                                             onAllStepsComplete={fireConfetti}
+                                            paused={paused}
                                         />
                                     ))}
                                 </SortableContext>

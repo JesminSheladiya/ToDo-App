@@ -5,6 +5,7 @@ import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
 import Stack from "../components/Stack";
 import { useGoalActions } from "../hooks/useGoalActions";
 import { updateGoal, reorderGoals, reorderSteps, batchReorder } from "../store/goalsSlice";
+import { setActiveCategory } from "../store/uiSlice";
 
 function CategoriesPage() {
     const dispatch = useDispatch();
@@ -42,6 +43,10 @@ function CategoriesPage() {
         dispatch(updateGoal({ ...goal, steps: newSteps }));
     }, [dispatch]);
 
+    const handleViewAll = useCallback((categoryKey) => {
+        dispatch(setActiveCategory(categoryKey));
+    }, [dispatch]);
+
     const filteredCategories = activeCategory === "all"
         ? categories
         : categories.filter((cat) => cat.key === activeCategory);
@@ -59,6 +64,8 @@ function CategoriesPage() {
                     }
                     categoryCounts={categoryCounts}
                     loading={countersLoading}
+                    expanded={activeCategory !== "all" && activeCategory === category.key}
+                    onViewAll={handleViewAll}
                     onCreate={handleOpenCreate}
                     onViewDetails={handleOpenDetail}
                     onEdit={handleOpenEdit}

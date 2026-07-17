@@ -14,7 +14,7 @@ const uiSlice = createSlice({
         editingGoal: null,
         draft: { ...emptyDraft },
         newStepText: "",
-        activeCategory: "all",
+        activeCategory: localStorage.getItem("activeCategory") || "all",
     },
     reducers: {
         openEditor(state, action) {
@@ -74,9 +74,11 @@ const uiSlice = createSlice({
         },
         setActiveCategory(state, action) {
             state.activeCategory = action.payload;
+            localStorage.setItem("activeCategory", action.payload);
         },
         clearActiveCategory(state) {
             state.activeCategory = "all";
+            localStorage.setItem("activeCategory", "all");
         },
     }
 });

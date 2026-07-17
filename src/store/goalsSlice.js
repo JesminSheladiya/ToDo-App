@@ -13,17 +13,29 @@ export const fetchGoals = createAsyncThunk("goals/fetchGoals", async (_, { getSt
         }
     };
 
+    const sumSteps = (goals) => {
+        let totalSteps = 0;
+        let doneSteps = 0;
+        goals.forEach((g) => {
+            const steps = g.steps || [];
+            totalSteps += steps.length;
+            doneSteps += steps.filter((s) => s.done).length;
+        });
+        return { totalSteps, doneSteps };
+    };
+
     if (!categories || categories.length === 0) {
         const response = await api.get("/tasks", { params: { size: 10 } });
         const data = response?.data;
         const goals = data?.content || (Array.isArray(data) ? data : []);
         dispatch(appendCategoryGoals({ category: "all", goals }));
+        const { totalSteps, doneSteps } = sumSteps(goals);
         return {
             categoryCounts: {},
             totalElements: data?.totalElements ?? 0,
             statusCounts: { completed: 0, paused: 0 },
-            totalSteps: 0,
-            doneSteps: 0,
+            totalSteps,
+            doneSteps,
         };
     }
 
@@ -33,31 +45,32 @@ export const fetchGoals = createAsyncThunk("goals/fetchGoals", async (_, { getSt
                 const data = res?.data;
                 const goals = data?.content || (Array.isArray(data) ? data : []);
                 dispatch(appendCategoryGoals({ category: cat.key, goals }));
-                return { category: cat.key, totalElements: data?.totalElements ?? 0 };
+                const { totalSteps, doneSteps } = sumSteps(goals);
+                return {
+                    category: cat.key,
+                    totalElements: data?.totalElements ?? 0,
+                    totalSteps,
+                    doneSteps,
+                };
             })
-            .catch(() => ({ category: cat.key, totalElements: 0 }))
+            .catch(() => ({ category: cat.key, totalElements: 0, totalSteps: 0, doneSteps: 0 }))
     );
 
-    const [categoryResults, completedCount, pausedCount, allTasksRes] = await Promise.all([
+    const [categoryResults, completedCount, pausedCount] = await Promise.all([
         Promise.all(categoryPromises),
         countByStatus("completed"),
         countByStatus("paused"),
-        api.get("/tasks", { params: { size: 10000 } }).then((res) => res?.data?.content || []).catch(() => []),
     ]);
 
     const categoryCounts = {};
     let totalElements = 0;
+    let totalSteps = 0;
+    let doneSteps = 0;
     categoryResults.forEach((r) => {
         categoryCounts[r.category] = r.totalElements;
         totalElements += r.totalElements;
-    });
-
-    let totalSteps = 0;
-    let doneSteps = 0;
-    allTasksRes.forEach((g) => {
-        const steps = g.steps || [];
-        totalSteps += steps.length;
-        doneSteps += steps.filter((s) => s.done).length;
+        totalSteps += r.totalSteps;
+        doneSteps += r.doneSteps;
     });
 
     return {
@@ -188,7 +201,8 @@ const goalsSlice = createSlice({
                 state.filteredLoading = true;
             })
             .addCase(fetchFilteredGoals.fulfilled, (state, action) => {
-                state.filteredItems = action.payload.content || [];
+                const content = action.payload.content || [];
+                state.filteredItems = content;
                 state.pagination = {
                     page: action.payload.currentPage ?? 0,
                     pageSize: action.payload.pageSize ?? 20,
@@ -196,6 +210,14 @@ const goalsSlice = createSlice({
                     totalElements: action.payload.totalElements ?? 0,
                 };
                 state.filteredLoading = false;
+                content.forEach((goal) => {
+                    const index = state.items.findIndex((g) => g.id === goal.id);
+                    if (index !== -1) {
+                        state.items[index] = goal;
+                    } else {
+                        state.items.push(goal);
+                    }
+                });
             })
             .addCase(fetchFilteredGoals.rejected, (state) => {
                 state.filteredLoading = false;

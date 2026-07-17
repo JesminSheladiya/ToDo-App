@@ -60,14 +60,14 @@ function GoalFormPage() {
     const background = location.state?.background;
     const isOverlay = !!background;
 
+    useEffect(() => {
+        dispatch(fetchGoals());
+    }, [dispatch]);
+
     const existingGoal = useMemo(
         () => isEditing && !loading ? goals.find((g) => String(g.id) === id) : null,
         [id, goals, isEditing, loading]
     );
-
-    useEffect(() => {
-        dispatch(fetchGoals());
-    }, [dispatch]);
 
     const initialCategory = searchParams.get("category") || "short_term";
 

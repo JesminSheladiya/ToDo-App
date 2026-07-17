@@ -19,7 +19,7 @@ function ListPage() {
     const categoryFilter = searchParams.get("category") || "all";
     const statusFilter = searchParams.get("status") || "all";
     const page = Math.max(0, parseInt(searchParams.get("page") || "1") - 1);
-    const pageSize = parseInt(searchParams.get("size") || "10");
+    const pageSize = parseInt(searchParams.get("size") || "20");
 
     const [inputValue, setInputValue] = useState(query);
     const debounceRef = useRef(null);
@@ -31,29 +31,44 @@ function ListPage() {
         if (!categories || categories.length === 0) return;
 
         setCountsLoading(true);
-        const params = { size: 10000 };
-        if (query) params.search = query;
-        if (categoryFilter && categoryFilter !== "all") params.category = categoryFilter;
-        if (statusFilter && statusFilter !== "all") params.status = statusFilter;
 
-        api.get("/tasks", { params }).then((res) => {
-            const data = res?.data;
-            const items = data?.content || (Array.isArray(data) ? data : []);
+        const baseParams = {};
+        if (query) baseParams.search = query;
+        if (statusFilter && statusFilter !== "all") baseParams.status = statusFilter;
 
+        const countFor = (extra) =>
+            api.get("/tasks", { params: { size: 1, ...baseParams, ...extra } })
+                .then((res) => res?.data?.totalElements ?? 0)
+                .catch(() => 0);
+
+        const catPromises = categories.map((cat) =>
+            countFor({ category: cat.key }).then((count) => ({ key: cat.key, count }))
+        );
+
+        const statusKeys = ["active", "completed", "paused"];
+        const statusPromises = statusKeys.map((st) => {
+            const params = { size: 1 };
+            if (query) params.search = query;
+            if (categoryFilter && categoryFilter !== "all") params.category = categoryFilter;
+            params.status = st;
+            return api.get("/tasks", { params })
+                .then((res) => ({ key: st, count: res?.data?.totalElements ?? 0 }))
+                .catch(() => ({ key: st, count: 0 }));
+        });
+
+        Promise.all([...catPromises, ...statusPromises]).then((results) => {
             const catCounts = {};
-            categories.forEach((cat) => {
-                catCounts[cat.key] = items.filter((g) => g.category === cat.key).length;
+            const statCounts = { active: 0, completed: 0, paused: 0 };
+            results.forEach((r) => {
+                if (r.key === "active" || r.key === "completed" || r.key === "paused") {
+                    statCounts[r.key] = r.count;
+                } else {
+                    catCounts[r.key] = r.count;
+                }
             });
-
-            const statCounts = {
-                active: items.filter((g) => g.status === "active" && !g.completed).length,
-                completed: items.filter((g) => g.completed || g.status === "completed").length,
-                paused: items.filter((g) => g.status === "paused").length,
-            };
-
             setLiveCategoryCounts(catCounts);
             setLiveStatusCounts(statCounts);
-        }).catch(() => {}).finally(() => {
+        }).finally(() => {
             setCountsLoading(false);
         });
     }, [query, categoryFilter, statusFilter, categories]);

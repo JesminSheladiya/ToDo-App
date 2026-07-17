@@ -80,14 +80,7 @@ export function useGoalActions() {
 
         const nextGoal = { ...goal, steps: nextSteps, completed, status: completed ? "completed" : goal.status === "paused" ? "paused" : "active" };
 
-        toast.promise(
-            dispatch(updateGoal(nextGoal)).unwrap(),
-            {
-                pending: "Updating...",
-                success: completed ? "Goal completed!" : "Goal reopened",
-                error: "Failed to update goal"
-            }
-        );
+        return dispatch(updateGoal(nextGoal)).unwrap();
     }, [dispatch]);
 
     const handlePauseToggle = useCallback((goal) => {
@@ -99,7 +92,7 @@ export function useGoalActions() {
             completed: isPaused ? false : goal.completed,
         };
 
-        toast.promise(
+        return toast.promise(
             dispatch(updateGoal(nextGoal)).unwrap(),
             {
                 pending: isPaused ? "Resuming goal..." : "Pausing goal...",
@@ -116,7 +109,7 @@ export function useGoalActions() {
         const nextSteps = steps.map((step) => ({ ...step, done: true }));
         const nextGoal = { ...goal, steps: nextSteps, completed: true, status: "completed" };
 
-        toast.promise(
+        return toast.promise(
             dispatch(updateGoal(nextGoal)).unwrap(),
             {
                 pending: "Updating...",
@@ -136,7 +129,7 @@ export function useGoalActions() {
             )
         };
 
-        dispatch(updateGoal(nextGoal));
+        return dispatch(updateGoal(nextGoal)).unwrap();
     }, [dispatch]);
 
     return {

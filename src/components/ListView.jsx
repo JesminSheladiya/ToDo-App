@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from "react";
 import confetti from "canvas-confetti";
-import { Box, ClickAwayListener, IconButton, InputAdornment, Pagination, Popper, Skeleton, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, CircularProgress, ClickAwayListener, IconButton, InputAdornment, Pagination, Popper, Skeleton, TextField, Tooltip, Typography } from "@mui/material";
 import { PiEyeBold, PiMagnifyingGlassBold, PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaRegCircle, FaCircleCheck } from "react-icons/fa6";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
@@ -89,6 +89,7 @@ function SelectDropdown({ value, options, onChange, sx, triggerSx, className }) 
 function ListView({ goals, categories, storeCategoryCounts = {}, storeStatusCounts = {}, countsLoading = false, query, categoryFilter, statusFilter, loading, onQueryChange, onCategoryFilterChange, onStatusFilterChange, onViewDetails, onEdit, onDelete, onToggleGoal, onPauseToggle, className, page = 0, pageSize = 20, totalPages = 0, totalElements = 0, onPageChange, onPageSizeChange }) {
     const [mobileMenuGoal, setMobileMenuGoal] = useState(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+    const [togglingId, setTogglingId] = useState(null);
 
     const fireConfetti = useCallback((element, categoryColor) => {
         if (!element) return;
@@ -278,30 +279,47 @@ function ListView({ goals, categories, storeCategoryCounts = {}, storeStatusCoun
                                     py: 1.25,
                                     minHeight: 52,
                                 }}>
-                                    <IconButton
-                                        onClick={(e) => {
-                                            if (!completed && !paused) fireConfetti(e.currentTarget, category.text);
-                                            onToggleGoal(goal);
-                                        }}
-                                        size="small"
-                                        className="list-view__toggle-btn"
-                                        sx={{
-                                            display: { xs: "none", sm: "inline-flex" },
-                                            p: 0.25,
-                                            color: completed ? category.text : "hsl(240, 8%, 50%)",
-                                            opacity: paused ? 0.35 : 1,
-                                            cursor: paused ? "not-allowed" : "pointer",
-                                            transition: "all 150ms ease",
-                                            "&:hover": { transform: paused ? "none" : "scale(1.1)" },
-                                            "&:active": { transform: paused ? "none" : "scale(0.95)" },
-                                        }}
-                                    >
-                                        {completed ? (
-                                            <FaCircleCheck size={16} />
-                                        ) : (
-                                            <FaRegCircle size={16} />
-                                        )}
-                                    </IconButton>
+                                    <Tooltip title="Goal is paused" disableHoverListener={!paused} arrow placement="top">
+                                        <Box component="span" sx={{ display: "inline-flex" }}>
+                                            <IconButton
+                                                onClick={async (e) => {
+                                                    if (paused || togglingId !== null) return;
+                                                    const btn = e.currentTarget;
+                                                    const wasCompleted = completed;
+                                                    setTogglingId(goal.id);
+                                                    try {
+                                                        await onToggleGoal(goal);
+                                                        if (!wasCompleted) fireConfetti(btn, category.text);
+                                                    } catch {
+                                                        // update failed
+                                                    } finally {
+                                                        setTogglingId(null);
+                                                    }
+                                                }}
+                                                size="small"
+                                                className="list-view__toggle-btn"
+                                                disabled={paused || togglingId !== null}
+                                                sx={{
+                                                    display: { xs: "none", sm: "inline-flex" },
+                                                    p: 0.25,
+                                                    color: completed ? category.text : "hsl(240, 8%, 50%)",
+                                                    opacity: paused || (togglingId !== null && togglingId !== goal.id) ? 0.35 : 1,
+                                                    cursor: (paused || togglingId !== null) ? "not-allowed" : "pointer",
+                                                    transition: "all 150ms ease",
+                                                    "&:hover": { transform: paused || togglingId !== null ? "none" : "scale(1.1)" },
+                                                    "&:active": { transform: paused || togglingId !== null ? "none" : "scale(0.95)" },
+                                                }}
+                                            >
+                                                {togglingId === goal.id ? (
+                                                    <CircularProgress size={16} sx={{ color: category.text }} />
+                                                ) : completed ? (
+                                                    <FaCircleCheck size={16} />
+                                                ) : (
+                                                    <FaRegCircle size={16} />
+                                                )}
+                                            </IconButton>
+                                        </Box>
+                                    </Tooltip>
 
                                     <RoundedGoalIcon
                                         className="list-view__goal-icon"
@@ -477,29 +495,49 @@ function ListView({ goals, categories, storeCategoryCounts = {}, storeStatusCoun
                                                         <PiEyeBold size={16} color="#7c3aed" />
                                                         View Details
                                                     </Box>
-                                                    <Box
-                                                        onClick={() => { if (goal.status !== "paused") { if (!completed) confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true }); onToggleGoal(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
-                                                        className="list-view__dropdown-item"
-                                                        sx={{
-                                                            px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
-                                                            color: "hsl(240, 8%, 20%)",
-                                                            cursor: goal.status === "paused" ? "not-allowed" : "pointer",
-                                                            opacity: goal.status === "paused" ? 0.35 : 1,
-                                                            display: "flex", alignItems: "center", gap: 1.5,
-                                                            borderBottom: "1px solid hsl(240, 10%, 93%)",
-                                                            transition: "0.3s all ease",
-                                                            "&:hover": {
-                                                                bgcolor: goal.status === "paused" ? "inherit" : category.soft,
-                                                                color: goal.status === "paused" ? "inherit" : category.text,
-                                                            },
-                                                        }}
-                                                    >
-                                                        {(goal.status === "completed" || goal.completed)
-                                                            ? <FaCircleCheck size={16} color={category.text} />
-                                                            : <FaRegCircle size={16} color={category.text} />
-                                                        }
-                                                        {(goal.status === "completed" || goal.completed) ? "Incomplete" : "Complete"}
-                                                    </Box>
+                                                    <Tooltip title="Goal is paused" disableHoverListener={!paused} arrow placement="top">
+                                                        <Box
+                                                            onClick={async () => {
+                                                                if (goal.status === "paused" || togglingId !== null) return;
+                                                                const wasCompleted = goal.completed || goal.status === "completed";
+                                                                setTogglingId(goal.id);
+                                                                try {
+                                                                    await onToggleGoal(goal);
+                                                                    if (!wasCompleted) {
+                                                                        confetti({ particleCount: 50, spread: 60, startVelocity: 25, origin: { x: 0.5, y: 0.5 }, colors: ["#fb923c", "#facc15", "#4ade80", "#60a5fa", "#c084fc"], disableForReducedMotion: true });
+                                                                    }
+                                                                    setMobileMenuGoal(null);
+                                                                    setMobileMenuAnchor(null);
+                                                                } catch {
+                                                                    // update failed
+                                                                } finally {
+                                                                    setTogglingId(null);
+                                                                }
+                                                            }}
+                                                            className="list-view__dropdown-item"
+                                                            sx={{
+                                                                px: 1.5, py: 1, fontSize: 13, fontWeight: 500,
+                                                                color: "hsl(240, 8%, 20%)",
+                                                                cursor: (goal.status === "paused" || togglingId !== null) ? "not-allowed" : "pointer",
+                                                                opacity: (goal.status === "paused" || togglingId !== null) ? 0.35 : 1,
+                                                                display: "flex", alignItems: "center", gap: 1.5,
+                                                                borderBottom: "1px solid hsl(240, 10%, 93%)",
+                                                                transition: "0.3s all ease",
+                                                                "&:hover": {
+                                                                    bgcolor: (goal.status === "paused" || togglingId !== null) ? "inherit" : category.soft,
+                                                                    color: (goal.status === "paused" || togglingId !== null) ? "inherit" : category.text,
+                                                                },
+                                                            }}
+                                                        >
+                                                            {togglingId === goal.id ? (
+                                                                <CircularProgress size={16} sx={{ color: category.text }} />
+                                                            ) : (goal.status === "completed" || goal.completed)
+                                                                ? <FaCircleCheck size={16} color={category.text} />
+                                                                : <FaRegCircle size={16} color={category.text} />
+                                                            }
+                                                            {(goal.status === "completed" || goal.completed) ? "Incomplete" : "Complete"}
+                                                        </Box>
+                                                    </Tooltip>
                                                     <Box
                                                         onClick={() => { if (!(goal.completed || goal.status === "completed")) { onPauseToggle(goal); setMobileMenuGoal(null); setMobileMenuAnchor(null); } }}
                                                         className="list-view__dropdown-item"
@@ -569,7 +607,7 @@ function ListView({ goals, categories, storeCategoryCounts = {}, storeStatusCoun
                 </Box>
             )}
 
-            {!loading && onPageChange && (
+            {!loading && onPageChange && totalElements > pageSize && (
                 <Box className="list-view__pagination" sx={{
                     display: "flex",
                     flexDirection: { xs: "column", sm: "row" },
@@ -589,19 +627,18 @@ function ListView({ goals, categories, storeCategoryCounts = {}, storeStatusCoun
                             <Typography sx={{ fontSize: 13, color: "hsl(240, 8%, 35%)", whiteSpace: "nowrap" }}>
                                 Rows:
                             </Typography>
-                            <SelectDropdown
-                                value={pageSize}
-                                options={[
-                                    { value: 10, label: "10" },
-                                    { value: 20, label: "20" },
-                                    { value: 40, label: "40" },
-                                    { value: 80, label: "80" },
-                                    { value: 100, label: "100" },
-                                ]}
-                                onChange={(val) => onPageSizeChange?.(val)}
-                                className="list-view__pagination-select"
-                                triggerSx={{ minHeight: 30, py: 0.25, minWidth: 56 }}
-                            />
+                        <SelectDropdown
+                            value={pageSize}
+                            options={[
+                                { value: 20, label: "20" },
+                                { value: 40, label: "40" },
+                                { value: 70, label: "70" },
+                                { value: 100, label: "100" },
+                            ]}
+                            onChange={(val) => onPageSizeChange?.(val)}
+                            className="list-view__pagination-select"
+                            triggerSx={{ minHeight: 30, py: 0.25, minWidth: 56 }}
+                        />
                         </Box>
 
                         <Typography className="list-view__pagination-info" sx={{
