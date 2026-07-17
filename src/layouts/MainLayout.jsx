@@ -528,6 +528,7 @@ function MainLayout() {
     const storeTotalSteps = useSelector((state) => state.goals.totalSteps);
     const storeDoneSteps = useSelector((state) => state.goals.doneSteps);
     const loading = useSelector((state) => state.goals.loading);
+    const countersLoading = useSelector((state) => state.goals.countersLoading);
     const user = useSelector((state) => state.auth.user);
     const { handleOpenCreate } = useGoalActions();
 
@@ -726,7 +727,7 @@ function MainLayout() {
                         <Outlet />
                     ) : (
                         <Stack className="main-layout__stack" spacing={2.5}>
-                            <ProgressSummary className="main-layout__progress-summary" stats={stats} goals={goals} categories={categories} categoryCounts={categoryCounts} totalSteps={storeTotalSteps} doneSteps={storeDoneSteps} loading={loading} />
+                            <ProgressSummary className="main-layout__progress-summary" stats={stats} goals={goals} categories={categories} categoryCounts={categoryCounts} totalSteps={storeTotalSteps} doneSteps={storeDoneSteps} loading={countersLoading} />
 
                             {loading ? (
                                 <DashboardSkeleton className="main-layout__dashboard-skeleton" />

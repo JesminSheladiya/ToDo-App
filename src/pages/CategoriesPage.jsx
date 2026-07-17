@@ -11,7 +11,7 @@ function CategoriesPage() {
     const goals = useSelector((state) => state.goals.items);
     const categories = useSelector((state) => state.config.categories);
     const categoryCounts = useSelector((state) => state.goals.categoryCounts);
-    const loading = useSelector((state) => state.goals.loading);
+    const countersLoading = useSelector((state) => state.goals.countersLoading);
     const activeCategory = useSelector((state) => state.ui.activeCategory);
     const {
         handleOpenCreate,
@@ -58,7 +58,7 @@ function CategoriesPage() {
                         .sort((a, b) => (a.taskOrder ?? 0) - (b.taskOrder ?? 0))
                     }
                     categoryCounts={categoryCounts}
-                    loading={loading}
+                    loading={countersLoading}
                     onCreate={handleOpenCreate}
                     onViewDetails={handleOpenDetail}
                     onEdit={handleOpenEdit}
